@@ -1,8 +1,10 @@
 import { useState } from "react";
-import { Text, View, FlatList, Pressable } from "react-native";
+import { Text, View, FlatList, Pressable, TouchableOpacity } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
+import Swipeable from "react-native-gesture-handler/Swipeable";
 import styled from "styled-components";
 
-import { initialDecks } from "@/data/decks";
+import { Card, initialDecks } from "@/data/decks";
 
 interface Props {
     deckId?: string;
@@ -11,6 +13,7 @@ interface Props {
 const DeckDetailScreen: React.FC<Props> = ({ deckId }) => {
     const deck = initialDecks.find((deck) => deck.id === deckId);
     const [visibleAnswers, setVisibleAnswers] = useState<Record<string, boolean>>({});
+    const [cards, setCards] = useState<Card[]>(deck?.cards ?? []);
 
     const toggleAnswer = (cardId: string) => {
         setVisibleAnswers((prev) => ({
@@ -19,24 +22,37 @@ const DeckDetailScreen: React.FC<Props> = ({ deckId }) => {
         }));
     };
 
-    if (!deck) {
-        return <Text>Deck not found</Text>
-    }
+    const deleteCard = (cardId: string) => {
+        setCards(prev => prev.filter(card => card.id !== cardId));
+
+        setVisibleAnswers(prev => {
+            const updated = { ...prev };
+            delete updated[cardId];
+            return updated;
+        });
+    };
+
+    const renderRightActions = (cardId: string) => (
+        <DeleteCard onPress={() => deleteCard(cardId)}>
+            <MaterialIcons name='delete' size={24} color='#e6e6e6' />
+        </DeleteCard>
+    );
 
     return (
         <StyledView>
             <FlatList
-                data={deck.cards}
+                data={cards}
                 keyExtractor={(item) => item.id}
                 contentContainerStyle={{ gap: 12, paddingTop: 16 }}
                 renderItem={({ item }) => (
-                    <CardStyledContainer onPress={() => toggleAnswer(item.id)}>
-                        <StyledQuestion>{item.question}</StyledQuestion>
-
-                        {visibleAnswers[item.id] && (
-                            <StyledAnswer>{item.answer}</StyledAnswer>
-                        )}
-                    </CardStyledContainer>
+                    <Swipeable renderRightActions={() => renderRightActions(item.id)}>
+                        <CardStyledContainer onPress={() => toggleAnswer(item.id)}>
+                            <StyledQuestion>{item.question}</StyledQuestion>
+                            {visibleAnswers[item.id] && (
+                                <StyledAnswer>{item.answer}</StyledAnswer>
+                            )}
+                        </CardStyledContainer>
+                    </Swipeable>
                 )}
             />
         </StyledView>
@@ -72,4 +88,13 @@ const StyledAnswer = styled(Text)`
     margin-top: 10px;
     font-size: 16px;
     color: #e6e6e6;
+`;
+
+const DeleteCard = styled(TouchableOpacity)`
+    width: 64px;
+    margin-left: 8px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 12px;
+    background-color: #d11a2a;
 `;
