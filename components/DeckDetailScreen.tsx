@@ -1,5 +1,4 @@
-import { useLocalSearchParams } from "expo-router";
-import { Text, View } from "react-native";
+import { Text, View, FlatList } from "react-native";
 import styled from "styled-components";
 
 import { initialDecks } from "@/data/decks";
@@ -21,30 +20,50 @@ const DeckDetailScreen: React.FC<Props> = ({ deckId }) => {
 
     return (
         <StyledView>
-            <StyledTitle>{deck.title}</StyledTitle>
-            <CardCount>{deck.cards.length}</CardCount>
+            <FlatList
+                data={deck.cards}
+                keyExtractor={(item) => item.id}
+                contentContainerStyle={{ gap: 12, paddingTop: 16 }}
+                renderItem={({ item }) => (
+                    <CardStyledContainer>
+                        <StyledQuestion>{item.question}</StyledQuestion>
+                        <StyledAnswer>{item.answer}</StyledAnswer>
+                    </CardStyledContainer>
+                )}
+            />
         </StyledView>
     );
 }
 
 export default DeckDetailScreen;
 
+export const getDeckTitleById = (id?: string): string => {
+    const deck = initialDecks.find((deck) => deck.id === id);
+    return deck?.title ?? '';
+};
+
 const StyledView = styled(View)`
     flex: 1;
-    padding: 20px;
+    padding: 16px 10px;
     background-color: #25292e;
 `;
 
-const StyledTitle = styled(Text)`
-    font-size: 28px;
-    font-weight: bold;
-    color: #e6e6e6;
+const CardStyledContainer = styled(View)`
+    padding: 16px;
+    border-radius: 12px;
+    background-color: #1a1c20;
 `;
 
-const CardCount = styled(Text)`
+const StyledQuestion = styled(Text)`
     font-size: 16px;
-    margin-top: 8px;
-    color: #808080;
+    font-weight: bold;
+    color: #0a7ea4;
+`;
+
+const StyledAnswer = styled(Text)`
+    margin-top: 4px;
+    font-size: 14px;
+    color: #e6e6e6;
 `;
 
 const NotFoundDeckView = styled(View)`
