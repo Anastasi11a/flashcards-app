@@ -1,4 +1,5 @@
-import { Text, View, FlatList } from "react-native";
+import { useState } from "react";
+import { Text, View, FlatList, Pressable } from "react-native";
 import styled from "styled-components";
 
 import { initialDecks } from "@/data/decks";
@@ -9,13 +10,17 @@ interface Props {
 
 const DeckDetailScreen: React.FC<Props> = ({ deckId }) => {
     const deck = initialDecks.find((deck) => deck.id === deckId);
+    const [visibleAnswers, setVisibleAnswers] = useState<Record<string, boolean>>({});
+
+    const toggleAnswer = (cardId: string) => {
+        setVisibleAnswers((prev) => ({
+            ...prev,
+            [cardId]: !prev[cardId],
+        }));
+    };
 
     if (!deck) {
-        return (
-            <NotFoundDeckView>
-                <NotFoundDeckText>Deck not found</NotFoundDeckText>
-            </NotFoundDeckView>
-        );
+        return <Text>Deck not found</Text>
     }
 
     return (
@@ -25,9 +30,12 @@ const DeckDetailScreen: React.FC<Props> = ({ deckId }) => {
                 keyExtractor={(item) => item.id}
                 contentContainerStyle={{ gap: 12, paddingTop: 16 }}
                 renderItem={({ item }) => (
-                    <CardStyledContainer>
+                    <CardStyledContainer onPress={() => toggleAnswer(item.id)}>
                         <StyledQuestion>{item.question}</StyledQuestion>
-                        <StyledAnswer>{item.answer}</StyledAnswer>
+
+                        {visibleAnswers[item.id] && (
+                            <StyledAnswer>{item.answer}</StyledAnswer>
+                        )}
                     </CardStyledContainer>
                 )}
             />
@@ -48,31 +56,20 @@ const StyledView = styled(View)`
     background-color: #25292e;
 `;
 
-const CardStyledContainer = styled(View)`
-    padding: 16px;
+const CardStyledContainer = styled(Pressable)`
+    padding: 16px 12px;
     border-radius: 12px;
     background-color: #1a1c20;
 `;
 
 const StyledQuestion = styled(Text)`
-    font-size: 16px;
+    font-size: 18px;
     font-weight: bold;
     color: #0a7ea4;
 `;
 
 const StyledAnswer = styled(Text)`
-    margin-top: 4px;
-    font-size: 14px;
-    color: #e6e6e6;
-`;
-
-const NotFoundDeckView = styled(View)`
-    flex: 1;
-    justify-content: center;
-    align-items: center;
-    background-color: #808080;
-`;
-const NotFoundDeckText = styled(Text)`
+    margin-top: 10px;
     font-size: 16px;
     color: #e6e6e6;
 `;
