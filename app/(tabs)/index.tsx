@@ -1,9 +1,12 @@
 import { Text, View, FlatList, Pressable } from "react-native";
+import { useRouter } from "expo-router";
 import styled from "styled-components";
 
 import { initialDecks } from "@/data/decks";
 
 export default function App() {
+    const router = useRouter();
+
     return (
         <Container>
             <FlatList
@@ -11,7 +14,10 @@ export default function App() {
                 keyExtractor={(item) => item.id}
                 contentContainerStyle={{ gap: 12 }}
                 renderItem={({ item }) => (
-                    <DeckCard>
+                    <DeckCard onPress={() => router.push({
+                        pathname: '/deck/[id]',
+                        params: { id: item.id },
+                    })}>
                         <DeckTitle>{item.title}</DeckTitle>
                         <DeckCount>{item.cards.length}</DeckCount>
                     </DeckCard>
