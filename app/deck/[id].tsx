@@ -4,7 +4,6 @@ import DeckDetailScreen, { getDeckTitleById } from "@/components/DeckDetailScree
 
 const DeckScreen: React.FC = () => {
     const { id } = useLocalSearchParams<{ id: string }>();    
-
     const navigation = useNavigation();
 
     useLayoutEffect(() => {
