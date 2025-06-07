@@ -14,8 +14,11 @@ const DeckDetailScreen: React.FC<Props> = ({ deckId }) => {
     const deck = initialDecks.find((deck) => deck.id === deckId);
     const [visibleAnswers, setVisibleAnswers] = useState<Record<string, boolean>>({});
     const [cards, setCards] = useState<Card[]>(deck?.cards ?? []);
+    const [swipingCardId, setSwipingCardId] = useState<string | null>(null);
 
     const toggleAnswer = (cardId: string) => {
+        if (swipingCardId === cardId) return;
+
         setVisibleAnswers((prev) => ({
             ...prev,
             [cardId]: !prev[cardId],
@@ -30,11 +33,13 @@ const DeckDetailScreen: React.FC<Props> = ({ deckId }) => {
             delete updated[cardId];
             return updated;
         });
+
+        setSwipingCardId(null);
     };
 
     const renderRightActions = (cardId: string) => (
         <DeleteCard onPress={() => deleteCard(cardId)}>
-            <MaterialIcons name='delete' size={24} color='#e6e6e6' />
+            <MaterialIcons name='delete-sweep' size={24} color='#e6e6e6' />
         </DeleteCard>
     );
 
@@ -45,7 +50,11 @@ const DeckDetailScreen: React.FC<Props> = ({ deckId }) => {
                 keyExtractor={(item) => item.id}
                 contentContainerStyle={{ gap: 12, paddingTop: 16 }}
                 renderItem={({ item }) => (
-                    <Swipeable renderRightActions={() => renderRightActions(item.id)}>
+                    <Swipeable 
+                        renderRightActions={() => renderRightActions(item.id)}
+                        onSwipeableWillOpen={() => setSwipingCardId(item.id)}
+                        onSwipeableClose={() => setSwipingCardId(null)}
+                    >
                         <CardStyledContainer onPress={() => toggleAnswer(item.id)}>
                             <StyledQuestion>{item.question}</StyledQuestion>
                             {visibleAnswers[item.id] && (
