@@ -1,30 +1,16 @@
-import { useLayoutEffect } from "react";
-import { useLocalSearchParams, useNavigation } from "expo-router";
-import DeckDetailScreen, { getDeckTitleById } from "@/components/DeckDetailScreen";
+import { useLocalSearchParams } from "expo-router";
+
+import DeckDetailScreen from "@/components/DeckDetailScreen";
+import useCustomHeader from "@/hooks/useCustomHeader";
+import { useDecks } from "@/context/DeckContext";
 
 const DeckScreen: React.FC = () => {
-    const { id } = useLocalSearchParams<{ id: string }>();    
-    const navigation = useNavigation();
-
-    useLayoutEffect(() => {
-        if (id) {
-            navigation.setOptions({
-                title: getDeckTitleById(id),
-                headerStyle: {
-                    backgroundColor: "#25292e",
-                },
-                headerBackTitle: "Back",
-                headerTintColor: "#ffd33d", 
-                headerTitleStyle: {
-                    color: "#e6e6e6",
-                    fontSize: 20,
-                    fontWeight: "bold",
-                },
-            });
-        }
-    }, [navigation, id]);
-
+    const { id } = useLocalSearchParams<{ id: string }>();   
+    const { decks } = useDecks(); 
+    const deck = decks.find((d) => d.id === id);
+    
+    useCustomHeader({ title: deck?.title });
     return <DeckDetailScreen deckId={id} />;
-}
+};
 
 export default DeckScreen;

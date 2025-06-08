@@ -3,17 +3,19 @@ import { useRouter } from "expo-router";
 import { View, Text, TextInput, Button, Alert } from "react-native";
 import styled from "styled-components/native";
 
+import { useDecks } from "@/context/DeckContext";
+
 const AddDeckScreen = () => {
     const router = useRouter();
     const [title, setTitle] = useState('');
+    const { addDeck } = useDecks();
 
     const handleAdd = () => {
         if (title.trim() === '') {
             Alert.alert("Validation", "Please enter a deck title.");
             return;
         }
-        console.log("New deck title:", title);
-
+        addDeck(title);
         router.back();
     };
 

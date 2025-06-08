@@ -2,15 +2,19 @@ import { Text, View, FlatList, Pressable } from "react-native";
 import { useRouter } from "expo-router";
 import styled from "styled-components";
 
+import { useDecks } from "@/context/DeckContext";
 import { initialDecks } from "@/data/decks";
+import AddButton from "@/components/AddButton";
 
 export default function App() {
     const router = useRouter();
+    const { decks } = useDecks();
 
     return (
         <Container>
             <FlatList
-                data={initialDecks}
+                // data={initialDecks}
+                data={decks}
                 keyExtractor={(item) => item.id}
                 contentContainerStyle={{ gap: 12 }}
                 renderItem={({ item }) => (
@@ -23,6 +27,7 @@ export default function App() {
                     </DeckCard>
                 )}
             />
+            <AddButton onPress={() => router.push({ pathname: '/add-deck' })} />
         </Container>
     );
 }

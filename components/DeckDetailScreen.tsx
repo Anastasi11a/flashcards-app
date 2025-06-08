@@ -4,14 +4,17 @@ import { MaterialIcons } from "@expo/vector-icons";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import styled from "styled-components";
 
-import { Card, initialDecks } from "@/data/decks";
+import { Card } from "@/data/decks";
+import { useDecks } from "@/context/DeckContext";
 
 interface Props {
     deckId?: string;
 }
 
 const DeckDetailScreen: React.FC<Props> = ({ deckId }) => {
-    const deck = initialDecks.find((deck) => deck.id === deckId);
+    const { decks } = useDecks();
+    const deck = decks.find((d) => d.id === deckId); 
+
     const [visibleAnswers, setVisibleAnswers] = useState<Record<string, boolean>>({});
     const [cards, setCards] = useState<Card[]>(deck?.cards ?? []);
     const [swipingCardId, setSwipingCardId] = useState<string | null>(null);
@@ -69,11 +72,6 @@ const DeckDetailScreen: React.FC<Props> = ({ deckId }) => {
 }
 
 export default DeckDetailScreen;
-
-export const getDeckTitleById = (id?: string): string => {
-    const deck = initialDecks.find((deck) => deck.id === id);
-    return deck?.title ?? '';
-};
 
 const StyledView = styled(View)`
     flex: 1;
