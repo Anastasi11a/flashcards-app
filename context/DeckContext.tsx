@@ -4,6 +4,7 @@ import { Deck, initialDecks } from "@/data/decks";
 interface DeckContextProps {
     decks: Deck[];
     addDeck: (title: string) => void;
+    deleteDeck: (deckId: string) => void;
 }
 
 const DeckContext = createContext<DeckContextProps | undefined>(undefined);
@@ -20,8 +21,12 @@ export const DeckProvider = ({ children }: { children: ReactNode }) => {
         setDecks(prev => [...prev, newDeck]);
     };
 
+    const deleteDeck = (deckId: string) => {
+        setDecks((prev) => prev.filter((deck) => deck.id !== deckId));
+    };
+
     return (
-        <DeckContext.Provider value={{ decks, addDeck }}>
+        <DeckContext.Provider value={{ decks, addDeck, deleteDeck }}>
             {children}
         </DeckContext.Provider>
     );

@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { Text, View, FlatList, Pressable, TouchableOpacity } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
+import { Text, View, FlatList, Pressable } from "react-native";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import styled from "styled-components";
 
 import { Card } from "@/data/decks";
 import { useDecks } from "@/context/DeckContext";
+import SwipeDelete from "./SwipeDelete";
 
 interface Props {
     deckId?: string;
@@ -41,9 +41,7 @@ const DeckDetailScreen: React.FC<Props> = ({ deckId }) => {
     };
 
     const renderRightActions = (cardId: string) => (
-        <DeleteCard onPress={() => deleteCard(cardId)}>
-            <MaterialIcons name='delete-sweep' size={24} color='#e6e6e6' />
-        </DeleteCard>
+        <SwipeDelete onDelete={() => deleteCard(cardId)} />
     );
 
     return (
@@ -95,13 +93,4 @@ const StyledAnswer = styled(Text)`
     margin-top: 10px;
     font-size: 16px;
     color: #e6e6e6;
-`;
-
-const DeleteCard = styled(TouchableOpacity)`
-    width: 64px;
-    margin-left: 8px;
-    justify-content: center;
-    align-items: center;
-    border-radius: 12px;
-    background-color: #d11a2a;
 `;
