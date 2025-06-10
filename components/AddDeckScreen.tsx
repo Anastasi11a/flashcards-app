@@ -1,34 +1,21 @@
-import { useState } from "react";
-import { useRouter } from "expo-router";
-import { View, Text, TextInput, Button, Alert } from "react-native";
+import { View, Text, TextInput } from "react-native";
 import styled from "styled-components/native";
 
-import { useDecks } from "@/context/DeckContext";
+interface AddDeckScreenProps {
+    title: string;
+    setTitle: (title: string) => void;
+}
 
-const AddDeckScreen = () => {
-    const router = useRouter();
-    const [title, setTitle] = useState('');
-    const { addDeck } = useDecks();
-
-    const handleAdd = () => {
-        if (title.trim() === '') {
-            Alert.alert("Validation", "Please enter a deck title.");
-            return;
-        }
-        addDeck(title);
-        router.back();
-    };
-
+const AddDeckScreen = (props: AddDeckScreenProps) => {
     return (
         <StyledView>
             <StyledTitle>Deck Title</StyledTitle>
             <StyledInput
-                value={title}
+                value={props.title}
                 placeholder='Enter deck title'
                 placeholderTextColor='#aaa'
-                onChangeText={setTitle}
+                onChangeText={props.setTitle}
             />
-            <Button title='Add Deck' onPress={handleAdd} />
         </StyledView>
     );
 };
