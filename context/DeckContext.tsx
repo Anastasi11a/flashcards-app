@@ -1,9 +1,9 @@
 import { useState, useContext, createContext, ReactNode } from "react";
-import { Deck, initialDecks } from "@/data/decks";
+import { Card, Deck, initialDecks } from "@/data/decks";
 
 interface DeckContextProps {
     decks: Deck[];
-    addDeck: (title: string) => void;
+    addDeck: (title: string, cards?: Card[]) => void;
     deleteDeck: (deckId: string) => void;
 }
 
@@ -12,11 +12,11 @@ const DeckContext = createContext<DeckContextProps | undefined>(undefined);
 export const DeckProvider = ({ children }: { children: ReactNode }) => {
     const [decks, setDecks] = useState<Deck[]>(initialDecks);
 
-    const addDeck = (title: string) => {
+    const addDeck = (title: string, cards: Card[] = []) => {
         const newDeck: Deck = {
             id: Date.now().toString(),
             title,
-            cards: [],
+            cards,
         };
         setDecks(prev => [...prev, newDeck]);
     };
