@@ -35,7 +35,7 @@ export default function App() {
                     </Swipeable>
                 )}
             />
-            <AddButton onPress={() => router.push({ pathname: '/add-deck' })} />
+            <AddButton onPress={() => router.push({ pathname: '/create/add-deck-title' })} />
         </Container>
     );
 }
