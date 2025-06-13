@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { View, TextInput, Button, Alert } from 'react-native';
+import { Alert } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
 import { useDecks } from '@/context/DeckContext';
 import useCustomHeader from '@/hooks/useCustomHeader';
 import { Card } from '@/data/decks';
+import AddCardsScreen from '@/components/AddCardsScreen';
 
 export default function AddDeckCards() {
     const router = useRouter();
@@ -37,7 +38,7 @@ export default function AddDeckCards() {
     };
 
     useCustomHeader({
-        title: 'Add Cards',
+        title: 'Cards list',
         rightButton: {
             label: 'Save',
             onPress: handleCreateDeck,
@@ -45,20 +46,12 @@ export default function AddDeckCards() {
     });
 
     return (
-        <View style={{ padding: 16 }}>
-            <TextInput
-                placeholder="Question"
-                value={question}
-                onChangeText={setQuestion}
-                style={{ borderBottomWidth: 1, marginBottom: 10 }}
-            />
-            <TextInput
-                placeholder="Answer"
-                value={answer}
-                onChangeText={setAnswer}
-                style={{ borderBottomWidth: 1, marginBottom: 20 }}
-            />
-            <Button title="Add Card" onPress={addCard} />
-        </View>
+        <AddCardsScreen 
+            question={question}  
+            answer={answer} 
+            setQuestion={setQuestion} 
+            setAnswer={setAnswer} 
+            onAddCard={addCard} 
+        />
     );
-}
+};
