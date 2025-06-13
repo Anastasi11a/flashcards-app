@@ -1,4 +1,4 @@
-import { View, Text, TextInput } from "react-native";
+import { View, TextInput } from "react-native";
 import styled from "styled-components/native";
 
 interface AddDeckTitleProps {
@@ -27,7 +27,8 @@ const StyledView = styled(View)`
 `;
 
 const StyledInput = styled(TextInput).attrs({
-    placeholderTextColor: '#aaa',
+    placeholderTextColor: '#808080',
+    selectionColor: '#aaa',
 })`
     margin-bottom: 16px;
     height: 48px;
@@ -35,5 +36,5 @@ const StyledInput = styled(TextInput).attrs({
     padding: 12px;
     font-size: 16px;
     background-color: #1a1c20;
-    color: #fff;
+    color: #e6e6e6;
 `;
