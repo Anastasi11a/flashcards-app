@@ -52,6 +52,7 @@ export default function AddDeckCards() {
             setQuestion={setQuestion} 
             setAnswer={setAnswer} 
             onAddCard={addCard} 
+            cards={cards}
         />
     );
 };

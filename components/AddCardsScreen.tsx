@@ -1,6 +1,7 @@
-import { View, Text, TextInput, Button } from "react-native";
+import { View, Text, TextInput, FlatList } from "react-native";
 import styled from "styled-components";
 
+import { Card } from "@/data/decks";
 import AddCardButton from "./AddCardButton";
 
 interface AddCardsScreenProps {
@@ -9,6 +10,7 @@ interface AddCardsScreenProps {
     setQuestion: (value: string) => void;
     setAnswer: (value: string) => void;
     onAddCard: () => void;
+    cards: Card[];
 }
 
 const AddCardsScreen = (props: AddCardsScreenProps) => {
@@ -29,6 +31,18 @@ const AddCardsScreen = (props: AddCardsScreenProps) => {
             </InputWrapper>
 
             <AddCardButton label='Add Card' onPress={props.onAddCard} />
+
+            <FlatList
+                data={props.cards}
+                keyExtractor={(item) => item.id}
+                contentContainerStyle={{ paddingBottom: 80 }}
+                renderItem={({ item, index }) => (
+                    <CardPreview>
+                        <CardText>{index + 1}. Q: {item.question}</CardText>
+                        <CardText>A: {item.answer}</CardText>
+                    </CardPreview>
+                )}
+            />
         </StyledView>
     );
 };
@@ -70,4 +84,17 @@ const Divider = styled(View)`
     margin: 2px 0;
     align-self: center;
     background-color: #25292e;
+`;
+
+const CardPreview = styled(View)`
+    background-color: #1f2125;
+    padding: 12px;
+    border-radius: 12px;
+    margin-top: 10px;
+`;
+
+const CardText = styled(Text)`
+    color: #ccc;
+    font-size: 16px;
+    margin-bottom: 4px;
 `;
