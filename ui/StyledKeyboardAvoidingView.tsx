@@ -5,7 +5,7 @@ const StyledKeyboardAvoidingView = styled(KeyboardAvoidingView).attrs(() => ({
     behavior: Platform.OS === 'ios' ? 'padding' : 'height',
 }))`
     flex: 1;
-    background-color: #25292e;
+    background-color: #1a1c20;
 `;
 
 export default StyledKeyboardAvoidingView;

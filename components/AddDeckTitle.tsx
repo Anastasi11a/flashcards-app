@@ -10,7 +10,7 @@ interface AddDeckTitleProps {
 }
 
 const AddDeckTitle = (props: AddDeckTitleProps) => {
-    const inputRef = useKeyboardVisibility();
+    const { inputRef } = useKeyboardVisibility();
 
     return (
         <StyledKeyboardAvoidingView>
@@ -31,7 +31,7 @@ export default AddDeckTitle;
 const StyledView = styled(View)`
     flex: 1;
     padding: 20px 10px;
-    background-color: #25292e;
+    background-color: #1a1c20;
 `;
 
 const StyledInput = styled(TextInput).attrs({
@@ -43,6 +43,6 @@ const StyledInput = styled(TextInput).attrs({
     border-radius: 12px;
     padding: 12px;
     font-size: 16px;
-    background-color: #1a1c20;
+    background-color: #25292e;
     color: #e6e6e6;
 `;

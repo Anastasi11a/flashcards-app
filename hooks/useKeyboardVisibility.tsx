@@ -12,7 +12,11 @@ const useKeyboardVisibility = () => {
         return () => clearTimeout(timer);
     }, []);
 
-    return inputRef;
+    const focusInput = () => {
+        inputRef.current?.focus();
+    };
+
+    return { inputRef, focusInput };
 };
 
 export default useKeyboardVisibility;

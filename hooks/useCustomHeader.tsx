@@ -22,7 +22,7 @@ const useCustomHeader = ({ title, enabled = true, rightButton }: CustomHeaderPro
         navigation.setOptions({
             title,
             headerStyle: {
-                backgroundColor: "#25292e",
+                backgroundColor: "#1a1c20",
             },
             headerBackTitle: "Back",
             headerTintColor: "#ffd33d",
