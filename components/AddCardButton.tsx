@@ -1,5 +1,6 @@
 import { Text, TouchableOpacity } from "react-native";
 import { BlurView } from "expo-blur";
+import { LinearGradient } from 'expo-linear-gradient';
 import styled from "styled-components";
 
 interface AddCardButtonProps {
@@ -10,9 +11,11 @@ interface AddCardButtonProps {
 const AddCardButton = (props: AddCardButtonProps) => {
     return (
         <ButtonContainer onPress={props.onPress}>
-            <StyledTouchable>
-                <StyledTextButton>{props.label}</StyledTextButton>
-            </StyledTouchable>
+            <GradientOverlay colors={['#464C55', '#25282e', '#464C55']}>
+                <StyledTouchable>
+                    <StyledTextButton>{props.label}</StyledTextButton>
+                </StyledTouchable>
+            </GradientOverlay>
         </ButtonContainer>
     );
 };
@@ -27,7 +30,7 @@ const ButtonContainer = styled(TouchableOpacity)`
 
 const StyledTouchable = styled(BlurView).attrs({
     tint: 'light',
-    intensity: 50,
+    intensity: 30,
 })`
     padding: 12px 0;
     align-items: center;
@@ -39,4 +42,8 @@ const StyledTextButton = styled(Text)`
     font-weight: 700;
     letter-spacing: 0.5px;
     color: #e6e6e6;
+`;
+
+const GradientOverlay = styled(LinearGradient)`
+    align-items: center,
 `;
