@@ -1,20 +1,28 @@
 import { View, TextInput } from "react-native";
 import styled from "styled-components/native";
 
+import useKeyboardVisibility from "@/hooks/useKeyboardVisibility";
+import StyledKeyboardAvoidingView from "@/ui/StyledKeyboardAvoidingView";
+
 interface AddDeckTitleProps {
     title: string;
     setTitle: (title: string) => void;
 }
 
 const AddDeckTitle = (props: AddDeckTitleProps) => {
+    const inputRef = useKeyboardVisibility();
+
     return (
-        <StyledView>
-            <StyledInput
-                value={props.title}
-                placeholder='Enter deck title'
-                onChangeText={props.setTitle}
-            />
-        </StyledView>
+        <StyledKeyboardAvoidingView>
+            <StyledView>
+                <StyledInput
+                    ref={inputRef}
+                    value={props.title}
+                    placeholder='Enter deck title'
+                    onChangeText={props.setTitle}
+                />
+            </StyledView>
+        </StyledKeyboardAvoidingView>
     );
 };
 
