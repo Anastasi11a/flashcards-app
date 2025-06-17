@@ -1,11 +1,11 @@
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Alert } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
 
+import AddCardsScreen from '@/components/screens/AddCardsScreen';
 import { useDecks } from '@/context/DeckContext';
-import useCustomHeader from '@/hooks/useCustomHeader';
 import { Card } from '@/data/decks';
-import AddCardsScreen from '@/components/AddCardsScreen';
+import useCustomHeader from '@/hooks/useCustomHeader';
 
 export default function AddDeckCards() {
     const router = useRouter();

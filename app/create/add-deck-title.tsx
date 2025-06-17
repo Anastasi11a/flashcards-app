@@ -1,9 +1,9 @@
-import { useState } from "react";
 import { useRouter } from "expo-router";
+import { useState } from "react";
 import { Alert } from "react-native";
 
+import AddDeckTitle from "@/components/screens/AddDeckTitle";
 import useCustomHeader from "@/hooks/useCustomHeader";
-import AddDeckTitle from "@/components/AddDeckTitle";
 
 const AddDeckTitleScreen = () => {
     const [title, setTitle] = useState('');
