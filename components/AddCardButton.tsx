@@ -23,7 +23,7 @@ const AddCardButton = (props: AddCardButtonProps) => {
 export default AddCardButton;
 
 const ButtonContainer = styled(TouchableOpacity)`
-    margin: 16px 0;
+    margin: 16px 0 0;
     border-radius: 24px;
     overflow: hidden;
 `;

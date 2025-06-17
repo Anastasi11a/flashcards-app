@@ -45,14 +45,19 @@ export default function AddDeckCards() {
         },
     });
 
+    const handleDeleteCard = (cardId: string) => {
+        setCards(prev => prev.filter(card => card.id !== cardId));
+    };
+
     return (
         <AddCardsScreen 
+            cards={cards}
             question={question}  
             answer={answer} 
             setQuestion={setQuestion} 
             setAnswer={setAnswer} 
             onAddCard={addCard} 
-            cards={cards}
+            onDeleteCard={handleDeleteCard}
         />
     );
 };

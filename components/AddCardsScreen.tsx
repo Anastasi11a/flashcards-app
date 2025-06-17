@@ -1,18 +1,21 @@
-import { View, Text, TextInput, FlatList } from "react-native";
+import { View, TextInput } from "react-native";
 import styled from "styled-components";
 
 import { Card } from "@/data/decks";
 import AddCardButton from "./AddCardButton";
+import DeckList from "./DecksList";
 import useKeyboardVisibility from "@/hooks/useKeyboardVisibility";
 import StyledKeyboardAvoidingView from "@/ui/StyledKeyboardAvoidingView";
 
 interface AddCardsScreenProps {
+    deckId?: string;
+    cards: Card[];
     question: string;
     answer: string;
     setQuestion: (value: string) => void;
     setAnswer: (value: string) => void;
     onAddCard: () => void;
-    cards: Card[];
+    onDeleteCard: (cardId: string) => void;
 }
 
 const AddCardsScreen = (props: AddCardsScreenProps) => {
@@ -40,21 +43,14 @@ const AddCardsScreen = (props: AddCardsScreenProps) => {
                         onChangeText={props.setAnswer}
                     />
                 </InputWrapper>
-
                 <AddCardButton label='Add Card' onPress={handleAddCard} />
-
-                <FlatList
-                    data={props.cards}
-                    keyExtractor={(item) => item.id}
-                    contentContainerStyle={{ paddingBottom: 20 }}
-                    renderItem={({ item, index }) => (
-                        <CardPreview>
-                            <CardText>{index + 1}. Q: {item.question}</CardText>
-                            <CardText>A: {item.answer}</CardText>
-                        </CardPreview>
-                    )}
-                />
             </StyledView>
+            
+            <DeckList 
+                deckId={props.deckId} 
+                cards={props.cards} 
+                onDelete={props.onDeleteCard} 
+            />
         </StyledKeyboardAvoidingView>
     );
 };
@@ -62,8 +58,7 @@ const AddCardsScreen = (props: AddCardsScreenProps) => {
 export default AddCardsScreen;
 
 const StyledView = styled(View)`
-    flex: 1;
-    padding: 16px 10px;
+    padding: 20px 10px 10px;
     background-color: #1a1c20;
 `;
 
@@ -96,17 +91,4 @@ const Divider = styled(View)`
     margin: 2px 0;
     align-self: center;
     background-color: #1a1c20;
-`;
-
-const CardPreview = styled(View)`
-    background-color: #25292e;
-    padding: 12px;
-    border-radius: 12px;
-    margin-top: 10px;
-`;
-
-const CardText = styled(Text)`
-    color: #ccc;
-    font-size: 16px;
-    margin-bottom: 4px;
 `;
