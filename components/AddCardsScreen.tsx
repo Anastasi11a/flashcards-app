@@ -49,7 +49,7 @@ const AddCardsScreen = (props: AddCardsScreenProps) => {
             <DeckList 
                 deckId={props.deckId} 
                 cards={props.cards} 
-                onDelete={props.onDeleteCard} 
+                onDelete={(_, cardId) => props.onDeleteCard(cardId)} 
             />
         </StyledKeyboardAvoidingView>
     );

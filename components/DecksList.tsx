@@ -18,15 +18,22 @@ const DeckList = (props: DeckListProps) => {
     
     const toggleAnswer = (cardId: string) => {
         if (swipingCardId === cardId) return;
-
         setVisibleAnswers((prev) => ({ ...prev, [cardId]: !prev[cardId] }));
     };
 
     const renderRightActions = (cardId: string) => {
-        if (!props.deckId) return null;
+        if (!props.onDelete) return null;
         
         return (        
-            <SwipeDelete onDelete={() => props.onDelete(props.deckId!, cardId)} />
+            <SwipeDelete
+                onDelete={() => {
+                    if (props.deckId) {
+                        props.onDelete(props.deckId, cardId);
+                    } else {
+                        props.onDelete('', cardId)
+                    }
+                }}
+            />
         ); 
     };
 
