@@ -5,14 +5,14 @@ import styled from "styled-components";
 
 import { useDecks } from "@/context/DeckContext";
 import AddButton from "@/components/AddButton";
-import SwipeDelete from "@/components/SwipeDelete";
+import SwipeButton from "@/components/SwipeButton";
 
 export default function App() {
     const router = useRouter();
     const { decks, deleteDeck } = useDecks();
 
     const renderRightActions = (deckId: string) => {
-        return <SwipeDelete onDelete={() => deleteDeck(deckId)} />
+        return <SwipeButton iconName='delete-sweep' iconType='delete' onPress={() => deleteDeck(deckId)} />
     };
 
     return (
@@ -38,18 +38,18 @@ export default function App() {
             <AddButton onPress={() => router.push({ pathname: '/create/add-deck-title' })} />
         </Container>
     );
-}
+};
 
 const Container = styled(View)`
     flex: 1;
     padding: 16px 10px;
-    background-color: #25292e;
+    background-color: #1a1c20;
 `;
 
 const DeckCard = styled(Pressable)`
     padding: 16px;
     border-radius: 20px;
-    background-color: #1a1c20;
+    background-color: #25292e;
 `;
 
 const DeckTitle = styled(Text)`

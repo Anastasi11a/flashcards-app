@@ -4,12 +4,13 @@ import Swipeable from "react-native-gesture-handler/Swipeable";
 import styled from "styled-components";
 
 import { Card } from "@/data/decks";
-import SwipeDelete from "./SwipeDelete";
+import SwipeButton from "./SwipeButton";
 
 interface DeckListProps {
     deckId?: string;
     cards: Card[];
     onDelete: (deckId: string, cardId: string) => void;
+    onEdit?: (deckId: string, cardId: string) => void;
 }
 
 const DeckList = (props: DeckListProps) => {
@@ -22,19 +23,24 @@ const DeckList = (props: DeckListProps) => {
     };
 
     const renderRightActions = (cardId: string) => {
-        if (!props.onDelete) return null;
-        
-        return (        
-            <SwipeDelete
-                onDelete={() => {
-                    if (props.deckId) {
-                        props.onDelete(props.deckId, cardId);
-                    } else {
-                        props.onDelete('', cardId)
-                    }
-                }}
-            />
-        ); 
+        const deckId = props.deckId ?? '';
+
+        return (
+            <ButtonContainer>
+                <SwipeButton 
+                    iconName='delete-sweep'
+                    iconType='delete'
+                    onPress={() => props.onDelete(deckId, cardId)} 
+                />
+                {props.onEdit && (
+                    <SwipeButton 
+                        iconName='playlist-edit'
+                        iconType='edit'
+                        onPress={() => props.onEdit?.(deckId, cardId)} 
+                    />
+                )}
+            </ButtonContainer>
+        );
     };
 
     return (
@@ -86,4 +92,8 @@ const StyledAnswer = styled(Text)`
     margin-top: 10px;
     font-size: 16px;
     color: #e6e6e6;
+`;
+
+const ButtonContainer = styled(View)`
+    flex-direction: row;
 `;
