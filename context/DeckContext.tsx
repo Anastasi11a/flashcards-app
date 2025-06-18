@@ -6,6 +6,8 @@ interface DeckContextProps {
     addDeck: (title: string, cards?: Card[]) => void;
     deleteDeck: (deckId: string) => void;
     deleteCard: (deckId: string, cardId: string) => void;
+    editDeck: (deckId: string, newTitle: string) => void;
+    editCard: (deckId: string, cardId: string, newQuestion: string, newAnswer: string) => void;
 }
 
 const DeckContext = createContext<DeckContextProps | undefined>(undefined);
@@ -36,8 +38,34 @@ export const DeckProvider = ({ children }: { children: ReactNode }) => {
         );
     };
 
+    const editDeck = (deckId: string, newTitle: string) => {
+        setDecks(prev =>
+            prev.map(deck =>
+                deck.id === deckId
+                    ? { ...deck, title: newTitle }
+                    : deck
+            )
+        );
+    };
+
+    const editCard = (deckId: string, cardId: string, newQuestion: string, newAnswer: string) => {
+        setDecks(prev =>
+            prev.map(deck => deck.id === deckId
+                ? {
+                    ...deck,
+                    cards: deck.cards.map(card =>
+                        card.id === cardId
+                            ? { ...card, question: newQuestion, answer: newAnswer }
+                            : card
+                    )
+                }
+                : deck
+            )
+        );
+    };
+
     return (
-        <DeckContext.Provider value={{ decks, addDeck, deleteDeck, deleteCard }}>
+        <DeckContext.Provider value={{ decks, addDeck, deleteDeck, deleteCard, editDeck, editCard }}>
             {children}
         </DeckContext.Provider>
     );

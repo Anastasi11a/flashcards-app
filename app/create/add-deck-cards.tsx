@@ -15,6 +15,7 @@ export default function AddDeckCards() {
     const [question, setQuestion] = useState('');
     const [answer, setAnswer] = useState('');
     const [cards, setCards] = useState<Card[]>([]);
+    const [editingCardId, setEditingCardId] = useState<string | null>(null);
 
     const addCard = () => {
         if (!question || !answer) {
@@ -22,7 +23,17 @@ export default function AddDeckCards() {
             return;
         }
 
-        setCards([...cards, { id: Date.now().toString(), question, answer }]);
+        if (editingCardId) {
+            setCards(prev =>
+                prev.map(card => card.id === editingCardId
+                    ? { ...card, question, answer }
+                    : card
+                )
+            );
+            setEditingCardId(null);
+        } else {
+            setCards([...cards, { id: Date.now().toString(), question, answer }]);
+        }
         setQuestion('');
         setAnswer('');
     };
@@ -37,6 +48,21 @@ export default function AddDeckCards() {
         router.push('/(tabs)');
     };
 
+    
+    const handleDeleteCard = (cardId: string) => {
+        setCards(prev => prev.filter(card => card.id !== cardId));
+    };
+
+    const handleEditCard = (cardId: string) => {
+        const card = cards.find(c => c.id === cardId);
+
+        if (card) {
+            setEditingCardId(cardId);
+            setQuestion(card.question);
+            setAnswer(card.answer);
+        }
+    };
+
     useCustomHeader({
         title: 'Cards list',
         rightButton: {
@@ -44,10 +70,6 @@ export default function AddDeckCards() {
             onPress: handleCreateDeck,
         },
     });
-
-    const handleDeleteCard = (cardId: string) => {
-        setCards(prev => prev.filter(card => card.id !== cardId));
-    };
 
     return (
         <AddCardsScreen 
@@ -58,6 +80,7 @@ export default function AddDeckCards() {
             setAnswer={setAnswer} 
             onAddCard={addCard} 
             onDeleteCard={handleDeleteCard}
+            onEditCard={handleEditCard}
         />
     );
 };

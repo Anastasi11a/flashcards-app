@@ -2,8 +2,8 @@ import { View, TextInput } from "react-native";
 import styled from "styled-components";
 
 import { Card } from "@/data/decks";
-import AddCardButton from "./AddCardButton";
-import DeckList from "./DecksList";
+import AddCardButton from "../AddCardButton";
+import DeckList from "../DecksList";
 import useKeyboardVisibility from "@/hooks/useKeyboardVisibility";
 import StyledKeyboardAvoidingView from "@/ui/StyledKeyboardAvoidingView";
 
@@ -16,6 +16,7 @@ interface AddCardsScreenProps {
     setAnswer: (value: string) => void;
     onAddCard: () => void;
     onDeleteCard: (cardId: string) => void;
+    onEditCard: (cardId: string) => void;
 }
 
 const AddCardsScreen = (props: AddCardsScreenProps) => {
@@ -49,7 +50,8 @@ const AddCardsScreen = (props: AddCardsScreenProps) => {
             <DeckList 
                 deckId={props.deckId} 
                 cards={props.cards} 
-                onDelete={(_, cardId) => props.onDeleteCard(cardId)} 
+                onDelete={(_, cardId) => props.onDeleteCard(cardId)}
+                onEdit={(_, cardId) => props.onEditCard(cardId)}  
             />
         </StyledKeyboardAvoidingView>
     );
