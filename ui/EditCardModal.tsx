@@ -2,9 +2,9 @@ import { View, Modal } from "react-native";
 import styled from "styled-components";
 
 import AddCardButton from "@/components/AddCardButton";
-import { InputWrapper, AnswerInput, QuestionInput, Divider } from "@/components/screens/AddCardsScreen";
+import { InputWrapper, AnswerInput, QuestionInput, Divider } from "@/ui/CardInputFields";
 
-interface EditCardModalProps {
+interface EditCardModalProps { 
     visible: boolean;
     question: string;
     answer: string;
