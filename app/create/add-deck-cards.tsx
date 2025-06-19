@@ -53,14 +53,13 @@ export default function AddDeckCards() {
         setCards(prev => prev.filter(card => card.id !== cardId));
     };
 
-    const handleEditCard = (cardId: string) => {
-        const card = cards.find(c => c.id === cardId);
-
-        if (card) {
-            setEditingCardId(cardId);
-            setQuestion(card.question);
-            setAnswer(card.answer);
-        }
+    const handleEditCard = (cardId: string, newQuestion: string, newAnswer: string) => {
+        setCards(prev =>
+            prev.map(card => card.id === cardId
+                ? { ...card, question: newQuestion, answer: newAnswer }
+                : card
+            )
+        );
     };
 
     useCustomHeader({

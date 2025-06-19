@@ -30,8 +30,7 @@ export const DeckProvider = ({ children }: { children: ReactNode }) => {
 
     const deleteCard = (deckId: string, cardId: string) => {
         setDecks(prev =>
-            prev.map(deck =>
-                deck.id === deckId
+            prev.map(deck => deck.id === deckId
                 ? { ...deck, cards: deck.cards.filter(card => card.id !== cardId) }
                 : deck
             )
@@ -40,10 +39,9 @@ export const DeckProvider = ({ children }: { children: ReactNode }) => {
 
     const editDeck = (deckId: string, newTitle: string) => {
         setDecks(prev =>
-            prev.map(deck =>
-                deck.id === deckId
-                    ? { ...deck, title: newTitle }
-                    : deck
+            prev.map(deck => deck.id === deckId
+                ? { ...deck, title: newTitle }
+                : deck
             )
         );
     };
@@ -53,10 +51,9 @@ export const DeckProvider = ({ children }: { children: ReactNode }) => {
             prev.map(deck => deck.id === deckId
                 ? {
                     ...deck,
-                    cards: deck.cards.map(card =>
-                        card.id === cardId
-                            ? { ...card, question: newQuestion, answer: newAnswer }
-                            : card
+                    cards: deck.cards.map(card => card.id === cardId
+                        ? { ...card, question: newQuestion, answer: newAnswer }
+                        : card
                     )
                 }
                 : deck
