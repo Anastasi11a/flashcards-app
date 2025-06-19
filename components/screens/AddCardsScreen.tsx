@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { View, TextInput } from "react-native";
 import styled from "styled-components";
 
@@ -6,6 +5,7 @@ import { Card } from "@/data/decks";
 import AddCardButton from "../AddCardButton";
 import DeckList from "../DecksList";
 import EditCardModal from "@/ui/EditCardModal";
+import useCardEditor from "@/hooks/useCardEditor";
 import useKeyboardVisibility from "@/hooks/useKeyboardVisibility";
 import StyledKeyboardAvoidingView from "@/ui/StyledKeyboardAvoidingView";
 
@@ -23,32 +23,23 @@ interface AddCardsScreenProps {
 
 const AddCardsScreen = (props: AddCardsScreenProps) => {
     const { inputRef, focusInput } = useKeyboardVisibility();
-    const [editingCardId, setEditingCardId] = useState<string | null>(null);
-    const [editQuestion, setEditQuestion] = useState('');
-    const [editAnswer, setEditAnswer] = useState('');
+    const { 
+        editingCardId, editQuestion, editAnswer, setEditQuestion, setEditAnswer, startEditing, saveEdit, resetEditor
+    } = useCardEditor(
+        {
+            initialCards: props.cards,
+            onUpdateCards: (updatedCards) => {
+                const updatedCard = updatedCards.find(card => card.id === editingCardId);
+                if (updatedCard) {
+                    props.onEditCard(updatedCard.id, updatedCard.question, updatedCard.answer);
+                }
+            },
+        }
+    );
 
     const handleAddCard = () => {
         props.onAddCard();
         focusInput();
-    };
-
-    const handleEditCard = (cardId: string) => {
-        const card = props.cards.find((c) => c.id === cardId);
-
-        if (card) {
-            setEditingCardId(cardId);
-            setEditQuestion(card.question);
-            setEditAnswer(card.answer);
-        }
-    };
-
-    const handleSaveEdit = () => {
-        if (!editingCardId) return;
-
-        props.onEditCard(editingCardId, editQuestion, editAnswer);
-        setEditingCardId(null);
-        setEditQuestion('');
-        setEditAnswer('');
     };
 
     return (
@@ -75,7 +66,7 @@ const AddCardsScreen = (props: AddCardsScreenProps) => {
                 deckId={props.deckId} 
                 cards={props.cards} 
                 onDelete={(_, cardId) => props.onDeleteCard(cardId)}
-                onEdit={(_, cardId) => handleEditCard(cardId)}   
+                onEdit={(_, cardId) => startEditing(cardId)}
             />
 
             <EditCardModal
@@ -84,8 +75,8 @@ const AddCardsScreen = (props: AddCardsScreenProps) => {
                 answer={editAnswer}
                 onChangeQuestion={setEditQuestion}
                 onChangeAnswer={setEditAnswer}
-                onSave={handleSaveEdit}
-                onClose={() => setEditingCardId(null)} 
+                onSave={saveEdit}
+                onClose={resetEditor}
             />
         </StyledKeyboardAvoidingView>
     );
