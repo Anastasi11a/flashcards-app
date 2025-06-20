@@ -1,7 +1,7 @@
 import { View, Modal } from "react-native";
 import styled from "styled-components";
 
-import AddCardButton from "@/components/AddCardButton";
+import RowButton from "@/components/RowButton";
 import { InputWrapper, AnswerInput, QuestionInput, Divider } from "@/ui/CardInputFields";
 
 interface EditCardModalProps { 
@@ -35,7 +35,11 @@ const EditCardModal = (props: EditCardModalProps) => {
                         onChangeText={props.onChangeAnswer}
                     />
                 </InputWrapper>
-                <AddCardButton label='Save' onPress={props.onSave} />
+
+                <ButtonContainer>
+                    <RowButton buttonName='cancel' onPress={props.onClose} />
+                    <RowButton buttonName='save' onPress={props.onSave} />
+                </ButtonContainer> 
             </ModalContainer>
         </Modal>
     );
@@ -47,5 +51,12 @@ const ModalContainer = styled(View)`
     flex: 1;
     justify-content: center;
     padding: 20px;
-    background-color: rgba(0, 0, 0, 0.85);
+    background-color: rgba(0, 0, 0, 0.8);
+`;
+
+const ButtonContainer = styled(View)`
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 42px;
+    gap: 24px;
 `;
