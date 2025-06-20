@@ -42,7 +42,6 @@ const DeckList = (props: DeckListProps) => {
                             props.onEdit?.(deckId, cardId);
                             swipeableRefs.current[cardId]?.close();
                         }} 
-                        // onPress={() => props.onEdit?.(deckId, cardId)} 
                     />
                 )}
             </ButtonContainer>
