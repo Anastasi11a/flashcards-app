@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Text, View, FlatList, Pressable } from "react-native";
 import Swipeable from "react-native-gesture-handler/Swipeable";
+import type SwipeableLegacyType from 'react-native-gesture-handler/Swipeable';
 import styled from "styled-components";
 
 import { Card } from "@/data/decks";
@@ -14,6 +15,7 @@ interface DeckListProps {
 }
 
 const DeckList = (props: DeckListProps) => {
+    const swipeableRefs  = useRef<Record<string, SwipeableLegacyType | null>>({});
     const [visibleAnswers, setVisibleAnswers] = useState<Record<string, boolean>>({});
     const [swipingCardId, setSwipingCardId] = useState<string | null>(null);
     
@@ -36,7 +38,11 @@ const DeckList = (props: DeckListProps) => {
                     <SwipeButton 
                         iconName='playlist-edit'
                         iconType='edit'
-                        onPress={() => props.onEdit?.(deckId, cardId)} 
+                        onPress={() => {
+                            props.onEdit?.(deckId, cardId);
+                            swipeableRefs.current[cardId]?.close();
+                        }} 
+                        // onPress={() => props.onEdit?.(deckId, cardId)} 
                     />
                 )}
             </ButtonContainer>
@@ -51,6 +57,7 @@ const DeckList = (props: DeckListProps) => {
                 contentContainerStyle={{ gap: 10 }}
                 renderItem={({ item }) => (
                     <Swipeable 
+                        ref={(ref) => {swipeableRefs.current[item.id] = ref}}
                         renderRightActions={() => renderRightActions(item.id)}
                         onSwipeableWillOpen={() => setSwipingCardId(item.id)}
                         onSwipeableClose={() => setSwipingCardId(null)}
