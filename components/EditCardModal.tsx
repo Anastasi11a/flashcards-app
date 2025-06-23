@@ -2,7 +2,7 @@ import { View, Modal } from "react-native";
 import styled from "styled-components";
 
 import RowButton from "@/components/RowButton";
-import { InputWrapper, AnswerInput, QuestionInput, Divider } from "@/ui/CardInputFields";
+import { InputWrapper, AnswerInput, QuestionInput, Divider, HintCounter } from "@/ui/CardInputFields";
 
 interface EditCardModalProps { 
     visible: boolean;
@@ -23,15 +23,17 @@ const EditCardModal = (props: EditCardModalProps) => {
             onRequestClose={props.onClose}>
             <ModalContainer>
                 <InputWrapper>
+                    <HintCounter>{props.question.length}</HintCounter>
                     <QuestionInput
                         value={props.question}
-                        placeholder='Edit question'
+                        multiline
                         onChangeText={props.onChangeQuestion}
                     />
                     <Divider />
+                    <HintCounter>{props.answer.length}</HintCounter>
                     <AnswerInput
                         value={props.answer}
-                        placeholder='Edit answer'
+                        multiline
                         onChangeText={props.onChangeAnswer}
                     />
                 </InputWrapper>
