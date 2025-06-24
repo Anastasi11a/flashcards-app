@@ -5,11 +5,11 @@ import EditCardModal from "@/components/EditCardModal";
 import { Card } from "@/data/decks";
 import useCardEditor from "@/hooks/useCardEditor";
 import useKeyboardVisibility from "@/hooks/useKeyboardVisibility";
-import { AnswerInput, Divider, InputWrapper, QuestionInput, HintText, InputContainer, StyledClearButton } from "@/ui/CardInputFields";
+import { AnswerInput, Divider, InputWrapper, QuestionInput } from "@/ui/CardInputFields";
 import StyledKeyboardAvoidingView from "@/ui/StyledKeyboardAvoidingView";
 import AddCardButton from "../AddCardButton";
-import ClearButton from "../ClearButton";
 import DeckList from "../DecksList";
+import InputField from "../InputField";
 
 interface AddCardsScreenProps {
     deckId?: string;
@@ -49,45 +49,21 @@ const AddCardsScreen = (props: AddCardsScreenProps) => {
         <StyledKeyboardAvoidingView>
             <StyledView>         
                 <InputWrapper>
-                    <InputContainer>
-                        <QuestionInput
-                            ref={inputRef}
-                            value={props.question}
-                            placeholder='Type a question, task or something else'
-                            multiline
-                            onChangeText={props.setQuestion}
-                        />
-                        {props.question.length > 0 && (
-                            <StyledClearButton>
-                                <ClearButton onPress={() => props.setQuestion('')} />
-                            </StyledClearButton>
-                        )}
-                        {props.question.length >= 82 && (
-                            <HintText>
-                                {props.question.length} characters - recommend to keep max 82
-                            </HintText>
-                        )}
-                    </InputContainer>
-
+                    <InputField
+                        ref={inputRef}
+                        text={props.question}
+                        InputComponent={QuestionInput}
+                        placeholder='Type a question or something else'
+                        maxLengthHint={75}
+                        onChangeText={props.setQuestion}
+                    />
                     <Divider />
-                    <InputContainer>
-                        <AnswerInput
-                            value={props.answer}
-                            placeholder='Type a description or something else'
-                            multiline
-                            onChangeText={props.setAnswer}
-                        />
-                        {props.answer.length > 0 && (
-                            <StyledClearButton>
-                                <ClearButton onPress={() => props.setAnswer('')} />
-                            </StyledClearButton>
-                        )}
-                        {props.answer.length >= 142 && (
-                            <HintText>
-                                {props.answer.length} characters - recommend to keep max 142
-                            </HintText>
-                        )}
-                    </InputContainer>
+                    <InputField
+                        text={props.answer}
+                        InputComponent={AnswerInput}
+                        placeholder='Type a description or something else'
+                        onChangeText={props.setAnswer}
+                    />
                 </InputWrapper>
                 <AddCardButton label='Add Card' onPress={handleAddCard} />
             </StyledView>
