@@ -1,8 +1,10 @@
-import { View, Modal } from "react-native";
+import { View, Modal, ScrollView } from "react-native";
 import styled from "styled-components";
 
 import RowButton from "@/components/RowButton";
-import { InputWrapper, AnswerInput, QuestionInput, Divider, HintCounter } from "@/ui/CardInputFields";
+import ClearButton from "./ClearButton";
+import StyledKeyboardAvoidingView from "@/ui/StyledKeyboardAvoidingView";
+import { StyledInputWrapper, AnswerInput, QuestionInput, InputContainer, Divider, StyledClearButton } from "@/ui/CardInputFields";
 
 interface EditCardModalProps { 
     visible: boolean;
@@ -21,28 +23,44 @@ const EditCardModal = (props: EditCardModalProps) => {
             visible={props.visible} 
             animationType='fade' 
             onRequestClose={props.onClose}>
-            <ModalContainer>
-                <InputWrapper>
-                    <HintCounter>{props.question.length}</HintCounter>
-                    <QuestionInput
-                        value={props.question}
-                        multiline
-                        onChangeText={props.onChangeQuestion}
-                    />
-                    <Divider />
-                    <HintCounter>{props.answer.length}</HintCounter>
-                    <AnswerInput
-                        value={props.answer}
-                        multiline
-                        onChangeText={props.onChangeAnswer}
-                    />
-                </InputWrapper>
+            <StyledKeyboardAvoidingView>
+                <StyledScrollView>
+                    <ModalContainer>
+                        <StyledInputWrapper>
+                            <InputContainer>
+                                <QuestionInput
+                                    value={props.question}
+                                    multiline
+                                    onChangeText={props.onChangeQuestion}
+                                />
+                                {props.question.length > 0 && (
+                                    <StyledClearButton>
+                                        <ClearButton onPress={() => props.onChangeQuestion('')} />
+                                    </StyledClearButton>
+                                )}
+                            </InputContainer>
+                            <Divider />
+                            <InputContainer>
+                                <AnswerInput
+                                    value={props.answer}
+                                    multiline
+                                    onChangeText={props.onChangeAnswer}
+                                />
+                                {props.answer.length > 0 && (
+                                    <StyledClearButton>
+                                        <ClearButton onPress={() => props.onChangeAnswer('')} />
+                                    </StyledClearButton>
+                                )}
+                            </InputContainer>
+                        </StyledInputWrapper>
 
-                <ButtonContainer>
-                    <RowButton buttonName='cancel' onPress={props.onClose} />
-                    <RowButton buttonName='save' onPress={props.onSave} />
-                </ButtonContainer> 
-            </ModalContainer>
+                        <ButtonContainer>
+                            <RowButton buttonName='cancel' onPress={props.onClose} />
+                            <RowButton buttonName='save' onPress={props.onSave} />
+                        </ButtonContainer> 
+                    </ModalContainer>
+                </StyledScrollView>
+            </StyledKeyboardAvoidingView>
         </Modal>
     );
 };
@@ -52,13 +70,23 @@ export default EditCardModal;
 const ModalContainer = styled(View)`
     flex: 1;
     justify-content: center;
-    padding: 20px;
-    background-color: rgba(0, 0, 0, 0.8);
+    padding: 16px 10px;
+    background-color: rgba(0, 0, 0, 0.7);
+`;
+
+const StyledScrollView = styled(ScrollView).attrs(() => ({
+    keyboardShouldPersistTaps: 'handled',
+    contentContainerStyle: {
+        flexGrow: 1,
+        justifyContent: 'center',
+    },
+}))`
+    flex: 1;
 `;
 
 const ButtonContainer = styled(View)`
     flex-direction: row;
     justify-content: center;
-    margin-top: 42px;
+    margin-top: 20px;
     gap: 24px;
 `;
