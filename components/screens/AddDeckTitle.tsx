@@ -1,8 +1,6 @@
-import { View, TextInput } from "react-native";
-import styled from "styled-components/native";
-
+import InputField from "../InputField";
 import useKeyboardVisibility from "@/hooks/useKeyboardVisibility";
-import StyledKeyboardAvoidingView from "@/ui/StyledKeyboardAvoidingView";
+import { StyledView, QuestionInput, InputWrapper } from "@/ui/CardInputFields";
 
 interface AddDeckTitleProps {
     title: string;
@@ -13,36 +11,19 @@ const AddDeckTitle = (props: AddDeckTitleProps) => {
     const { inputRef } = useKeyboardVisibility();
 
     return (
-        <StyledKeyboardAvoidingView>
-            <StyledView>
-                <StyledInput
+        <StyledView>
+            <InputWrapper>
+                <InputField
                     ref={inputRef}
-                    value={props.title}
+                    text={props.title}
                     placeholder='Enter deck title'
+                    maxLengthHint={35}
+                    InputComponent={QuestionInput}
                     onChangeText={props.setTitle}
                 />
-            </StyledView>
-        </StyledKeyboardAvoidingView>
+            </InputWrapper>
+        </StyledView>
     );
 };
 
 export default AddDeckTitle;
-
-const StyledView = styled(View)`
-    flex: 1;
-    padding: 20px 10px;
-    background-color: #1a1c20;
-`;
-
-const StyledInput = styled(TextInput).attrs({
-    placeholderTextColor: '#808080',
-    selectionColor: '#aaa',
-})`
-    margin-bottom: 16px;
-    height: 48px;
-    border-radius: 12px;
-    padding: 12px;
-    font-size: 16px;
-    background-color: #25292e;
-    color: #e6e6e6;
-`;
