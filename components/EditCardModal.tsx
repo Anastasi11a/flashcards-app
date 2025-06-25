@@ -1,10 +1,10 @@
 import { View, Modal, ScrollView } from "react-native";
 import styled from "styled-components";
 
+import InputField from "./InputField";
 import RowButton from "@/components/RowButton";
-import ClearButton from "./ClearButton";
 import StyledKeyboardAvoidingView from "@/ui/StyledKeyboardAvoidingView";
-import { StyledInputWrapper, AnswerInput, QuestionInput, InputContainer, Divider, StyledClearButton } from "@/ui/CardInputFields";
+import { StyledInputWrapper, AnswerInput, QuestionInput, Divider } from "@/ui/CardInputFields";
 
 interface EditCardModalProps { 
     visible: boolean;
@@ -27,31 +27,17 @@ const EditCardModal = (props: EditCardModalProps) => {
                 <StyledScrollView>
                     <ModalContainer>
                         <StyledInputWrapper>
-                            <InputContainer>
-                                <QuestionInput
-                                    value={props.question}
-                                    multiline
-                                    onChangeText={props.onChangeQuestion}
-                                />
-                                {props.question.length > 0 && (
-                                    <StyledClearButton>
-                                        <ClearButton onPress={() => props.onChangeQuestion('')} />
-                                    </StyledClearButton>
-                                )}
-                            </InputContainer>
+                            <InputField
+                                text={props.question}
+                                InputComponent={QuestionInput}
+                                onChangeText={props.onChangeQuestion}
+                            />
                             <Divider />
-                            <InputContainer>
-                                <AnswerInput
-                                    value={props.answer}
-                                    multiline
-                                    onChangeText={props.onChangeAnswer}
-                                />
-                                {props.answer.length > 0 && (
-                                    <StyledClearButton>
-                                        <ClearButton onPress={() => props.onChangeAnswer('')} />
-                                    </StyledClearButton>
-                                )}
-                            </InputContainer>
+                            <InputField
+                                text={props.answer}
+                                InputComponent={AnswerInput}
+                                onChangeText={props.onChangeAnswer}
+                            />
                         </StyledInputWrapper>
 
                         <ButtonContainer>
