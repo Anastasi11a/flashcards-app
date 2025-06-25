@@ -1,7 +1,7 @@
+import EditCardModal from "@/components/EditCardModal";
 import { useDecks } from "@/context/DeckContext";
 import useCardEditor from "@/hooks/useCardEditor";
 import DeckList from "./DecksList";
-import EditCardModal from "@/ui/EditCardModal";
 
 interface DeckDetailScreenProps {
     deckId?: string;

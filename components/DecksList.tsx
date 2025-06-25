@@ -59,8 +59,8 @@ const DeckList = (props: DeckListProps) => {
                         ref={(ref) => {swipeableRefs.current[item.id] = ref}}
                         renderRightActions={() => renderRightActions(item.id)}
                         onSwipeableWillOpen={() => setSwipingCardId(item.id)}
-                        onSwipeableClose={() => setSwipingCardId(null)}
-                    >
+                        onSwipeableClose={() => setSwipingCardId(null)}>
+
                         <CardStyledContainer onPress={() => toggleAnswer(item.id)}>
                             <StyledQuestion>{item.question}</StyledQuestion>
                             {visibleAnswers[item.id] && (
@@ -83,18 +83,24 @@ const StyledView = styled(View)`
 `;
 
 const CardStyledContainer = styled(Pressable)`
-    padding: 16px 12px;
+    padding: 16px 32px 16px 20px;
     border-radius: 12px;
     background-color: #25292e;
 `;
 
-const StyledQuestion = styled(Text)`
+const StyledInput = styled(Text)`
+    line-height: 22px;
+    letter-spacing: 0.4px;
+    text-align-vertical: top;
+`; 
+
+const StyledQuestion = styled(StyledInput)`
     font-size: 18px;
     font-weight: bold;
     color: #0a7ea4;
 `;
 
-const StyledAnswer = styled(Text)`
+const StyledAnswer = styled(StyledInput)`
     margin-top: 10px;
     font-size: 16px;
     color: #e6e6e6;
