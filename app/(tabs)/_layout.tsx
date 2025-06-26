@@ -1,25 +1,27 @@
-import { Tabs } from "expo-router";
+import { Tabs, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
+import AddButton from "@/components/AddButton";
+
 export default function TabLayout() {
+    const router = useRouter();
+
     return (
         <Tabs
             screenOptions={{
                 headerShadowVisible: false,
                 headerStyle: {
-                    backgroundColor: '#25292e',
+                    backgroundColor: '#1a1c20', 
                     height: 110,
                 },
                 tabBarActiveTintColor: '#0a7ea4',
                 tabBarStyle: {
-                    backgroundColor: '#1a1c20',
+                    backgroundColor: '#25292e',
                     position: 'absolute',
                     bottom: 0,
                     left: 0,
                     right: 0,
-                    height: 70,
-                    borderTopEndRadius: 20,
-                    borderTopStartRadius: 20,
+                    height: 80,
                     borderColor: 'transparent',
                     paddingTop: 3,
                     overflow: 'hidden', 
@@ -37,6 +39,9 @@ export default function TabLayout() {
                         fontWeight: 'bold',
                         color: '#e6e6e6',
                     },
+                    headerRight: () => (
+                        <AddButton onPress={() => router.push('/create/add-deck-title')} />
+                    ),
                     tabBarLabel: 'Cards collection',
                     tabBarIcon: ({ color, focused }) => (
                         <Ionicons 
