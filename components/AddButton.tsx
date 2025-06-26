@@ -1,5 +1,6 @@
 import { TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import styled from "styled-components/native";
 
 interface AddButtonProps {
@@ -8,22 +9,29 @@ interface AddButtonProps {
 
 const AddButton = (props: AddButtonProps) => {
     return (
-        <StyledPressable onPress={props.onPress}>
-            <MaterialIcons name='add' size={32} color='#fff' />
-        </StyledPressable>
+        <GradientOverlay colors={['#12b3d6', '#0a7ea4']}>
+            <StyledPressable onPress={props.onPress}>
+                <MaterialIcons name="add" size={24} color="#fff" />
+            </StyledPressable>
+        </GradientOverlay>     
     );
 };
 
 export default AddButton;
 
-const StyledPressable = styled(TouchableOpacity)`
-    position: absolute;
-    right: 20px;
-    bottom: 80px;
-    width: 60px;
-    height: 60px;
+const GradientOverlay = styled(LinearGradient)`
+    width: 52px;
+    height: 46px;
+    margin: 12px 12px 0 0;
+    border-radius: 16px;
     justify-content: center;
     align-items: center;
-    border-radius: 30px;
-    background-color: #0a7ea4;
+`;
+
+const StyledPressable = styled(TouchableOpacity)`
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
 `;
