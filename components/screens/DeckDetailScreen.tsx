@@ -1,14 +1,14 @@
 import EditCardModal from "@/components/EditCardModal";
 import { useDecks } from "@/context/DeckContext";
 import useCardEditor from "@/hooks/useCardEditor";
-import DeckList from "./DecksList";
+import DeckList from "../DecksList";
 
 interface DeckDetailScreenProps {
     deckId?: string;
 }
 
 const DeckDetailScreen = (props: DeckDetailScreenProps) => {
-    const { decks, deleteCard, editCard } = useDecks();
+    const { decks, deleteDeck, deleteCard, editCard } = useDecks();
     const deck = decks.find((d) => d.id === props.deckId); 
     const { 
         editingCardId, editQuestion, editAnswer, setEditQuestion, setEditAnswer, startEditing, saveEdit, resetEditor
@@ -28,6 +28,10 @@ const DeckDetailScreen = (props: DeckDetailScreenProps) => {
 
     const handleDeleteCard = (deckId: string, cardId: string) => {
         deleteCard(deckId, cardId);
+    };
+
+    const handleDeleteDeck = (deckId: string) => {
+        deleteDeck(deckId);
     };
 
     return (
