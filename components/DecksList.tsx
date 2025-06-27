@@ -53,7 +53,7 @@ const DeckList = (props: DeckListProps) => {
             <FlatList
                 data={props.cards}
                 keyExtractor={(item) => item.id}
-                contentContainerStyle={{ gap: 10 }}
+                contentContainerStyle={{ paddingBottom: 100, gap: 4 }}
                 renderItem={({ item }) => (
                     <Swipeable 
                         ref={(ref) => {swipeableRefs.current[item.id] = ref}}
