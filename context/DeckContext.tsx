@@ -4,6 +4,7 @@ import { Card, Deck, initialDecks } from "@/data/decks";
 interface DeckContextProps {
     decks: Deck[];
     addDeck: (title: string, cards?: Card[]) => void;
+    addCard: (deckId: string, card: Card) => void;
     deleteDeck: (deckId: string) => void;
     deleteCard: (deckId: string, cardId: string) => void;
     editDeck: (deckId: string, newTitle: string) => void;
@@ -22,6 +23,16 @@ export const DeckProvider = ({ children }: { children: ReactNode }) => {
             cards,
         };
         setDecks(prev => [...prev, newDeck]);
+    };
+
+    const addCard = (deckId: string, newCard: Card) => {
+        setDecks(prev =>
+            prev.map(deck =>
+                deck.id === deckId
+                    ? { ...deck, cards: [newCard, ...deck.cards] }
+                    : deck
+            )
+        );
     };
 
     const deleteDeck = (deckId: string) => {
@@ -62,7 +73,7 @@ export const DeckProvider = ({ children }: { children: ReactNode }) => {
     };
 
     return (
-        <DeckContext.Provider value={{ decks, addDeck, deleteDeck, deleteCard, editDeck, editCard }}>
+        <DeckContext.Provider value={{ decks, addDeck, addCard, deleteDeck, deleteCard, editDeck, editCard }}>
             {children}
         </DeckContext.Provider>
     );
