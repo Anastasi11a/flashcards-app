@@ -7,7 +7,8 @@ interface CustomHeaderProps {
     enabled?: boolean;
     rightButton?: {
         onPress: () => void;
-        label: string;
+        label?: string;
+        icon?: React.ReactNode;
         style?: StyleProp<ViewStyle>;
         textStyle?: StyleProp<TextStyle>;
     };
@@ -28,25 +29,27 @@ const useCustomHeader = ({ title, enabled = true, rightButton }: CustomHeaderPro
             headerTintColor: "#ffd33d",
             headerTitleStyle: {
                 color: "#e6e6e6",
-                fontSize: 20,
+                fontSize: 18,
                 fontWeight: "bold",
             },
             headerRight: rightButton
                 ? () => (
                     <TouchableOpacity onPress={rightButton.onPress} style={rightButton.style}>
-                        <Text 
-                            style={[
-                                { 
-                                    color: "#0a7ea4",
-                                    fontSize: 20,
-                                    fontWeight: "bold",
-                                    marginRight: 10,
-                                    paddingHorizontal: 3,  
-                                }, rightButton.textStyle
-                            ]}
-                        >
-                            {rightButton.label}
-                        </Text>
+                        {rightButton.icon ?? (
+                            <Text 
+                                style={[
+                                    { 
+                                        color: "#0a7ea4",
+                                        fontSize: 20,
+                                        fontWeight: "bold",
+                                        marginRight: 10,
+                                        paddingHorizontal: 3,  
+                                    }, 
+                                    rightButton.textStyle
+                                ]}>
+                                {rightButton.label}
+                            </Text>
+                        )}
                     </TouchableOpacity>
                 )
                 : undefined,
