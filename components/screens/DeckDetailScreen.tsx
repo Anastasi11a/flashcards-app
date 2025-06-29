@@ -1,9 +1,10 @@
-import { useCallback } from "react";
+import { useState, useCallback } from "react";
 import { useRouter } from "expo-router";
 import { Alert } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 
 import EditCardModal from "@/components/EditCardModal";
+import EditTitleModal from "../EditTitleModal";
 import { useDecks } from "@/context/DeckContext";
 import useCardEditor from "@/hooks/useCardEditor";
 import DeckList from "../DecksList";
@@ -17,7 +18,7 @@ interface DeckDetailScreenProps {
 
 const DeckDetailScreen = (props: DeckDetailScreenProps) => {
     const router = useRouter();
-    const { decks, deleteDeck, deleteCard, addCard, editCard } = useDecks();
+    const { decks, deleteDeck, deleteCard, addCard, editCard, editDeck } = useDecks();
     const deck = decks.find((d) => d.id === props.deckId);
     
     if (!deck || !props.deckId) return null;
@@ -40,6 +41,8 @@ const DeckDetailScreen = (props: DeckDetailScreenProps) => {
             },
         }
     );
+    const [isEditingTitle, setIsEditingTitle] = useState(false);
+    const [newTitle, setNewTitle] = useState(deck?.title ?? '');
 
     const handleDeleteCard = (deckId: string, cardId: string) => {
         deleteCard(deckId, cardId);
@@ -51,10 +54,12 @@ const DeckDetailScreen = (props: DeckDetailScreenProps) => {
     };
 
     const handleEditPressed = () => {
-        console.log('Edit Deck title pressed');
+        if (!deck) return;
+        setNewTitle(deck.title);
+        setIsEditingTitle(true);
         props.onCloseMenu();
     };
-    
+
     const handleDeleteDeck = (deckId: string) => {
         props.onCloseMenu();
 
@@ -124,6 +129,19 @@ const DeckDetailScreen = (props: DeckDetailScreenProps) => {
                 onChangeAnswer={setNewAnswer}
                 onSave={saveNewCard}
                 onClose={resetNewCard}
+            />
+            <EditTitleModal
+                visible={isEditingTitle}
+                title={newTitle}
+                maxLengthHint={25}
+                onChangeTitle={setNewTitle}
+                onSave={() => {
+                    if (props.deckId && newTitle.trim()) {
+                        editDeck(props.deckId, newTitle.trim());
+                    }
+                    setIsEditingTitle(false);
+                }}
+                onClose={() => setIsEditingTitle(false)}
             />
         </>
     );
