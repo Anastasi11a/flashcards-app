@@ -22,6 +22,7 @@ const EditCardModal = (props: EditCardModalProps) => {
             <InputField
                 text={props.question}
                 InputComponent={QuestionInput}
+                maxLengthHint={75}
                 onChangeText={props.onChangeQuestion}
             />
             <Divider />
