@@ -1,12 +1,12 @@
 import { useState, useCallback } from "react";
-import { useRouter } from "expo-router";
-import { Alert } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
 
 import EditCardModal from "@/components/EditCardModal";
 import EditTitleModal from "../EditTitleModal";
 import { useDecks } from "@/context/DeckContext";
 import useCardEditor from "@/hooks/useCardEditor";
+import { useDeckMenuButtons } from "@/hooks/useDeckMenuButtons";
+import { useConfirmDeleteDeck } from "@/hooks/useConfirmDeleteDeck";
+import { showExportOptions } from "@/utils/showExportOptions";
 import DeckList from "../DecksList";
 import MenuPopupButton from "../MenuPopupButton";
 
@@ -17,7 +17,6 @@ interface DeckDetailScreenProps {
 }
 
 const DeckDetailScreen = (props: DeckDetailScreenProps) => {
-    const router = useRouter();
     const { decks, deleteDeck, deleteCard, addCard, editCard, editDeck } = useDecks();
     const deck = decks.find((d) => d.id === props.deckId);
     
@@ -43,6 +42,7 @@ const DeckDetailScreen = (props: DeckDetailScreenProps) => {
     );
     const [isEditingTitle, setIsEditingTitle] = useState(false);
     const [newTitle, setNewTitle] = useState(deck?.title ?? '');
+    const confirmDeleteDeck = useConfirmDeleteDeck();
 
     const handleDeleteCard = (deckId: string, cardId: string) => {
         deleteCard(deckId, cardId);
@@ -60,44 +60,24 @@ const DeckDetailScreen = (props: DeckDetailScreenProps) => {
         props.onCloseMenu();
     };
 
+    const handleExportDeck = useCallback(() => {
+        if (deck) {
+            showExportOptions(deck, props.onCloseMenu)
+        }
+    }, [deck, props]);
+
     const handleDeleteDeck = (deckId: string) => {
         props.onCloseMenu();
-
-        Alert.alert(
-            "Delete Deck",
-            "Are you sure you want to delete this deck?",
-            [
-                { text: "Cancel", style: "cancel" },
-                { text: "Delete", style: "destructive",
-                    onPress: () => {
-                        deleteDeck(deckId);
-                        router.replace('/');
-                    },
-                },
-            ],
-            { cancelable: true }
-        );
+        confirmDeleteDeck(deckId);
     };
 
-    const menuButtons = useCallback(() => {
-        return [
-            {
-                label: 'Add new card',
-                icon: <MaterialIcons name='playlist-add' size={24} color='#0a7ea4' />,
-                onPress: handleAddPressed,
-            },
-            {
-                label: 'Edit collection name',
-                icon: <MaterialIcons name='edit-note' size={24} color='#0a7ea4' />,
-                onPress: handleEditPressed,
-            },
-            {
-                label: 'Delete Deck',
-                icon: <MaterialIcons name='delete-sweep' size={24} color='#0a7ea4' />,
-                onPress: () => handleDeleteDeck(props.deckId!),
-            },
-        ]
-    }, [props.deckId]);
+    const menuButtons = useDeckMenuButtons({
+        deckId: props.deckId!,
+        onAdd: handleAddPressed,
+        onEdit: handleEditPressed,
+        onExport: handleExportDeck,
+        onDelete: handleDeleteDeck,
+    });
 
     return (
         <>
