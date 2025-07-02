@@ -32,9 +32,14 @@ const useCustomHeader = ({ title, enabled = true, rightButton }: CustomHeaderPro
                 fontSize: 18,
                 fontWeight: "bold",
             },
+            headerUnderLineColor: "transparent",
             headerRight: rightButton
                 ? () => (
-                    <TouchableOpacity onPress={rightButton.onPress} style={rightButton.style}>
+                    <TouchableOpacity 
+                        onPress={rightButton.onPress} 
+                        style={rightButton.style}
+                        hitSlop={{ top: 10, bottom: 10, left: 20, right: 10 }}>
+                            
                         {rightButton.icon ?? (
                             <Text 
                                 style={[

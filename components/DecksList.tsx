@@ -53,7 +53,7 @@ const DeckList = (props: DeckListProps) => {
             <FlatList
                 data={props.cards}
                 keyExtractor={(item) => item.id}
-                contentContainerStyle={{ paddingBottom: 100, gap: 4 }}
+                contentContainerStyle={{ marginTop: 16, paddingBottom: 80, gap: 4 }}
                 renderItem={({ item }) => (
                     <Swipeable 
                         ref={(ref) => {swipeableRefs.current[item.id] = ref}}
@@ -78,7 +78,7 @@ export default DeckList;
 
 const StyledView = styled(View)`
     flex: 1;
-    padding: 16px 10px;
+    padding: 0 10px;
     background-color: #1a1c20;
 `;
 
