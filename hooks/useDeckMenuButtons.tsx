@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 interface DeckMenuButtonProps {
     deckId: string;
@@ -11,31 +11,33 @@ interface DeckMenuButtonProps {
 
 export const useDeckMenuButtons = (props: DeckMenuButtonProps) => {
     return useCallback(() => {
-        const icon = (name: keyof typeof MaterialIcons.glyphMap) => (
-            <MaterialIcons name={name} size={24} color="#0a7ea4" />
-        );
+        const icon = (
+            name: keyof typeof MaterialCommunityIcons.glyphMap,
+            color = '#fff'
+        ) => <MaterialCommunityIcons name={name} size={24} color={color} />;
 
         return [
             { 
                 label: 'Add new card', 
-                icon: icon('playlist-add'), 
+                icon: icon('playlist-plus'), 
                 onPress: props.onAdd 
             },
             { 
-                label: 'Edit collection name', 
-                icon: icon('edit-note'), 
+                label: 'Edit title', 
+                icon: icon('playlist-edit'), 
                 onPress: props.onEdit 
 
             },
             {
-                label: 'Export Deck', 
-                icon: icon('file-download'), 
+                label: 'Export', 
+                icon: icon('export-variant'), 
                 onPress: () => props.onExport(),
             },
             { 
-                label: 'Delete Deck', 
-                icon: icon('delete-sweep'), 
-                onPress: () => props.onDelete(props.deckId) 
+                label: 'Remove', 
+                icon: icon('delete-sweep', '#ff4d4f'), 
+                onPress: () => props.onDelete(props.deckId),
+                isDestructive: true,
             },
         ];
     }, [props.deckId, props.onAdd, props.onEdit, props.onDelete]);

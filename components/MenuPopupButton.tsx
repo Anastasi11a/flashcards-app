@@ -2,6 +2,7 @@ import { Text, View, Modal, TouchableOpacity } from "react-native";
 import styled from "styled-components/native";
 
 interface MenuOptionProps {
+    isDestructive?: boolean;
     label?: string;
     icon?: React.ReactNode;
     onPress?: () => void;
@@ -24,10 +25,13 @@ const MenuPopupButton = (props: MenuPopupProps) => {
             <Overlay onStartShouldSetResponder={() => (props.onClose?.(), true)}>
                 <StyledMenuView>
                     {props.buttons.map((btn, i) => (
-                        <StyledPressable key={i} onPress={btn.onPress}>
-                            {btn.icon && <IconWrapper>{btn.icon}</IconWrapper>}
-                            <Label>{btn.label}</Label>
-                        </StyledPressable>
+                        <View key={i}>
+                            <StyledPressable onPress={btn.onPress}>
+                                <Label $destructive={btn.isDestructive}>{btn.label}</Label>
+                                {btn.icon}
+                            </StyledPressable>
+                            {i < props.buttons.length - 1 && <Divider />}
+                        </View>
                     ))}
                 </StyledMenuView>
             </Overlay>
@@ -45,25 +49,29 @@ const Overlay = styled(View)`
 `;
 
 const StyledMenuView = styled(View)`
-    flex-grow: 0;
-    align-items: stretch;
+    width: 220px;
     margin: 110px 10px 0 0;
-    padding: 14px;
-    border-radius: 16px;
+    padding-vertical: 6px;
+    border-radius: 12px;
     background-color: #25292e;
 `;
 
 const StyledPressable = styled(TouchableOpacity)`
     flex-direction: row;
     align-items: center;
-    padding: 12px;
+    justify-content: space-between;
+    padding: 14px 20px;
 `;
 
-const IconWrapper = styled(View)`
-    margin-right: 8px;
+const Label = styled(Text)<{ $destructive?: boolean }>`
+    flex: 1;
+    font-size: 18px;
+    color: ${({ $destructive }) => ($destructive ? '#ff4d4f' : '#e6e6e6')};
 `;
 
-const Label = styled(Text)`
-    font-size: 16px;
-    color: #e6e6e6;
+const Divider = styled(View)`
+    width: 90%;
+    align-self: center;
+    height: 0.6px;
+    background-color: #808080;
 `;
