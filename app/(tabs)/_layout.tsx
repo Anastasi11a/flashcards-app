@@ -1,10 +1,19 @@
-import { Tabs, useRouter } from "expo-router";
+import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
-import AddButton from "@/components/AddButton";
+import HeaderOptions from "@/components/HeaderOptions";
+import { useDecks } from "@/context/DeckContext";
+import { importDeck } from "@/utils/importDeck";
 
 export default function TabLayout() {
-    const router = useRouter();
+    const { addDeck } = useDecks();
+
+    const handleImport  = async () => {
+        const importedDeck = await importDeck();
+        if (importedDeck) {
+            addDeck(importedDeck.title, importedDeck.cards); 
+        }
+    };
 
     return (
         <Tabs
@@ -26,22 +35,20 @@ export default function TabLayout() {
                     paddingTop: 3,
                     overflow: 'hidden', 
                 },
-            }}
-        >
+            }}>
             <Tabs.Screen 
                 name='index' 
                 options={{ 
                     title: 'Flashcards',
+                    headerTitleAlign: 'left',
                     headerTitleStyle: {
-                        marginTop: 10,
-                        textAlign: "center",
-                        fontSize: 32,
+                        marginTop: 16,
+                        marginStart: 12,
+                        fontSize: 28,
                         fontWeight: 'bold',
                         color: '#e6e6e6',
                     },
-                    headerRight: () => (
-                        <AddButton onPress={() => router.push('/create/add-deck-title')} />
-                    ),
+                    headerRight: () => <HeaderOptions onImport={handleImport} />,
                     tabBarLabel: 'Cards collection',
                     tabBarIcon: ({ color, focused }) => (
                         <Ionicons 
@@ -67,4 +74,4 @@ export default function TabLayout() {
             />
         </Tabs>
     );
-}
+};
