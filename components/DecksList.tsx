@@ -10,6 +10,7 @@ import SwipeButton from "./SwipeButton";
 interface DeckListProps {
     deckId?: string;
     cards: Card[];
+    paddingTop?: number;
     onDelete: (deckId: string, cardId: string) => void;
     onEdit?: (deckId: string, cardId: string) => void;
 }
@@ -51,9 +52,14 @@ const DeckList = (props: DeckListProps) => {
     return (
         <StyledView>
             <FlatList
-                data={props.cards}
+                data={[...props.cards].reverse()}
                 keyExtractor={(item) => item.id}
-                contentContainerStyle={{ marginTop: 16, paddingBottom: 80, gap: 4 }}
+                contentContainerStyle={{
+                    gap: 4, 
+                    marginVertical: 16, 
+                    paddingBottom: 140,
+                    ...(props.paddingTop !== undefined && { paddingTop: props.paddingTop }),
+                }}
                 renderItem={({ item }) => (
                     <Swipeable 
                         ref={(ref) => {swipeableRefs.current[item.id] = ref}}
