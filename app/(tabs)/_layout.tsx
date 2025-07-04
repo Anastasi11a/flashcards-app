@@ -1,9 +1,11 @@
 import { Tabs } from "expo-router";
+import { Platform } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 import HeaderOptions from "@/components/HeaderOptions";
 import { useDecks } from "@/context/DeckContext";
 import { importDeck } from "@/utils/importDeck";
+import BlurTabBarBackground from "@/ui/BlurTabBarBackground";
 
 export default function TabLayout() {
     const { addDeck } = useDecks();
@@ -24,17 +26,13 @@ export default function TabLayout() {
                     height: 110,
                 },
                 tabBarActiveTintColor: '#0a7ea4',
-                tabBarStyle: {
-                    backgroundColor: '#25292e',
-                    position: 'absolute',
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    height: 80,
-                    borderColor: 'transparent',
-                    paddingTop: 3,
-                    overflow: 'hidden', 
-                },
+                tabBarStyle: Platform.select({
+                    ios: {
+                        position: 'absolute',
+                    },
+                    default: {},
+                }),
+                tabBarBackground: BlurTabBarBackground,
             }}>
             <Tabs.Screen 
                 name='index' 
