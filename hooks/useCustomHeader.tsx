@@ -5,6 +5,8 @@ import { TouchableOpacity, Text, StyleProp, ViewStyle, TextStyle } from "react-n
 interface CustomHeaderProps {
     title?: string | null;
     enabled?: boolean;
+    headerTransparent?: boolean;
+    headerBlurEffect?: 'regular';
     rightButton?: {
         onPress: () => void;
         label?: string;
@@ -14,7 +16,13 @@ interface CustomHeaderProps {
     };
 }
 
-const useCustomHeader = ({ title, enabled = true, rightButton }: CustomHeaderProps) => {
+const useCustomHeader = ({ 
+    title, 
+    enabled = true, 
+    headerTransparent,
+    headerBlurEffect, 
+    rightButton 
+}: CustomHeaderProps) => {
     const navigation = useNavigation();
 
     useLayoutEffect(() => {
@@ -22,17 +30,22 @@ const useCustomHeader = ({ title, enabled = true, rightButton }: CustomHeaderPro
 
         navigation.setOptions({
             title,
-            headerStyle: {
-                backgroundColor: "#1a1c20",
-            },
-            headerBackTitle: "Back",
-            headerTintColor: "#ffd33d",
+            ...(headerTransparent
+                ? {}
+                : {
+                    headerStyle: {
+                        backgroundColor: "#1a1c20",
+                    },
+                }),
+            headerBackTitle: 'Back',
+            headerTintColor: "#808080",
             headerTitleStyle: {
                 color: "#e6e6e6",
                 fontSize: 18,
                 fontWeight: "bold",
             },
-            headerUnderLineColor: "transparent",
+            ...(headerTransparent !== undefined && { headerTransparent }),
+            ...(headerBlurEffect !== undefined && { headerBlurEffect }),
             headerRight: rightButton
                 ? () => (
                     <TouchableOpacity 
@@ -59,7 +72,7 @@ const useCustomHeader = ({ title, enabled = true, rightButton }: CustomHeaderPro
                 )
                 : undefined,
         });
-    }, [navigation, title, enabled, rightButton]);
+    }, [navigation, title, enabled, headerTransparent, headerBlurEffect, rightButton]);
 };
 
 export default useCustomHeader;

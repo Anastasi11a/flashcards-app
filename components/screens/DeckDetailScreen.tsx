@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { useHeaderHeight } from "@react-navigation/elements";
 
 import EditCardModal from "@/components/EditCardModal";
 import EditTitleModal from "../EditTitleModal";
@@ -17,7 +18,7 @@ interface DeckDetailScreenProps {
 }
 
 const DeckDetailScreen = (props: DeckDetailScreenProps) => {
-    const { decks, deleteDeck, deleteCard, addCard, editCard, editDeck } = useDecks();
+    const { decks, deleteCard, addCard, editCard, editDeck } = useDecks();
     const deck = decks.find((d) => d.id === props.deckId);
     
     if (!deck || !props.deckId) return null;
@@ -43,6 +44,7 @@ const DeckDetailScreen = (props: DeckDetailScreenProps) => {
     const [isEditingTitle, setIsEditingTitle] = useState(false);
     const [newTitle, setNewTitle] = useState(deck?.title ?? '');
     const confirmDeleteDeck = useConfirmDeleteDeck();
+    const headerHeight = useHeaderHeight();
 
     const handleDeleteCard = (deckId: string, cardId: string) => {
         deleteCard(deckId, cardId);
@@ -88,7 +90,8 @@ const DeckDetailScreen = (props: DeckDetailScreenProps) => {
             />
             <DeckList 
                 deckId={props.deckId}
-                cards={deck.cards} 
+                cards={deck.cards}
+                paddingTop={headerHeight}
                 onDelete={handleDeleteCard} 
                 onEdit={(_, cardId) => startEditing(cardId)}
             />

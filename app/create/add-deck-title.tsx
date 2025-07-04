@@ -19,7 +19,7 @@ const AddDeckTitleScreen = () => {
     };
 
     useCustomHeader({
-        title: 'Add Deck Title',
+        title: 'Deck Title',
         rightButton: {
             label: 'Next',
             onPress: handleNextPressed,

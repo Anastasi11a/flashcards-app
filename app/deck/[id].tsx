@@ -16,6 +16,8 @@ const DeckScreen: React.FC = () => {
     
     useCustomHeader({ 
         title: deck?.title,
+        headerTransparent: true,
+        headerBlurEffect: 'regular',
         rightButton: {
             icon: <SimpleLineIcons name='options-vertical' size={18} color='#808080' />,
             onPress: openMenu, 
