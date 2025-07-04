@@ -11,7 +11,7 @@ export default function App() {
     return (
         <Container>
             <FlatList
-                data={decks}
+                data={[...decks].reverse()}
                 keyExtractor={(item) => item.id}
                 contentContainerStyle={{ paddingBottom: 100, gap: 4 }}
                 renderItem={({ item }) => (
