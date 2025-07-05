@@ -5,7 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 import HeaderOptions from "@/components/HeaderOptions";
 import { useDecks } from "@/context/DeckContext";
 import { importDeck } from "@/utils/importDeck";
-import BlurTabBarBackground from "@/ui/BlurTabBarBackground";
+import BlurBackground from "@/ui/BlurBackground";
 
 export default function TabLayout() {
     const { addDeck } = useDecks();
@@ -21,18 +21,12 @@ export default function TabLayout() {
         <Tabs
             screenOptions={{
                 headerShadowVisible: false,
-                headerStyle: {
-                    backgroundColor: '#1a1c20', 
-                    height: 110,
-                },
                 tabBarActiveTintColor: '#0a7ea4',
                 tabBarStyle: Platform.select({
-                    ios: {
-                        position: 'absolute',
-                    },
+                    ios: { position: 'absolute' },
                     default: {},
                 }),
-                tabBarBackground: BlurTabBarBackground,
+                tabBarBackground: BlurBackground,
             }}>
             <Tabs.Screen 
                 name='index' 
@@ -40,12 +34,22 @@ export default function TabLayout() {
                     title: 'Flashcards',
                     headerTitleAlign: 'left',
                     headerTitleStyle: {
-                        marginTop: 16,
+                        marginTop: 10,
                         marginStart: 12,
                         fontSize: 28,
                         fontWeight: 'bold',
                         color: '#e6e6e6',
                     },
+                    headerStyle: {
+                        backgroundColor: 'transparent',
+                        height: Platform.select({
+                            ios: 130,
+                            android: 120,
+                            default: 120,
+                        }),
+                    },
+                    headerTransparent: true,
+                    headerBackground: BlurBackground,
                     headerRight: () => <HeaderOptions onImport={handleImport} />,
                     tabBarLabel: 'Cards collection',
                     tabBarIcon: ({ color, focused }) => (
