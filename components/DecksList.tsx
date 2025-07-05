@@ -1,11 +1,12 @@
 import { useState, useRef } from "react";
-import { Text, View, FlatList, Pressable } from "react-native";
+import { Text, View, FlatList } from "react-native";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import type SwipeableLegacyType from 'react-native-gesture-handler/Swipeable';
 import styled from "styled-components";
 
 import { Card } from "@/data/decks";
-import SwipeButton from "./SwipeButton";
+import SwipeOptions from "./SwipeOptions";
+import { DeckContainer } from "@/ui/CardInputFields";
 
 interface DeckListProps {
     deckId?: string;
@@ -27,26 +28,19 @@ const DeckList = (props: DeckListProps) => {
 
     const renderRightActions = (cardId: string) => {
         const deckId = props.deckId ?? '';
+        const swipeableRef = swipeableRefs.current[cardId];
 
-        return (
-            <ButtonContainer>
-                <SwipeButton 
-                    iconName='delete-sweep'
-                    iconType='delete'
-                    onPress={() => props.onDelete(deckId, cardId)} 
-                />
-                {props.onEdit && (
-                    <SwipeButton 
-                        iconName='playlist-edit'
-                        iconType='edit'
-                        onPress={() => {
-                            props.onEdit?.(deckId, cardId);
-                            swipeableRefs.current[cardId]?.close();
-                        }} 
-                    />
-                )}
-            </ButtonContainer>
+        const swipeActions = (
+            <SwipeOptions
+                cardId={cardId}
+                deckId={deckId}
+                onDelete={props.onDelete}
+                onEdit={props.onEdit}
+                swipeableRef={swipeableRef}
+            />
         );
+
+        return swipeActions;
     };
 
     return (
@@ -67,12 +61,12 @@ const DeckList = (props: DeckListProps) => {
                         onSwipeableWillOpen={() => setSwipingCardId(item.id)}
                         onSwipeableClose={() => setSwipingCardId(null)}>
 
-                        <CardStyledContainer onPress={() => toggleAnswer(item.id)}>
+                        <DeckContainer onPress={() => toggleAnswer(item.id)}>
                             <StyledQuestion>{item.question}</StyledQuestion>
                             {visibleAnswers[item.id] && (
                                 <StyledAnswer>{item.answer}</StyledAnswer>
                             )}
-                        </CardStyledContainer>
+                        </DeckContainer>
                     </Swipeable>
                 )}
             />
@@ -86,12 +80,6 @@ const StyledView = styled(View)`
     flex: 1;
     padding: 0 10px;
     background-color: #1a1c20;
-`;
-
-const CardStyledContainer = styled(Pressable)`
-    padding: 16px 32px 16px 20px;
-    border-radius: 12px;
-    background-color: #25292e;
 `;
 
 const StyledInput = styled(Text)`
@@ -110,8 +98,4 @@ const StyledAnswer = styled(StyledInput)`
     margin-top: 10px;
     font-size: 16px;
     color: #e6e6e6;
-`;
-
-const ButtonContainer = styled(View)`
-    flex-direction: row;
 `;
