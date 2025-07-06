@@ -1,7 +1,4 @@
-import { LinearGradient } from "expo-linear-gradient";
-import styled from "styled-components/native";
-
-import { StyledPressable } from "@/ui/CardInputFields";
+import { GradientOverlay, StyledPressable } from "@/ui/CardInputFields";
 
 interface GradientButtonProps {
     icon: React.ReactElement;
@@ -20,11 +17,3 @@ const GradientButton = (props: GradientButtonProps) => {
 };
 
 export default GradientButton;
-
-const GradientOverlay = styled(LinearGradient)`
-    width: 46px;
-    height: 46px;
-    border-radius: 16px;
-    justify-content: center;
-    align-items: center;
-`;

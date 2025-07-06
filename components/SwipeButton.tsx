@@ -1,8 +1,10 @@
-import { LinearGradient } from "expo-linear-gradient";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import styled from "styled-components/native";
 
-import { StyledPressable, StyledIcon } from "@/ui/CardInputFields";
+import { 
+    GradientSwipeButtonWrapper, 
+    StyledPressable, 
+    StyledIcon 
+} from "@/ui/CardInputFields";
 
 type IconName = keyof typeof MaterialCommunityIcons.glyphMap;
 type IconType = 'edit' | 'delete';
@@ -21,20 +23,12 @@ const SwipeButton = (props: SwipeEditProps) => {
             : ['#42e695', '#035e04'];
 
     return (
-        <GradientWrapper colors={gradientColors}>
+        <GradientSwipeButtonWrapper colors={gradientColors}>
             <StyledPressable onPress={props.onPress}>
                 <StyledIcon name={props.iconName} />
             </StyledPressable>
-        </GradientWrapper>
+        </GradientSwipeButtonWrapper>
     ); 
 };
 
 export default SwipeButton;
-
-const GradientWrapper = styled(LinearGradient)`
-    width: 64px;
-    margin-left: 8px;
-    justify-content: center;
-    align-items: center;
-    border-radius: 10px;
-`;
