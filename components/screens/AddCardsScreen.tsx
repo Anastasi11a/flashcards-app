@@ -1,3 +1,7 @@
+import { useState } from "react";
+import uuid from "uuid-random";
+
+import { useDecks } from "@/context/DeckContext";
 import { Card } from "@/data/decks";
 import useCardEditor from "@/hooks/useCardEditor";
 import useKeyboardVisibility from "@/hooks/useKeyboardVisibility";
@@ -15,37 +19,51 @@ import {
 } from "@/ui/CardInputFields";
 
 interface AddCardsScreenProps {
-    deckId?: string;
-    cards: Card[];
-    question: string;
-    answer: string;
-    setQuestion: (value: string) => void;
-    setAnswer: (value: string) => void;
-    onAddCard: () => void;
-    onDeleteCard: (cardId: string) => void;
-    onEditCard: (cardId: string, newQuestion: string, newAnswer: string) => void;
-    onTextChange?: (value: string) => void;
+    deckId: string;
 }
 
-const AddCardsScreen = (props: AddCardsScreenProps) => {
+const AddCardsScreen = ({ deckId }: AddCardsScreenProps) => {
     const { inputRef, focusInput } = useKeyboardVisibility();
-    const { 
-        editingCardId, editQuestion, editAnswer, setEditQuestion, setEditAnswer, startEditing, saveEdit, resetEditor
-    } = useCardEditor(
-        {
-            initialCards: props.cards,
-            onUpdateCards: (updatedCards) => {
-                const updatedCard = updatedCards.find(card => card.id === editingCardId);
-                if (updatedCard) {
-                    props.onEditCard(updatedCard.id, updatedCard.question, updatedCard.answer);
-                }
-            },
-        }
-    );
+    const { decks, addCard, editCard, deleteCard } = useDecks();
 
-    const handleAddCard = () => {
-        props.onAddCard();
+    const deck = decks.find((d) => d.id === deckId);
+    const cards = deck?.cards || [];
+
+    const [question, setQuestion] = useState('');
+    const [answer, setAnswer] = useState('');
+
+    const {
+        editingCardId, editQuestion, editAnswer, 
+        setEditQuestion, setEditAnswer, startEditing, saveEdit, resetEditor,
+    } = useCardEditor({
+        initialCards: cards,
+        onUpdateCards: async (updatedCards) => {
+            const updated = updatedCards.find((c) => c.id === editingCardId);
+            if (updated) {
+                await editCard(deckId, updated.id, updated.question, updated.answer);
+            }
+        },
+    });
+
+    const handleAddCard = async () => {
+        const trimmedQuestion = question.trim();
+        const trimmedAnswer = answer.trim();
+        if (!trimmedQuestion || !trimmedAnswer) return;
+
+        const newCard: Card = {
+            id: uuid(),
+            question: trimmedQuestion,
+            answer: trimmedAnswer,
+        };
+
+        await addCard(deckId, newCard);
+        setQuestion('');
+        setAnswer('');
         focusInput();
+    };
+
+    const handleDeleteCard = async (cardId: string) => {
+        await deleteCard(deckId, cardId);
     };
 
     return (
@@ -54,27 +72,27 @@ const AddCardsScreen = (props: AddCardsScreenProps) => {
                 <InputWrapper>
                     <InputField
                         ref={inputRef}
-                        text={props.question}
+                        text={question}
                         InputComponent={QuestionInput}
                         placeholder='Type a question or something else'
                         maxLengthHint={75}
-                        onChangeText={props.setQuestion}
+                        onChangeText={setQuestion}
                     />
                     <Divider />
                     <InputField
-                        text={props.answer}
+                        text={answer}
                         InputComponent={AnswerInput}
                         placeholder='Type a description or something else'
-                        onChangeText={props.setAnswer}
+                        onChangeText={setAnswer}
                     />
                 </InputWrapper>
                 <AddCardButton label='Add Card' onPress={handleAddCard} />
             </StyledEAddScreenView>
             
             <DeckList 
-                deckId={props.deckId} 
-                cards={props.cards} 
-                onDelete={(_, cardId) => props.onDeleteCard(cardId)}
+                deckId={deckId} 
+                cards={cards} 
+                onDelete={(_, cardId) => handleDeleteCard(cardId)}
                 onEdit={(_, cardId) => startEditing(cardId)}
             />
 
