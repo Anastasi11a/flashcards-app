@@ -16,7 +16,7 @@ import {
 
 interface DeckContextProps {
     decks: Deck[];
-    addDeck: (title: string, cards?: Card[]) => Promise<void>;
+    addDeck: (title: string, cards?: Card[]) => Promise<string>;
     addCard: (deckId: string, card: Card) => Promise<void>;
     deleteDeck: (deckId: string) => Promise<void>;
     deleteCard: (deckId: string, cardId: string) => Promise<void>;
@@ -46,6 +46,7 @@ export const DeckProvider = ({ children }: { children: ReactNode }) => {
             await dbAddCard(card, id);
         }
         setDecks(prev => [...prev, { id, title, cards }]);
+        return id;
     };
 
     const addCard = async (deckId: string, newCard: Card) => {
