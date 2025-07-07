@@ -1,15 +1,18 @@
-import { View } from "react-native";
-import styled from "styled-components";
-
-import EditCardModal from "@/components/EditCardModal";
 import { Card } from "@/data/decks";
 import useCardEditor from "@/hooks/useCardEditor";
 import useKeyboardVisibility from "@/hooks/useKeyboardVisibility";
-import { AnswerInput, Divider, InputWrapper, QuestionInput } from "@/ui/CardInputFields";
-import StyledKeyboardAvoidingView from "@/ui/StyledKeyboardAvoidingView";
 import AddCardButton from "../AddCardButton";
 import DeckList from "../DecksList";
 import InputField from "../InputField";
+import EditCardModal from "@/components/EditCardModal";
+import StyledKeyboardAvoidingView from "@/ui/StyledKeyboardAvoidingView";
+import { 
+    StyledEAddScreenView, 
+    AnswerInput, 
+    Divider, 
+    InputWrapper, 
+    QuestionInput 
+} from "@/ui/CardInputFields";
 
 interface AddCardsScreenProps {
     deckId?: string;
@@ -47,7 +50,7 @@ const AddCardsScreen = (props: AddCardsScreenProps) => {
 
     return (
         <StyledKeyboardAvoidingView>
-            <StyledView>         
+            <StyledEAddScreenView>         
                 <InputWrapper>
                     <InputField
                         ref={inputRef}
@@ -66,7 +69,7 @@ const AddCardsScreen = (props: AddCardsScreenProps) => {
                     />
                 </InputWrapper>
                 <AddCardButton label='Add Card' onPress={handleAddCard} />
-            </StyledView>
+            </StyledEAddScreenView>
             
             <DeckList 
                 deckId={props.deckId} 
@@ -89,8 +92,3 @@ const AddCardsScreen = (props: AddCardsScreenProps) => {
 };
 
 export default AddCardsScreen;
-
-const StyledView = styled(View)`
-    padding: 20px 10px 10px;
-    background-color: #1a1c20;
-`;
