@@ -93,6 +93,16 @@ export const deleteCard = async (
     );
 };
 
+export const importDeckToDB = async (
+    deck: Deck
+): Promise<void> => {
+    await addDeck(deck.id, deck.title);
+
+    for (const card of deck.cards) {
+        await addCard(card, deck.id);
+    }
+};
+
 export const getDecksWithCardsFromDB = async (): Promise<Deck[]> => {
     try {
         const db = await getDB();

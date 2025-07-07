@@ -1,19 +1,24 @@
 import { Tabs } from "expo-router";
-import { Platform } from "react-native";
+import { Alert, Platform } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-import HeaderOptions from "@/components/HeaderOptions";
 import { useDecks } from "@/context/DeckContext";
-import { importDeck } from "@/utils/importDeck";
+import { importDeck as pickDeckFile } from "@/utils/importDeck";
+import HeaderOptions from "@/components/HeaderOptions";
 import BlurBackground from "@/ui/BlurBackground";
 
 export default function TabLayout() {
-    const { addDeck } = useDecks();
+    const { importDeck } = useDecks();
 
     const handleImport  = async () => {
-        const importedDeck = await importDeck();
-        if (importedDeck) {
-            addDeck(importedDeck.title, importedDeck.cards); 
+        try {
+            const deck = await pickDeckFile();
+            if (!deck) return;
+            await importDeck(deck);
+
+        } catch (err) {
+            console.error('Failed to import deck:', err);
+            Alert.alert('Import Failed', 'Could not import the deck. Make sure the file is valid.');
         }
     };
 
