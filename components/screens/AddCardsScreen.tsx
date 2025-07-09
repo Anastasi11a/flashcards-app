@@ -3,7 +3,6 @@ import uuid from "uuid-random";
 
 import { useDecks } from "@/context/DeckContext";
 import { Card } from "@/data/decks";
-import useCardEditor from "@/hooks/useCardEditor";
 import useKeyboardVisibility from "@/hooks/useKeyboardVisibility";
 import AddCardButton from "../AddCardButton";
 import DeckList from "../DecksList";
@@ -32,18 +31,9 @@ const AddCardsScreen = ({ deckId }: AddCardsScreenProps) => {
     const [question, setQuestion] = useState('');
     const [answer, setAnswer] = useState('');
 
-    const {
-        editingCardId, editQuestion, editAnswer, 
-        setEditQuestion, setEditAnswer, startEditing, saveEdit, resetEditor,
-    } = useCardEditor({
-        initialCards: cards,
-        onUpdateCards: async (updatedCards) => {
-            const updated = updatedCards.find((c) => c.id === editingCardId);
-            if (updated) {
-                await editCard(deckId, updated.id, updated.question, updated.answer);
-            }
-        },
-    });
+    const [editingCard, setEditingCard] = useState<Card | null>(null);
+    const [editQuestion, setEditQuestion] = useState('');
+    const [editAnswer, setEditAnswer] = useState('');
 
     const handleAddCard = async () => {
         const trimmedQuestion = question.trim();
@@ -61,6 +51,28 @@ const AddCardsScreen = ({ deckId }: AddCardsScreenProps) => {
         setAnswer('');
         focusInput();
     };
+
+    const handleSaveEdit = async () => {
+        if (!editingCard) return;
+
+        const trimmedQ = editQuestion.trim();
+        const trimmedA = editAnswer.trim();
+        if (!trimmedQ || !trimmedA) return;
+
+        await editCard(deckId, editingCard.id, trimmedQ, trimmedA);
+        setEditingCard(null);
+    };
+
+    const handleEditCard = (cardId: string) => {
+        const card = cards.find((c) => c.id === cardId);
+        if (!card) return;
+
+        setEditingCard(card);
+        setEditQuestion(card.question);
+        setEditAnswer(card.answer);
+    };
+
+    const handleCloseEdit = () => setEditingCard(null);
 
     const handleDeleteCard = async (cardId: string) => {
         await deleteCard(deckId, cardId);
@@ -93,17 +105,17 @@ const AddCardsScreen = ({ deckId }: AddCardsScreenProps) => {
                 deckId={deckId} 
                 cards={cards} 
                 onDelete={(_, cardId) => handleDeleteCard(cardId)}
-                onEdit={(_, cardId) => startEditing(cardId)}
+                onEdit={(_, cardId) => handleEditCard(cardId)}
             />
 
             <EditCardModal
-                visible={editingCardId !== null}
+                visible={editingCard !== null}
                 question={editQuestion}
                 answer={editAnswer}
                 onChangeQuestion={setEditQuestion}
                 onChangeAnswer={setEditAnswer}
-                onSave={saveEdit}
-                onClose={resetEditor}
+                onSave={handleSaveEdit}
+                onClose={handleCloseEdit}
             />
         </StyledKeyboardAvoidingView>
     );
