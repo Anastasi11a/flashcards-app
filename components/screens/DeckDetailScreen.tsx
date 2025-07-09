@@ -1,15 +1,15 @@
 import { useState, useCallback } from "react";
 import { useHeaderHeight } from "@react-navigation/elements";
+import uuid from "uuid-random";
 
-import EditCardModal from "@/components/EditCardModal";
-import EditTitleModal from "../EditTitleModal";
 import { useDecks } from "@/context/DeckContext";
-import useCardEditor from "@/hooks/useCardEditor";
 import { useDeckMenuButtons } from "@/hooks/useDeckMenuButtons";
 import { useConfirmDeleteDeck } from "@/hooks/useConfirmDeleteDeck";
 import { showExportOptions } from "@/utils/showExportOptions";
 import DeckList from "../DecksList";
 import MenuPopupButton from "../MenuPopupButton";
+import EditCardModal from "@/components/EditCardModal";
+import EditTitleModal from "../EditTitleModal";
 
 interface DeckDetailScreenProps {
     deckId?: string;
@@ -17,64 +17,87 @@ interface DeckDetailScreenProps {
     onCloseMenu: () => void;
 }
 
-const DeckDetailScreen = (props: DeckDetailScreenProps) => {
+const DeckDetailScreen = ({ deckId, isMenuVisible, onCloseMenu }: DeckDetailScreenProps) => {
     const { decks, deleteCard, addCard, editCard, editDeck } = useDecks();
-    const deck = decks.find((d) => d.id === props.deckId);
-    
-    if (!deck || !props.deckId) return null;
-    const {
-        isAddingNewCard, newQuestion, newAnswer,
-        setNewQuestion, setNewAnswer, startAdding, saveNewCard, resetNewCard, 
-        editingCardId, editQuestion, editAnswer, 
-        setEditQuestion, setEditAnswer, startEditing, saveEdit, resetEditor
-    } = useCardEditor(
-        {
-            initialCards: deck?.cards ?? [],
-            onUpdateCards: (updatedCards) => {
-                const updatedCard = updatedCards.find(card => card.id === editingCardId);
-                if (updatedCard && editingCardId) {
-                    editCard(props.deckId!, updatedCard.id, updatedCard.question, updatedCard.answer);
-                } else if (updatedCards.length > deck.cards.length) {
-                    const [newCard] = updatedCards.filter(c => !deck.cards.find(dc => dc.id === c.id));
-                    if (newCard) addCard(props.deckId!, newCard);
-                }
-            },
-        }
-    );
-    const [isEditingTitle, setIsEditingTitle] = useState(false);
-    const [newTitle, setNewTitle] = useState(deck?.title ?? '');
+    const deck = decks.find((d) => d.id === deckId);
+ 
     const confirmDeleteDeck = useConfirmDeleteDeck();
     const headerHeight = useHeaderHeight();
+
+    const [isEditingCard, setIsEditingCard] = useState(false);
+    const [isAddingCard, setIsAddingCard] = useState(false);
+    const [editingCardId, setEditingCardId] = useState<string | null>(null);
+    const [question, setQuestion] = useState('');
+    const [answer, setAnswer] = useState('');
+
+    const [isEditingTitle, setIsEditingTitle] = useState(false);
+    const [newTitle, setNewTitle] = useState(deck?.title ?? '');
+
+    if (!deck || !deckId) return null;
+
+    const handleEditCard = (cardId: string) => {
+        const card = deck.cards.find((c) => c.id === cardId);
+        if (card) {
+            setEditingCardId(cardId);
+            setQuestion(card.question);
+            setAnswer(card.answer);
+            setIsEditingCard(true);
+        }
+    };
+
+    const handleSaveEditedCard = () => {
+        if (editingCardId && question.trim() && answer.trim()) {
+            editCard(deckId, editingCardId, question.trim(), answer.trim());
+            resetCardModal();
+        }
+    };
+
+    const handleSaveNewCard = () => {
+        if (question.trim() && answer.trim()) {
+            addCard(deckId, {
+                id: uuid(),
+                question: question.trim(),
+                answer: answer.trim(),
+            });
+            resetCardModal();
+        }
+    };
+
+    const resetCardModal = () => {
+        setEditingCardId(null);
+        setQuestion('');
+        setAnswer('');
+        setIsEditingCard(false);
+        setIsAddingCard(false);
+    };
 
     const handleDeleteCard = (deckId: string, cardId: string) => {
         deleteCard(deckId, cardId);
     };
 
     const handleAddPressed = () => { 
-        startAdding();
-        props.onCloseMenu();
+        resetCardModal();
+        setIsAddingCard(true);
+        onCloseMenu();
     };
 
     const handleEditPressed = () => {
-        if (!deck) return;
         setNewTitle(deck.title);
         setIsEditingTitle(true);
-        props.onCloseMenu();
+        onCloseMenu();
     };
 
     const handleExportDeck = useCallback(() => {
-        if (deck) {
-            showExportOptions(deck, props.onCloseMenu)
-        }
-    }, [deck, props]);
+        if (deck) showExportOptions(deck, onCloseMenu);
+    }, [deck]);
 
     const handleDeleteDeck = (deckId: string) => {
-        props.onCloseMenu();
+        onCloseMenu();
         confirmDeleteDeck(deckId);
     };
 
     const menuButtons = useDeckMenuButtons({
-        deckId: props.deckId!,
+        deckId,
         onAdd: handleAddPressed,
         onEdit: handleEditPressed,
         onExport: handleExportDeck,
@@ -84,34 +107,25 @@ const DeckDetailScreen = (props: DeckDetailScreenProps) => {
     return (
         <>
             <MenuPopupButton
-                isVisible={props.isMenuVisible}
+                isVisible={isMenuVisible}
                 buttons={menuButtons()} 
-                onClose={props.onCloseMenu}
+                onClose={onCloseMenu}
             />
             <DeckList 
-                deckId={props.deckId}
+                deckId={deckId}
                 cards={deck.cards}
                 paddingTop={headerHeight}
-                onDelete={handleDeleteCard} 
-                onEdit={(_, cardId) => startEditing(cardId)}
+                onDelete={handleDeleteCard}
+                onEdit={(_, cardId) => handleEditCard(cardId)}
             />
             <EditCardModal
-                visible={editingCardId !== null}
-                question={editQuestion}
-                answer={editAnswer}
-                onChangeQuestion={setEditQuestion}
-                onChangeAnswer={setEditAnswer}
-                onSave={saveEdit}
-                onClose={resetEditor}
-            />
-            <EditCardModal
-                visible={isAddingNewCard}
-                question={newQuestion}
-                answer={newAnswer}
-                onChangeQuestion={setNewQuestion}
-                onChangeAnswer={setNewAnswer}
-                onSave={saveNewCard}
-                onClose={resetNewCard}
+                visible={isAddingCard || isEditingCard}
+                question={question}
+                answer={answer}
+                onChangeQuestion={setQuestion}
+                onChangeAnswer={setAnswer}
+                onSave={isEditingCard ? handleSaveEditedCard : handleSaveNewCard}
+                onClose={resetCardModal}
             />
             <EditTitleModal
                 visible={isEditingTitle}
@@ -119,8 +133,8 @@ const DeckDetailScreen = (props: DeckDetailScreenProps) => {
                 maxLengthHint={25}
                 onChangeTitle={setNewTitle}
                 onSave={() => {
-                    if (props.deckId && newTitle.trim()) {
-                        editDeck(props.deckId, newTitle.trim());
+                    if (newTitle.trim()) {
+                        editDeck(deckId, newTitle.trim());
                     }
                     setIsEditingTitle(false);
                 }}
