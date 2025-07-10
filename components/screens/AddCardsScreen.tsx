@@ -1,8 +1,5 @@
-import { useState } from "react";
-import uuid from "uuid-random";
-
 import { useDecks } from "@/context/DeckContext";
-import { Card } from "@/data/decks";
+import { useCardModalManager } from "@/hooks/useCardModalManager";
 import useKeyboardVisibility from "@/hooks/useKeyboardVisibility";
 import AddCardButton from "../AddCardButton";
 import DeckList from "../DecksList";
@@ -28,51 +25,16 @@ const AddCardsScreen = ({ deckId }: AddCardsScreenProps) => {
     const deck = decks.find((d) => d.id === deckId);
     const cards = deck?.cards || [];
 
-    const [question, setQuestion] = useState('');
-    const [answer, setAnswer] = useState('');
-
-    const [editingCard, setEditingCard] = useState<Card | null>(null);
-    const [editQuestion, setEditQuestion] = useState('');
-    const [editAnswer, setEditAnswer] = useState('');
-
-    const handleAddCard = async () => {
-        const trimmedQuestion = question.trim();
-        const trimmedAnswer = answer.trim();
-        if (!trimmedQuestion || !trimmedAnswer) return;
-
-        const newCard: Card = {
-            id: uuid(),
-            question: trimmedQuestion,
-            answer: trimmedAnswer,
-        };
-
-        await addCard(deckId, newCard);
-        setQuestion('');
-        setAnswer('');
-        focusInput();
-    };
-
-    const handleSaveEdit = async () => {
-        if (!editingCard) return;
-
-        const trimmedQ = editQuestion.trim();
-        const trimmedA = editAnswer.trim();
-        if (!trimmedQ || !trimmedA) return;
-
-        await editCard(deckId, editingCard.id, trimmedQ, trimmedA);
-        setEditingCard(null);
-    };
-
-    const handleEditCard = (cardId: string) => {
-        const card = cards.find((c) => c.id === cardId);
-        if (!card) return;
-
-        setEditingCard(card);
-        setEditQuestion(card.question);
-        setEditAnswer(card.answer);
-    };
-
-    const handleCloseEdit = () => setEditingCard(null);
+    const { 
+        question, answer, setQuestion, setAnswer,
+        isModalVisible, isEditing,
+        startAdding, startEditing, save, reset,
+    } = useCardModalManager({
+        deckId, 
+        initialCards: cards,
+        onAdd: addCard,
+        onEdit: editCard,
+    });
 
     const handleDeleteCard = async (cardId: string) => {
         await deleteCard(deckId, cardId);
@@ -98,24 +60,24 @@ const AddCardsScreen = ({ deckId }: AddCardsScreenProps) => {
                         onChangeText={setAnswer}
                     />
                 </InputWrapper>
-                <AddCardButton label='Add Card' onPress={handleAddCard} />
+                <AddCardButton label='Add Card' onPress={save} />
             </StyledEAddScreenView>
             
             <DeckList 
                 deckId={deckId} 
                 cards={cards} 
                 onDelete={(_, cardId) => handleDeleteCard(cardId)}
-                onEdit={(_, cardId) => handleEditCard(cardId)}
+                onEdit={(_, id) => startEditing(id)}
             />
 
             <EditCardModal
-                visible={editingCard !== null}
-                question={editQuestion}
-                answer={editAnswer}
-                onChangeQuestion={setEditQuestion}
-                onChangeAnswer={setEditAnswer}
-                onSave={handleSaveEdit}
-                onClose={handleCloseEdit}
+                visible={isModalVisible}
+                question={question}
+                answer={answer}
+                onChangeQuestion={setQuestion}
+                onChangeAnswer={setAnswer}
+                onSave={save}
+                onClose={reset}
             />
         </StyledKeyboardAvoidingView>
     );

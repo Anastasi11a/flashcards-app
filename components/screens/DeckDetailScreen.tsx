@@ -1,8 +1,8 @@
 import { useState, useCallback } from "react";
 import { useHeaderHeight } from "@react-navigation/elements";
-import uuid from "uuid-random";
 
 import { useDecks } from "@/context/DeckContext";
+import { useCardModalManager } from "@/hooks/useCardModalManager";
 import { useDeckMenuButtons } from "@/hooks/useDeckMenuButtons";
 import { useConfirmDeleteDeck } from "@/hooks/useConfirmDeleteDeck";
 import { showExportOptions } from "@/utils/showExportOptions";
@@ -17,67 +17,38 @@ interface DeckDetailScreenProps {
     onCloseMenu: () => void;
 }
 
-const DeckDetailScreen = ({ deckId, isMenuVisible, onCloseMenu }: DeckDetailScreenProps) => {
-    const { decks, deleteCard, addCard, editCard, editDeck } = useDecks();
+const DeckDetailScreen = ({ 
+    deckId, isMenuVisible, onCloseMenu 
+}: DeckDetailScreenProps) => {
+    const { decks, addCard, editCard, editDeck, deleteCard } = useDecks();
     const deck = decks.find((d) => d.id === deckId);
- 
+
     const confirmDeleteDeck = useConfirmDeleteDeck();
     const headerHeight = useHeaderHeight();
-
-    const [isEditingCard, setIsEditingCard] = useState(false);
-    const [isAddingCard, setIsAddingCard] = useState(false);
-    const [editingCardId, setEditingCardId] = useState<string | null>(null);
-    const [question, setQuestion] = useState('');
-    const [answer, setAnswer] = useState('');
 
     const [isEditingTitle, setIsEditingTitle] = useState(false);
     const [newTitle, setNewTitle] = useState(deck?.title ?? '');
 
+    const { 
+        question, answer, setQuestion, setAnswer,
+        isModalVisible, isEditing,
+        startAdding, startEditing, save, reset,
+    } = useCardModalManager({
+        deckId: deckId!, 
+        initialCards: deck?.cards || [],
+        onAdd: addCard,
+        onEdit: editCard,
+    });
+
     if (!deck || !deckId) return null;
-
-    const handleEditCard = (cardId: string) => {
-        const card = deck.cards.find((c) => c.id === cardId);
-        if (card) {
-            setEditingCardId(cardId);
-            setQuestion(card.question);
-            setAnswer(card.answer);
-            setIsEditingCard(true);
-        }
-    };
-
-    const handleSaveEditedCard = () => {
-        if (editingCardId && question.trim() && answer.trim()) {
-            editCard(deckId, editingCardId, question.trim(), answer.trim());
-            resetCardModal();
-        }
-    };
-
-    const handleSaveNewCard = () => {
-        if (question.trim() && answer.trim()) {
-            addCard(deckId, {
-                id: uuid(),
-                question: question.trim(),
-                answer: answer.trim(),
-            });
-            resetCardModal();
-        }
-    };
-
-    const resetCardModal = () => {
-        setEditingCardId(null);
-        setQuestion('');
-        setAnswer('');
-        setIsEditingCard(false);
-        setIsAddingCard(false);
-    };
-
+    
     const handleDeleteCard = (deckId: string, cardId: string) => {
         deleteCard(deckId, cardId);
     };
 
     const handleAddPressed = () => { 
-        resetCardModal();
-        setIsAddingCard(true);
+        reset();
+        startAdding();
         onCloseMenu();
     };
 
@@ -116,16 +87,16 @@ const DeckDetailScreen = ({ deckId, isMenuVisible, onCloseMenu }: DeckDetailScre
                 cards={deck.cards}
                 paddingTop={headerHeight}
                 onDelete={handleDeleteCard}
-                onEdit={(_, cardId) => handleEditCard(cardId)}
+                onEdit={(_, cardId) => startEditing(cardId)}
             />
             <EditCardModal
-                visible={isAddingCard || isEditingCard}
+                visible={isModalVisible}
                 question={question}
                 answer={answer}
                 onChangeQuestion={setQuestion}
                 onChangeAnswer={setAnswer}
-                onSave={isEditingCard ? handleSaveEditedCard : handleSaveNewCard}
-                onClose={resetCardModal}
+                onSave={save}
+                onClose={reset}
             />
             <EditTitleModal
                 visible={isEditingTitle}
