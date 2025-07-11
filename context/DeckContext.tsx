@@ -16,6 +16,8 @@ import {
 
 interface DeckContextProps {
     decks: Deck[];
+    selectedDeckId: string | null;
+    setSelectedDeckId: (id: string | null) => void;
     addDeck: (title: string, cards?: Card[]) => Promise<string>;
     addCard: (deckId: string, card: Card) => Promise<void>;
     deleteDeck: (deckId: string) => Promise<void>;
@@ -29,6 +31,7 @@ const DeckContext = createContext<DeckContextProps | undefined>(undefined);
 
 export const DeckProvider = ({ children }: { children: ReactNode }) => {
     const [decks, setDecks] = useState<Deck[]>([]);
+    const [selectedDeckId, setSelectedDeckId] = useState<string | null>(null);
 
     useEffect(() => {
         const loadDecks = async () => {
@@ -115,7 +118,7 @@ export const DeckProvider = ({ children }: { children: ReactNode }) => {
     };
 
     return (
-        <DeckContext.Provider value={{ decks, addDeck, addCard, deleteDeck, deleteCard, editDeck, editCard, importDeck }}>
+        <DeckContext.Provider value={{ decks, selectedDeckId, setSelectedDeckId, addDeck, addCard, deleteDeck, deleteCard, editDeck, editCard, importDeck }}>
             {children}
         </DeckContext.Provider>
     );
