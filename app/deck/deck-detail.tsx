@@ -1,5 +1,4 @@
 import { useState, useCallback } from "react";
-import { useLocalSearchParams } from "expo-router";
 import { SimpleLineIcons } from "@expo/vector-icons";
 
 import DeckDetailScreen from "@/components/screens/DeckDetailScreen";
@@ -7,9 +6,8 @@ import { useDecks } from "@/context/DeckContext";
 import useCustomHeader from "@/hooks/useCustomHeader";
 
 const DeckScreen: React.FC = () => {
-    const { id } = useLocalSearchParams<{ id: string }>();   
-    const { decks } = useDecks(); 
-    const deck = decks.find((d) => d.id === id);
+    const { decks, selectedDeckId } = useDecks(); 
+    const deck = decks.find((d) => d.id === selectedDeckId);
 
     const [isMenuVisible, setMenuVisible] = useState(false);
     const openMenu = useCallback(() => setMenuVisible(true), []);
@@ -28,7 +26,7 @@ const DeckScreen: React.FC = () => {
 
     return (
         <DeckDetailScreen 
-            deckId={id} 
+            deckId={selectedDeckId!} 
             isMenuVisible={isMenuVisible}
             onCloseMenu={() => setMenuVisible(false)}
         />
