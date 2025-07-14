@@ -34,6 +34,7 @@ const AddCardsScreen = ({ deckId }: AddCardsScreenProps) => {
         initialCards: cards,
         onAdd: addCard,
         onEdit: editCard,
+        focusInput,
     });
 
     const handleDeleteCard = async (cardId: string) => {

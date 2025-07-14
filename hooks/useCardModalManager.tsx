@@ -8,10 +8,11 @@ interface CustomEditorProps {
     initialCards: Card[];
     onAdd: (deckId: string, card: Card) => void;
     onEdit: (deckId: string, cardId: string, q: string, a: string) => void;
+    focusInput?: () => void;
 }
 
 export function useCardModalManager({
-    deckId, initialCards, onAdd, onEdit,
+    deckId, initialCards, onAdd, onEdit, focusInput,
 }: CustomEditorProps) {
     const [question, setQuestion] = useState('');
     const [answer, setAnswer] = useState('');
@@ -48,7 +49,9 @@ export function useCardModalManager({
         }
 
         reset();
+        focusInput?.();
     };
+
 
     const reset = () => {
         setEditingCardId(null);
