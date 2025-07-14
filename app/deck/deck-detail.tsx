@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { SimpleLineIcons } from "@expo/vector-icons";
 
 import DeckDetailScreen from "@/components/screens/DeckDetailScreen";
@@ -17,7 +17,9 @@ const DeckScreen: React.FC = () => {
         headerTransparent: true,
         headerBlurEffect: 'regular',
         rightButton: {
-            icon: <SimpleLineIcons name='options-vertical' size={18} color='#808080' />,
+            icon: useMemo(() => (
+                <SimpleLineIcons name='options-vertical' size={18} color='#808080' />
+            ), []),
             onPress: openMenu, 
         },
     });

@@ -5,7 +5,7 @@ import { TouchableOpacity, Text, StyleProp, ViewStyle, TextStyle } from "react-n
 interface RightButtonProps {
     onPress: () => void;
     label?: string;
-    icon?: React.ReactNode;
+    icon?: React.ReactNode | (() => React.ReactNode);
     style?: StyleProp<ViewStyle>;
     textStyle?: StyleProp<TextStyle>;
 }
@@ -38,17 +38,18 @@ const useCustomHeader = ({
                 style={style}
                 hitSlop={{ top: 10, bottom: 10, left: 20, right: 10 }}>
 
-                {icon ?? (
-                    <Text
-                        style={[
-                            {
-                                color: "#0a7ea4",
-                                fontSize: 20,
-                                fontWeight: "bold",
-                                marginRight: 10,
-                                paddingHorizontal: 3,
-                            },
-                            textStyle,
+                {icon
+                ? (typeof icon === 'function' ? icon() : icon)
+                : (
+                    <Text style={[
+                        {
+                            color: "#0a7ea4",
+                            fontSize: 20,
+                            fontWeight: "bold",
+                            marginRight: 10,
+                            paddingHorizontal: 3,
+                        },
+                        textStyle,
                         ]}>
                         {label}
                     </Text>
