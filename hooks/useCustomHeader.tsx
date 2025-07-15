@@ -1,11 +1,12 @@
 import { useLayoutEffect } from "react";
 import { useNavigation } from "expo-router";
-import { TouchableOpacity, Text, StyleProp, ViewStyle, TextStyle } from "react-native";
+import { View, TouchableOpacity, Text, StyleProp, ViewStyle, TextStyle, Dimensions } from "react-native";
+import { SimpleLineIcons } from "@expo/vector-icons";
 
 interface RightButtonProps {
     onPress: () => void;
     label?: string;
-    icon?: React.ReactNode | (() => React.ReactNode);
+    iconName?: keyof typeof SimpleLineIcons.glyphMap;
     style?: StyleProp<ViewStyle>;
     textStyle?: StyleProp<TextStyle>;
 }
@@ -26,11 +27,32 @@ const useCustomHeader = ({
     rightButton 
 }: CustomHeaderProps) => {
     const navigation = useNavigation();
+    const screenWidth = Dimensions.get('window').width;
+
+    const renderTitle = () => {
+        return () => (
+            <View 
+                style={{
+                    maxWidth: screenWidth - 120,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}>
+                <Text 
+                    style={{
+                        color: "#e6e6e6",
+                        fontSize: 18,
+                        fontWeight: "bold",
+                        textAlign: "center",
+                    }}>
+                {title}
+                </Text>
+            </View>
+        );
+    };
 
     const renderRightButton = () => {
         if (!rightButton) return undefined;
-
-        const { onPress, icon, label, style, textStyle } = rightButton;
+        const { onPress, iconName, label, style, textStyle } = rightButton;
 
         return () => (
             <TouchableOpacity
@@ -38,22 +60,24 @@ const useCustomHeader = ({
                 style={style}
                 hitSlop={{ top: 10, bottom: 10, left: 20, right: 10 }}>
 
-                {icon
-                ? (typeof icon === 'function' ? icon() : icon)
-                : (
-                    <Text style={[
-                        {
-                            color: "#0a7ea4",
-                            fontSize: 20,
-                            fontWeight: "bold",
-                            marginRight: 10,
-                            paddingHorizontal: 3,
-                        },
-                        textStyle,
-                        ]}>
-                        {label}
-                    </Text>
-                )}
+                {iconName ? (
+                    <SimpleLineIcons name={iconName} size={18} color="#808080" />
+                ) : (
+                        <Text 
+                            style={[
+                                {
+                                    color: "#0a7ea4",
+                                    fontSize: 20,
+                                    fontWeight: "bold",
+                                    marginRight: 10,
+                                    paddingHorizontal: 3,
+                                },
+                                textStyle,
+                            ]}>
+                            {label}
+                        </Text>
+                    )
+                }
             </TouchableOpacity>
         );
     };
@@ -63,18 +87,14 @@ const useCustomHeader = ({
 
         navigation.setOptions({
             title: title ?? '',
+            headerTransparent,
+            headerBlurEffect,
             headerStyle: headerTransparent
                 ? undefined
                 : { backgroundColor: "#1a1c20" },
             headerBackTitle: "Back",
             headerTintColor: "#808080",
-            headerTitleStyle: {
-                color: "#e6e6e6",
-                fontSize: 18,
-                fontWeight: "bold",
-            },
-            headerTransparent,
-            headerBlurEffect,
+            headerTitle: renderTitle(),
             headerRight: renderRightButton(),
         });
     }, [navigation, title, enabled, headerTransparent, headerBlurEffect, rightButton]);
