@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { useRouter } from "expo-router";
 import { useHeaderHeight } from "@react-navigation/elements";
 
 import { useDecks } from "@/context/DeckContext";
@@ -23,8 +24,9 @@ const DeckDetailScreen = ({
     const { decks, addCard, editCard, editDeck, deleteCard } = useDecks();
     const deck = decks.find((d) => d.id === deckId);
 
-    const confirmDeleteDeck = useConfirmDeleteDeck();
+    const router = useRouter();
     const headerHeight = useHeaderHeight();
+    const confirmDeleteDeck = useConfirmDeleteDeck();
 
     const [isEditingTitle, setIsEditingTitle] = useState(false);
     const [newTitle, setNewTitle] = useState(deck?.title ?? '');
@@ -47,9 +49,11 @@ const DeckDetailScreen = ({
     };
 
     const handleAddPressed = () => { 
-        reset();
-        startAdding();
         onCloseMenu();
+        router.push({
+            pathname: '/(modals)/add-new-card',
+            params: { deckId },
+        });
     };
 
     const handleEditPressed = () => {
