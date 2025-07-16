@@ -46,7 +46,7 @@ const DeckList = (props: DeckListProps) => {
     return (
         <StyledView>
             <FlatList
-                data={[...props.cards].reverse()}
+                data={props.cards}
                 keyExtractor={(item) => item.id}
                 contentContainerStyle={{
                     gap: 4, 
