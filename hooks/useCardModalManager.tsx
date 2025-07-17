@@ -7,7 +7,7 @@ interface CustomEditorProps {
     deckId: string;
     initialCards: Card[];
     onAdd: (deckId: string, card: Card) => void;
-    onEdit: (deckId: string, cardId: string, q: string, a: string) => void;
+    onEdit?: (deckId: string, cardId: string, q: string, a: string) => void;
     focusInput?: () => void;
 }
 
@@ -38,7 +38,7 @@ export function useCardModalManager({
         const trimmedA = answer.trim();
         if (!trimmedQ || !trimmedA) return;
 
-        if (editingCardId) {
+        if (editingCardId && onEdit) {
             onEdit(deckId, editingCardId, trimmedQ, trimmedA);
         } else {
             onAdd(deckId, {
