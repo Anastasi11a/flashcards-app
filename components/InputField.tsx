@@ -1,8 +1,8 @@
-import React, { forwardRef } from "react";
 import { TextInput, TextInputProps } from "react-native";
 
 import ClearButton from "./ClearButton";
-import { InputContainer, HintText, StyledClearButton, QuestionInput } from "@/ui/CardInputFields";
+import QuestionInput from "@/ui/QuestionInput";
+import { InputContainer, HintText, StyledClearButton } from "@/ui/CardInputFields";
 
 interface InputFieldProps {
     text: string;
@@ -10,34 +10,37 @@ interface InputFieldProps {
     maxLengthHint?: number;
     onChangeText: (text: string) => void;
     InputComponent: React.ComponentType<TextInputProps>;
+    inputRef?: React.Ref<TextInput>;
 }
 
-const InputField = forwardRef<TextInput, InputFieldProps>((props, ref) => {
-    const isQuestionInput  = props.InputComponent === QuestionInput;
+const InputField = ({ 
+    text, placeholder, maxLengthHint, onChangeText, InputComponent, inputRef
+}: InputFieldProps) => {
+    const isQuestionInput = InputComponent === QuestionInput;
 
     return (
         <InputContainer>
-            <props.InputComponent
-                {...(isQuestionInput ? { ref } : {})}
-                value={props.text}
-                placeholder={props.placeholder}
+            <InputComponent
+                {...(isQuestionInput && inputRef ? { ref: inputRef } : {})}
+                value={text}
+                placeholder={placeholder}
                 multiline
-                onChangeText={props.onChangeText}
+                onChangeText={onChangeText}
             />
 
-            {props.text.length > 0 && (
+            {text.length > 0 && (
                 <StyledClearButton>
-                    <ClearButton onPress={() => props.onChangeText('')} />
+                    <ClearButton onPress={() => onChangeText('')} />
                 </StyledClearButton>
             )}
             
-            {!!props.maxLengthHint && props.text.length >= props.maxLengthHint && (
+            {!!maxLengthHint && text.length >= maxLengthHint && (
                 <HintText>
-                    {props.text.length} characters - recommend to keep max {props.maxLengthHint}
+                    {text.length} characters - recommend to keep max {maxLengthHint}
                 </HintText>
             )}
         </InputContainer>
     );
-});
+};
 
 export default InputField;
