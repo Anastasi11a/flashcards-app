@@ -1,18 +1,12 @@
 import { useDecks } from "@/context/DeckContext";
-import { useCardModalManager } from "@/hooks/useCardModalManager";
-import useKeyboardVisibility from "@/hooks/useKeyboardVisibility";
 import AddCardButton from "../AddCardButton";
 import DeckList from "../DecksList";
-import InputField from "../InputField";
-import EditCardModal from "@/components/EditCardModal";
+import EditCardModal from "../EditCardModal";
+import CardInputs from "../CardInputs";
+import { useCardModalManager } from "@/hooks/useCardModalManager";
+import useKeyboardVisibility from "@/hooks/useKeyboardVisibility";
 import StyledKeyboardAvoidingView from "@/ui/StyledKeyboardAvoidingView";
-import { 
-    StyledEAddScreenView, 
-    AnswerInput, 
-    Divider, 
-    InputWrapper, 
-    QuestionInput 
-} from "@/ui/CardInputFields";
+import { StyledEAddScreenView } from "@/ui/CardInputFields";
 
 interface AddCardsScreenProps {
     deckId: string;
@@ -43,24 +37,14 @@ const AddCardsScreen = ({ deckId }: AddCardsScreenProps) => {
 
     return (
         <StyledKeyboardAvoidingView>
-            <StyledEAddScreenView>         
-                <InputWrapper>
-                    <InputField
-                        ref={inputRef}
-                        text={question}
-                        InputComponent={QuestionInput}
-                        placeholder='Type a question or something else'
-                        maxLengthHint={75}
-                        onChangeText={setQuestion}
-                    />
-                    <Divider />
-                    <InputField
-                        text={answer}
-                        InputComponent={AnswerInput}
-                        placeholder='Type a description or something else'
-                        onChangeText={setAnswer}
-                    />
-                </InputWrapper>
+            <StyledEAddScreenView> 
+                <CardInputs
+                    inputRef={inputRef}
+                    question={question}
+                    answer={answer}
+                    onChangeQuestion={setQuestion}
+                    onChangeAnswer={setAnswer}
+                />
                 <AddCardButton label='Add Card' onPress={save} />
             </StyledEAddScreenView>
             
