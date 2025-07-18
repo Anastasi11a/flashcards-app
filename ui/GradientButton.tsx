@@ -6,11 +6,11 @@ interface GradientButtonProps {
     onPress?: () => void;
 }
 
-const GradientButton = (props: GradientButtonProps) => {
+const GradientButton = ({ icon, colors, onPress }: GradientButtonProps) => {
     return (
-        <GradientOverlay colors={props.colors}>
-            <StyledPressable onPress={props.onPress}>
-                {props.icon}
+        <GradientOverlay colors={colors}>
+            <StyledPressable onPress={onPress}>
+                {icon}
             </StyledPressable>
         </GradientOverlay>     
     );

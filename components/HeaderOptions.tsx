@@ -1,14 +1,14 @@
 import { useRouter } from "expo-router";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 
-import GradientButton from "./GradientButton";
+import GradientButton from "../ui/GradientButton";
 import { HeaderButtonContainer } from "@/ui/CardInputFields";
 
 interface HeaderOptionsProps {
     onImport: () => void;
 }
 
-const HeaderOptions = (props: HeaderOptionsProps) => {
+const HeaderOptions = ({ onImport }: HeaderOptionsProps) => {
     const router = useRouter();
 
     return (
@@ -16,7 +16,7 @@ const HeaderOptions = (props: HeaderOptionsProps) => {
             <GradientButton
                 icon={<Ionicons name='download-outline' size={24} color='#fff' />}
                 colors={['#474f59', '#25292e']}
-                onPress={props.onImport}
+                onPress={onImport}
             />
             <GradientButton
                 icon={<MaterialIcons name='add' size={24} color="#fff" />}
