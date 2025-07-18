@@ -1,5 +1,3 @@
-import { useEffect } from "react";
-
 import { useDecks } from "@/context/DeckContext";
 import AddCardButton from "../AddCardButton";
 import DeckList from "../DecksList";
@@ -16,7 +14,7 @@ interface AddCardsScreenProps {
 
 const AddCardsScreen = ({ deckId }: AddCardsScreenProps) => {
     const { inputRef, focusInput } = useKeyboardVisibility();
-    const { decks, addCard, editCard, deleteCard, deleteDeck } = useDecks();
+    const { decks, addCard, editCard, deleteCard } = useDecks();
 
     const deck = decks.find((d) => d.id === deckId);
     const cards = deck?.cards || [];
@@ -36,15 +34,6 @@ const AddCardsScreen = ({ deckId }: AddCardsScreenProps) => {
     const handleDeleteCard = async (cardId: string) => {
         await deleteCard(deckId, cardId);
     };
-
-    useEffect(() => {
-        return () => {
-            const deckStillExists = decks.find((d) => d.id === deckId);
-            if (deckStillExists && deckStillExists.cards.length === 0) {
-                deleteDeck(deckId);
-            }
-        };
-    }, [deckId, decks, deleteDeck]);
 
     return (
         <StyledKeyboardAvoidingView>
