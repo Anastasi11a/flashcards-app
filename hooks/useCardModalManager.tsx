@@ -52,7 +52,6 @@ export function useCardModalManager({
         focusInput?.();
     };
 
-
     const reset = () => {
         setEditingCardId(null);
         setQuestion('');
