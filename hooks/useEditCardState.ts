@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import { useDecks } from "@/context/DeckContext";
 
-export function useEditCardState(deckId: string, cardId: string) {
+interface Props {
+    deckId: string;
+    cardId: string;
+}
+
+export function useEditCardState({ deckId, cardId }: Props) {
     const { decks, editCard } = useDecks();
     const deck = decks.find(d => d.id === deckId);
     const card = deck?.cards.find(c => c.id === cardId);

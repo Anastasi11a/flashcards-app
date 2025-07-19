@@ -8,16 +8,19 @@ import { StyledEAddScreenView } from "@/ui/CardInputFields";
 import StyledKeyboardAvoidingView from "@/ui/StyledKeyboardAvoidingView";
 
 const EditCard = () => {
-    const { deckId, cardId } = useLocalSearchParams<{ 
-        deckId: string; 
-        cardId: string 
-    }>();
     const router = useRouter();
     const { inputRef, focusInput } = useKeyboardVisibility();
 
+    const { deckId, cardId } = useLocalSearchParams<{ 
+        deckId?: string; 
+        cardId?: string 
+    }>();
+    
+    if (!deckId || !cardId) return null;
+
     const { 
         question, answer, setQuestion, setAnswer, save
-    } = useEditCardState(deckId!, cardId!);
+    } = useEditCardState({ deckId, cardId });
 
     const handleSave = () => {
         save();
