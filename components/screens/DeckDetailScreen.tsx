@@ -3,13 +3,11 @@ import { useRouter } from "expo-router";
 import { useHeaderHeight } from "@react-navigation/elements";
 
 import { useDecks } from "@/context/DeckContext";
-import { useCardModalManager } from "@/hooks/useCardModalManager";
 import { useDeckMenuButtons } from "@/hooks/useDeckMenuButtons";
 import { useConfirmDeleteDeck } from "@/hooks/useConfirmDeleteDeck";
 import { showExportOptions } from "@/utils/showExportOptions";
 import DeckList from "../DecksList";
 import MenuPopupButton from "../MenuPopupButton";
-import EditCardModal from "@/components/EditCardModal";
 import EditTitleModal from "../EditTitleModal";
 
 interface DeckDetailScreenProps {
@@ -18,12 +16,9 @@ interface DeckDetailScreenProps {
     onCloseMenu: () => void;
 }
 
-const DeckDetailScreen = ({ 
-    deckId, isMenuVisible, onCloseMenu 
-}: DeckDetailScreenProps) => {
-    const { decks, addCard, editCard, editDeck, deleteCard } = useDecks();
+const DeckDetailScreen = ({ deckId, isMenuVisible, onCloseMenu }: DeckDetailScreenProps) => {
+    const { decks, addCard, editDeck, deleteCard } = useDecks();
     const deck = decks.find((d) => d.id === deckId);
-
     const router = useRouter();
     const headerHeight = useHeaderHeight();
     const confirmDeleteDeck = useConfirmDeleteDeck();
@@ -31,19 +26,15 @@ const DeckDetailScreen = ({
     const [isEditingTitle, setIsEditingTitle] = useState(false);
     const [newTitle, setNewTitle] = useState(deck?.title ?? '');
 
-    const { 
-        question, answer, setQuestion, setAnswer,
-        isModalVisible, isEditing,
-        startAdding, startEditing, save, reset,
-    } = useCardModalManager({
-        deckId: deckId!, 
-        initialCards: deck?.cards || [],
-        onAdd: addCard,
-        onEdit: editCard,
-    });
-
     if (!deck || !deckId) return null;
-    
+
+    const handleEditCardPressed = (cardId: string) => {
+        router.push({
+            pathname: '/(modals)/edit-card',
+            params: { deckId, cardId },
+        });
+    };
+
     const handleDeleteCard = (deckId: string, cardId: string) => {
         deleteCard(deckId, cardId);
     };
@@ -56,7 +47,7 @@ const DeckDetailScreen = ({
         });
     };
 
-    const handleEditPressed = () => {
+    const handleEditTitlePressed = () => {
         setNewTitle(deck.title);
         setIsEditingTitle(true);
         onCloseMenu();
@@ -74,7 +65,7 @@ const DeckDetailScreen = ({
     const menuButtons = useDeckMenuButtons({
         deckId,
         onAdd: handleAddPressed,
-        onEdit: handleEditPressed,
+        onEdit: handleEditTitlePressed,
         onExport: handleExportDeck,
         onDelete: handleDeleteDeck,
     });
@@ -91,16 +82,7 @@ const DeckDetailScreen = ({
                 cards={deck.cards}
                 paddingTop={headerHeight}
                 onDelete={handleDeleteCard}
-                onEdit={(_, cardId) => startEditing(cardId)}
-            />
-            <EditCardModal
-                visible={isModalVisible}
-                question={question}
-                answer={answer}
-                onChangeQuestion={setQuestion}
-                onChangeAnswer={setAnswer}
-                onSave={save}
-                onClose={reset}
+                onEdit={(_, cardId) => handleEditCardPressed(cardId)}
             />
             <EditTitleModal
                 visible={isEditingTitle}
