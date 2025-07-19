@@ -1,14 +1,13 @@
-import { useState, useCallback } from "react";
+import { useCallback } from "react";
 import { useRouter } from "expo-router";
 import { useHeaderHeight } from "@react-navigation/elements";
 
+import DeckList from "../DecksList";
+import MenuPopupButton from "../MenuPopupButton";
 import { useDecks } from "@/context/DeckContext";
 import { useDeckMenuButtons } from "@/hooks/useDeckMenuButtons";
 import { useConfirmDeleteDeck } from "@/hooks/useConfirmDeleteDeck";
 import { showExportOptions } from "@/utils/showExportOptions";
-import DeckList from "../DecksList";
-import MenuPopupButton from "../MenuPopupButton";
-import EditTitleModal from "../EditTitleModal";
 
 interface DeckDetailScreenProps {
     deckId?: string;
@@ -17,16 +16,14 @@ interface DeckDetailScreenProps {
 }
 
 const DeckDetailScreen = ({ deckId, isMenuVisible, onCloseMenu }: DeckDetailScreenProps) => {
-    const { decks, addCard, editDeck, deleteCard } = useDecks();
-    const deck = decks.find((d) => d.id === deckId);
     const router = useRouter();
     const headerHeight = useHeaderHeight();
-    const confirmDeleteDeck = useConfirmDeleteDeck();
 
-    const [isEditingTitle, setIsEditingTitle] = useState(false);
-    const [newTitle, setNewTitle] = useState(deck?.title ?? '');
-
+    const { decks, deleteCard } = useDecks();
+    const deck = decks.find((d) => d.id === deckId);
     if (!deck || !deckId) return null;
+
+    const confirmDeleteDeck = useConfirmDeleteDeck();
 
     const handleEditCardPressed = (cardId: string) => {
         router.push({
@@ -48,9 +45,11 @@ const DeckDetailScreen = ({ deckId, isMenuVisible, onCloseMenu }: DeckDetailScre
     };
 
     const handleEditTitlePressed = () => {
-        setNewTitle(deck.title);
-        setIsEditingTitle(true);
         onCloseMenu();
+        router.push({
+            pathname: '/(modals)/edit-title',
+            params: { deckId },
+        });
     };
 
     const handleExportDeck = useCallback(() => {
@@ -83,19 +82,6 @@ const DeckDetailScreen = ({ deckId, isMenuVisible, onCloseMenu }: DeckDetailScre
                 paddingTop={headerHeight}
                 onDelete={handleDeleteCard}
                 onEdit={(_, cardId) => handleEditCardPressed(cardId)}
-            />
-            <EditTitleModal
-                visible={isEditingTitle}
-                title={newTitle}
-                maxLengthHint={25}
-                onChangeTitle={setNewTitle}
-                onSave={() => {
-                    if (newTitle.trim()) {
-                        editDeck(deckId, newTitle.trim());
-                    }
-                    setIsEditingTitle(false);
-                }}
-                onClose={() => setIsEditingTitle(false)}
             />
         </>
     );
