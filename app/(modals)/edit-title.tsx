@@ -1,13 +1,12 @@
 import { useEffect } from "react";
-import { useRouter, useLocalSearchParams } from "expo-router";
 import { useHeaderHeight } from "@react-navigation/elements";
+import { useLocalSearchParams, useRouter } from "expo-router";
 
-import InputField from "@/components/InputField";
 import useCustomHeader from "@/hooks/useCustomHeader";
 import useKeyboardVisibility from "@/hooks/useKeyboardVisibility";
 import { useEditTitleState } from "@/hooks/useEditTitleState";
-import QuestionInput from "@/ui/QuestionInput";
-import { StyledEAddScreenView, InputWrapper } from "@/ui/CardInputFields";
+import { StyledEAddScreenView } from "@/ui/CardInputFields";
+import DeckTitleInput from "@/ui/DeckTitleInput";
 import StyledKeyboardAvoidingView from "@/ui/StyledKeyboardAvoidingView";
 
 const EditTitle = () => {
@@ -41,16 +40,12 @@ const EditTitle = () => {
     return (
         <StyledKeyboardAvoidingView>
             <StyledEAddScreenView style={{ paddingTop: headerHeight }}>
-                <InputWrapper>
-                    <InputField
-                        inputRef={inputRef}
-                        text={title}
-                        placeholder='Edit deck title'
-                        onChangeText={setTitle}
-                        InputComponent={QuestionInput}
-                        maxLengthHint={35}
-                    />
-                </InputWrapper>
+                <DeckTitleInput
+                    inputRef={inputRef}
+                    title={title}
+                    placeholder='Edit deck title'
+                    onChangeText={setTitle}
+                />
             </StyledEAddScreenView>
         </StyledKeyboardAvoidingView>
     );
