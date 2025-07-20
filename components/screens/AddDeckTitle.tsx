@@ -1,7 +1,6 @@
-import InputField from "../InputField";
 import useKeyboardVisibility from "@/hooks/useKeyboardVisibility";
-import QuestionInput from "@/ui/QuestionInput";
-import { StyledView, InputWrapper } from "@/ui/CardInputFields";
+import DeckTitleInput from "@/ui/DeckTitleInput";
+import { StyledView } from "@/ui/CardInputFields";
 
 interface AddDeckTitleProps {
     title: string;
@@ -13,16 +12,12 @@ const AddDeckTitle = ({ title, setTitle }: AddDeckTitleProps) => {
 
     return (
         <StyledView>
-            <InputWrapper>
-                <InputField
-                    inputRef={inputRef}
-                    text={title}
-                    placeholder='Enter deck title'
-                    maxLengthHint={35}
-                    InputComponent={QuestionInput}
-                    onChangeText={setTitle}
-                />
-            </InputWrapper>
+            <DeckTitleInput
+                inputRef={inputRef}
+                title={title}
+                placeholder='Enter deck title'
+                onChangeText={setTitle}
+            />
         </StyledView>
     );
 };
