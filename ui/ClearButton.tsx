@@ -5,9 +5,9 @@ interface ClearButtonProps {
     onPress: () => void;
 }
 
-const ClearButton = (props: ClearButtonProps) => {
+const ClearButton = ({ onPress }: ClearButtonProps) => {
     return (
-        <TouchableOpacity onPress={props.onPress}>
+        <TouchableOpacity onPress={onPress}>
             <MaterialIcons name='close' size={20} color='#808080' />
         </TouchableOpacity>
     );
