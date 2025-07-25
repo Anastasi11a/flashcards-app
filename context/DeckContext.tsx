@@ -48,7 +48,7 @@ export const DeckProvider = ({ children }: { children: ReactNode }) => {
         for (const card of cards) {
             await dbAddCard(card, id);
         }
-        setDecks(prev => [...prev, { id, title, cards }]);
+        setDecks(prev => [{ id, title, cards }, ...prev]);
         return id;
     };
 
