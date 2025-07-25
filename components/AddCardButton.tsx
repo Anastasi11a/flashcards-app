@@ -8,12 +8,12 @@ interface AddCardButtonProps {
     onPress: () => void;
 }
 
-const AddCardButton = (props: AddCardButtonProps) => {
+const AddCardButton = ({ label, onPress }: AddCardButtonProps) => {
     return (
-        <ButtonContainer onPress={props.onPress}>
+        <ButtonContainer onPress={onPress}>
             <GradientOverlay colors={['#464C55', '#25282e', '#464C55']}>
                 <StyledTouchable>
-                    <StyledTextButton>{props.label}</StyledTextButton>
+                    <StyledTextButton>{label}</StyledTextButton>
                 </StyledTouchable>
             </GradientOverlay>
         </ButtonContainer>
