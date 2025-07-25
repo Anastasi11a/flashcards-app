@@ -18,7 +18,7 @@ const DeckTitleInput = ({
         <InputContainer>
             <InputField
                 inputRef={inputRef}
-                text={title}
+                value={title}
                 placeholder={placeholder}
                 onChangeText={onChangeText}
                 maxLengthHint={35}

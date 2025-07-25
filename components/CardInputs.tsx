@@ -19,7 +19,7 @@ const CardInputs = ({
         <InputWrapper>
             <InputField
                 inputRef={inputRef}
-                text={question}
+                value={question}
                 InputComponent={QuestionInput}
                 placeholder='Type a question or something else'
                 maxLengthHint={75}
@@ -27,7 +27,7 @@ const CardInputs = ({
             />
             <Divider />
             <InputField
-                text={answer}
+                value={answer}
                 InputComponent={AnswerInput}
                 placeholder='Type a description or something else'
                 onChangeText={onChangeAnswer}
