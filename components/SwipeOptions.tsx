@@ -1,7 +1,6 @@
 import type Swipeable from 'react-native-gesture-handler/Swipeable';
 
-import SwipeButton from "./SwipeButton";
-import { ButtonRowContainer } from "@/ui/CardInputFields";
+import SwipeOptionsView from '@/ui/SwipeOptionsView';
 
 interface SwipeOptionsProps {
     cardId: string;
@@ -11,25 +10,22 @@ interface SwipeOptionsProps {
     onEdit?: (deckId: string, cardId: string) => void;
 }
 
-const SwipeOptions = (props: SwipeOptionsProps) => {
+const SwipeOptions = ({ 
+    cardId, deckId, swipeableRef, onDelete, onEdit 
+}: SwipeOptionsProps) => {
+    const handleDelete = () => onDelete(deckId, cardId);
+
+    const handleEdit = () => {
+        onEdit?.(deckId, cardId);
+        swipeableRef?.close();
+    };
+
     return (
-        <ButtonRowContainer>
-            <SwipeButton 
-                iconName='delete-sweep'
-                iconType='delete'
-                onPress={() => props.onDelete(props.deckId, props.cardId)} 
-            />
-            {props.onEdit && (
-                <SwipeButton 
-                    iconName='playlist-edit'
-                    iconType='edit'
-                    onPress={() => {
-                        props.onEdit?.(props.deckId, props.cardId);
-                        props.swipeableRef?.close();
-                    }} 
-                />
-            )}
-        </ButtonRowContainer>
+        <SwipeOptionsView
+            showEdit={!!onEdit}
+            onDeletePress={handleDelete}
+            onEditPress={onEdit ? handleEdit : undefined}
+        />
     );
 };
 
