@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 import { TextInput, TextInputProps } from "react-native";
-import { StyledInput } from "./CardInputFields";
+import styled from "styled-components/native";
 
 const QuestionInput = forwardRef<TextInput, TextInputProps>((props, ref) => (
     <StyledInput
@@ -15,3 +15,16 @@ const QuestionInput = forwardRef<TextInput, TextInputProps>((props, ref) => (
 ));
 
 export default QuestionInput;
+
+const StyledInput = styled(TextInput).attrs({
+    placeholderTextColor: '#808080',
+    selectionColor: '#aaa',
+})`
+    padding: 12px 16px;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 22px;
+    letter-spacing: 0.4px;
+    text-align-vertical: top;
+    color: #0a7ea4;
+`; 
