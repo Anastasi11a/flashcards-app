@@ -14,23 +14,23 @@ interface MenuPopupProps {
     onClose?: () => void;
 }
 
-const MenuPopupButton = (props: MenuPopupProps) => {
+const MenuPopupButton = ({ isVisible, buttons, onClose }: MenuPopupProps) => {
     return (
         <Modal
             transparent 
-            visible={props.isVisible} 
+            visible={isVisible} 
             animationType='fade' 
-            onRequestClose={props.onClose}>
+            onRequestClose={onClose}>
 
-            <Overlay onStartShouldSetResponder={() => (props.onClose?.(), true)}>
+            <Overlay onStartShouldSetResponder={() => (onClose?.(), true)}>
                 <StyledMenuView>
-                    {props.buttons.map((btn, i) => (
+                    {buttons.map((btn, i) => (
                         <View key={i}>
                             <StyledPressable onPress={btn.onPress}>
                                 <Label $destructive={btn.isDestructive}>{btn.label}</Label>
                                 {btn.icon}
                             </StyledPressable>
-                            {i < props.buttons.length - 1 && <Divider />}
+                            {i < buttons.length - 1 && <Divider />}
                         </View>
                     ))}
                 </StyledMenuView>
