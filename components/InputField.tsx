@@ -1,19 +1,14 @@
 import InputWrapper, { InputWrapperProps } from "@/ui/InputWrapper";
 import QuestionInput from "@/ui/QuestionInput";
 
-const InputField = ({ 
-    inputRef, value, placeholder, maxLengthHint, InputComponent, onChangeText
-}: InputWrapperProps) => {
+const InputField = (props: InputWrapperProps) => {
+    const { inputRef, InputComponent } = props;
     const refToUse = InputComponent === QuestionInput ? inputRef : undefined;
 
     return (
         <InputWrapper
+            {...props}
             inputRef={refToUse}
-            value={value}
-            placeholder={placeholder}
-            maxLengthHint={maxLengthHint}
-            InputComponent={InputComponent}
-            onChangeText={onChangeText}
         />
     );
 };
