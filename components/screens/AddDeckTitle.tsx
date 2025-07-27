@@ -1,6 +1,6 @@
-import TitleContainer from "../TitleContainer";
 import useKeyboardVisibility from "@/hooks/useKeyboardVisibility";
 import DeckTitleInput from "@/ui/DeckTitleInput";
+import AddTitleView from "@/ui/layout/AddTitleView";
 
 interface AddDeckTitleProps {
     title: string;
@@ -11,14 +11,14 @@ const AddDeckTitle = ({ title, setTitle }: AddDeckTitleProps) => {
     const { inputRef } = useKeyboardVisibility();
 
     return (
-        <TitleContainer>
+        <AddTitleView>
             <DeckTitleInput
                 inputRef={inputRef}
                 title={title}
                 placeholder='Enter deck title'
                 onChangeText={setTitle}
             />
-        </TitleContainer>
+        </AddTitleView>
     );
 };
 
