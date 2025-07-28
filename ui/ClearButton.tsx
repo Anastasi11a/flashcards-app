@@ -7,7 +7,10 @@ interface ClearButtonProps {
 
 const ClearButton = ({ onPress }: ClearButtonProps) => {
     return (
-        <TouchableOpacity onPress={onPress}>
+        <TouchableOpacity 
+            onPress={onPress}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+                
             <MaterialIcons name='close' size={20} color='#808080' />
         </TouchableOpacity>
     );

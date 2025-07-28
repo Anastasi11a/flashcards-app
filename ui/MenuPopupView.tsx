@@ -25,7 +25,7 @@ const MenuPopupView = ({ isVisible, buttons, onClose }: MenuPopupViewProps) => {
             <Overlay onStartShouldSetResponder={() => (onClose?.(), true)}>
                 <StyledMenuView>
                     {buttons.map((btn, i) => (
-                        <View key={i}>
+                        <View key={btn.label ?? i.toString()}>
                             <StyledPressable onPress={btn.onPress}>
                                 <Label $destructive={btn.isDestructive}>
                                     {btn.label}

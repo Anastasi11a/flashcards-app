@@ -1,11 +1,11 @@
 import { KeyboardAvoidingView, Platform } from "react-native";
 import styled from "styled-components/native";
 
-interface AddCardsContainerProps {
+interface KeyboardBehaviorProps  {
     children: React.ReactNode;
 }
 
-const KeyboardBehavior = ({ children }: AddCardsContainerProps) => {
+const KeyboardBehavior = ({ children }: KeyboardBehaviorProps ) => {
     return (
         <KeyboardAvoidingViewStyled 
             behavior={Platform.OS === "ios" ? "padding" : "height"}>

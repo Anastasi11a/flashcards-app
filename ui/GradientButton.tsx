@@ -5,7 +5,7 @@ import styled from "styled-components/native";
 interface GradientButtonProps {
     icon: React.ReactElement;
     colors: [string, string, ...string[]];
-    onPress?: () => void;
+    onPress: () => void;
 }
 
 const GradientButton = ({ icon, colors, onPress }: GradientButtonProps) => {

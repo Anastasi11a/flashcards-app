@@ -1,4 +1,5 @@
-import { View, TextInput } from "react-native";
+import { View } from "react-native";
+import type { TextInput } from "react-native";
 import styled from "styled-components/native";
 
 import InputField from "@/components/InputField";
