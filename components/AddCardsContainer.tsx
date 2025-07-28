@@ -2,7 +2,7 @@ import { TextInput } from "react-native";
 
 import CardInputs from "./CardInputs";
 import AddCardButton from "@/ui/AddCardButton";
-import AddCardsView from "@/ui/layout/AddCardsView";
+import AddCardsView from "@/ui/layout/CardContainer";
 
 interface AddCardsContainerProps {
     inputRef: React.Ref<TextInput>;
