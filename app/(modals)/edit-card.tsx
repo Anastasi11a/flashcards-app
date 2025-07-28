@@ -4,8 +4,7 @@ import CardInputs from "@/components/CardInputs";
 import useKeyboardVisibility from "@/hooks/useKeyboardVisibility";
 import useCustomHeader from "@/hooks/useCustomHeader";
 import { useEditCardState } from "@/hooks/useEditCardState";
-import { StyledEAddScreenView } from "@/ui/CardInputFields";
-import StyledKeyboardAvoidingView from "@/ui/StyledKeyboardAvoidingView";
+import ScreenContainer from "@/ui/layout/ScreenContainer";
 
 const EditCard = () => {
     const router = useRouter();
@@ -37,17 +36,15 @@ const EditCard = () => {
     });
 
     return (
-        <StyledKeyboardAvoidingView>
-            <StyledEAddScreenView>
-                <CardInputs
-                    inputRef={inputRef}
-                    question={question}
-                    answer={answer}
-                    onChangeQuestion={setQuestion}
-                    onChangeAnswer={setAnswer}
-                />
-            </StyledEAddScreenView>
-        </StyledKeyboardAvoidingView>
+        <ScreenContainer>
+            <CardInputs
+                inputRef={inputRef}
+                question={question}
+                answer={answer}
+                onChangeQuestion={setQuestion}
+                onChangeAnswer={setAnswer}
+            />
+        </ScreenContainer>
     );
 };
 

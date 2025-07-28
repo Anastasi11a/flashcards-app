@@ -1,11 +1,11 @@
-import { useEffect } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { useEffect } from "react";
 
-import { useEditTitleState } from "@/hooks/useEditTitleState";
 import useCustomHeader from "@/hooks/useCustomHeader";
+import { useEditTitleState } from "@/hooks/useEditTitleState";
 import useKeyboardVisibility from "@/hooks/useKeyboardVisibility";
 import DeckTitleInput from "@/ui/DeckTitleInput";
-import AddTitleView from "@/ui/layout/AddTitleView";
+import ScreenContainer from "@/ui/layout/ScreenContainer";
 
 const EditTitle = () => {
     const router = useRouter();
@@ -35,14 +35,14 @@ const EditTitle = () => {
     }, []);
 
     return (
-        <AddTitleView withHeaderPadding>
+        <ScreenContainer withHeaderPadding>
             <DeckTitleInput
                 inputRef={inputRef}
                 title={title}
                 placeholder='Edit deck title'
                 onChangeText={setTitle}
             />
-        </AddTitleView>
+        </ScreenContainer>
     );
 };
 

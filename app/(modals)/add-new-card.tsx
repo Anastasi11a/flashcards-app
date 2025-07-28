@@ -1,12 +1,11 @@
-import { useEffect } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { useEffect } from "react";
 
 import CardInputs from "@/components/CardInputs";
-import useKeyboardVisibility from "@/hooks/useKeyboardVisibility";
-import useCustomHeader from "@/hooks/useCustomHeader";
 import { useAddCardState } from "@/hooks/useAddCardState";
-import { StyledEAddScreenView } from "@/ui/CardInputFields";
-import StyledKeyboardAvoidingView from "@/ui/StyledKeyboardAvoidingView";
+import useCustomHeader from "@/hooks/useCustomHeader";
+import useKeyboardVisibility from "@/hooks/useKeyboardVisibility";
+import ScreenContainer from "@/ui/layout/ScreenContainer";
 
 const AddNewCard = () => {
     const { deckId } = useLocalSearchParams<{ deckId: string }>();
@@ -38,17 +37,15 @@ const AddNewCard = () => {
     }, []);
 
     return (
-        <StyledKeyboardAvoidingView>
-            <StyledEAddScreenView>
-                <CardInputs
-                    inputRef={inputRef}
-                    question={question}
-                    answer={answer}
-                    onChangeQuestion={setQuestion}
-                    onChangeAnswer={setAnswer}
-                />
-            </StyledEAddScreenView>
-        </StyledKeyboardAvoidingView>
+        <ScreenContainer>
+            <CardInputs
+                inputRef={inputRef}
+                question={question}
+                answer={answer}
+                onChangeQuestion={setQuestion}
+                onChangeAnswer={setAnswer}
+            />
+        </ScreenContainer>
     );
 };
 
