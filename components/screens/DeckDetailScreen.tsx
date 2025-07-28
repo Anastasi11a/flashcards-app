@@ -1,21 +1,19 @@
 import { useCallback } from "react";
 import { useRouter } from "expo-router";
 
-import DeckList from "../DecksList";
-import MenuPopupButton from "../MenuPopupButton";
-import DeckListContainer from "../DeckListContainer";
+import DeckContainer from "../DeckContainer";
 import { useDecks } from "@/context/DeckContext";
 import { useDeckMenuButtons } from "@/hooks/useDeckMenuButtons";
 import { useConfirmDeleteDeck } from "@/hooks/useConfirmDeleteDeck";
 import { showExportOptions } from "@/utils/showExportOptions";
 
-interface DeckDetailScreenProps {
+interface Props {
     deckId?: string;
     isMenuVisible: boolean;
     onCloseMenu: () => void;
 }
 
-const DeckDetailScreen = ({ deckId, isMenuVisible, onCloseMenu }: DeckDetailScreenProps) => {
+const DeckDetailScreen = ({ deckId, isMenuVisible, onCloseMenu }: Props) => {
     const router = useRouter();
     const { decks, deleteCard } = useDecks();
     const deck = decks.find((d) => d.id === deckId);
@@ -30,7 +28,7 @@ const DeckDetailScreen = ({ deckId, isMenuVisible, onCloseMenu }: DeckDetailScre
         });
     };
 
-    const handleDeleteCard = (deckId: string, cardId: string) => {
+    const handleDeleteCard = (cardId: string) => {
         deleteCard(deckId, cardId);
     };
 
@@ -68,21 +66,15 @@ const DeckDetailScreen = ({ deckId, isMenuVisible, onCloseMenu }: DeckDetailScre
     });
 
     return (
-        <>
-            <MenuPopupButton
-                isVisible={isMenuVisible}
-                buttons={menuButtons()} 
-                onClose={onCloseMenu}
-            />
-            <DeckListContainer>
-                <DeckList 
-                    deckId={deckId}
-                    cards={deck.cards}
-                    onDelete={handleDeleteCard}
-                    onEdit={(_, cardId) => handleEditCardPressed(cardId)}
-                />
-            </DeckListContainer>
-        </>
+        <DeckContainer
+            deckId={deckId}
+            deck={deck}
+            isMenuVisible={isMenuVisible}
+            menuButtons={menuButtons()}
+            onCloseMenu={onCloseMenu}
+            onDeleteCard={handleDeleteCard}
+            onEditCard={handleEditCardPressed}
+        />
     );
 };
 
