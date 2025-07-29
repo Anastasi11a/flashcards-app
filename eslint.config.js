@@ -8,7 +8,7 @@ module.exports = defineConfig([
         ignores: ['dist/*'],
         rules: {
             'import/no-named-as-default': 'off',
-            'max-len': ['warn', { code: 80 }],
+            'max-len': ['warn', { code: 90 }],
         },
     },
 ]);
