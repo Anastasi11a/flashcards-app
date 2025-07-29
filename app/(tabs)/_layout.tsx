@@ -21,7 +21,7 @@ export default function TabLayout() {
                     ios: { position: 'absolute' },
                     default: {},
                 }),
-                tabBarBackground: BlurBackground,
+                tabBarBackground: () => <BlurBackground />,
             }}>
             <Tabs.Screen 
                 name='index' 
@@ -35,6 +35,7 @@ export default function TabLayout() {
                         fontWeight: 'bold',
                         color: '#e6e6e6',
                     },
+                    headerTransparent: true,
                     headerStyle: {
                         backgroundColor: 'transparent',
                         height: Platform.select({
@@ -43,8 +44,7 @@ export default function TabLayout() {
                             default: 120,
                         }),
                     },
-                    headerTransparent: true,
-                    headerBackground: BlurBackground,
+                    headerBackground: () => <BlurBackground />,
                     headerRight: () => <HeaderOptions onImport={handleImport} />,
                     tabBarLabel: 'Cards collection',
                     tabBarIcon: ({ color, focused }) => (
@@ -62,7 +62,10 @@ export default function TabLayout() {
                     title: 'About' ,
                     tabBarIcon: ({ color, focused }) => (
                         <Ionicons 
-                            name={focused ? 'information-circle' : 'information-circle-outline'} 
+                            name={focused 
+                                ? 'information-circle' 
+                                : 'information-circle-outline'
+                            } 
                             color={color} 
                             size={24} 
                         />
