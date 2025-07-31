@@ -1,11 +1,11 @@
 import { useRouter } from "expo-router";
 
 import { useDecks } from "@/context/DeckContext";
+import { useAddCardState } from "@/hooks/useAddCardState";
+import useAutoFocusInput from "@/hooks/useAutoFocusInput";
+import KeyboardBehavior from "@/ui/layout/KeyboardBehavior";
 import AddCardsContainer from "../AddCardsContainer";
 import DeckList from "../DecksList";
-import useKeyboardVisibility from "@/hooks/useKeyboardVisibility";
-import { useAddCardState } from "@/hooks/useAddCardState";
-import KeyboardBehavior from "@/ui/layout/KeyboardBehavior";
 
 interface AddCardsScreenProps {
     deckId: string;
@@ -13,7 +13,7 @@ interface AddCardsScreenProps {
 
 const AddCardsScreen = ({ deckId }: AddCardsScreenProps) => {
     const router = useRouter();
-    const { inputRef, focusInput } = useKeyboardVisibility();
+    const { inputRef, focusInput } = useAutoFocusInput();
     const { decks, deleteCard } = useDecks();
 
     const deck = decks.find((d) => d.id === deckId);

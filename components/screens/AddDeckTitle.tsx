@@ -1,4 +1,4 @@
-import useKeyboardVisibility from "@/hooks/useKeyboardVisibility";
+import useAutoFocusInput from "@/hooks/useAutoFocusInput";
 import DeckTitleInput from "@/ui/DeckTitleInput";
 import ScreenContainer from "@/ui/layout/ScreenContainer";
 
@@ -8,7 +8,7 @@ interface AddDeckTitleProps {
 }
 
 const AddDeckTitle = ({ title, setTitle }: AddDeckTitleProps) => {
-    const { inputRef } = useKeyboardVisibility();
+    const { inputRef } = useAutoFocusInput();
 
     return (
         <ScreenContainer>

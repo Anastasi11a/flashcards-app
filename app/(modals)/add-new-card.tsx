@@ -3,8 +3,8 @@ import { useEffect } from "react";
 
 import CardInputs from "@/components/CardInputs";
 import { useAddCardState } from "@/hooks/useAddCardState";
+import useAutoFocusInput from "@/hooks/useAutoFocusInput";
 import useCustomHeader from "@/hooks/useCustomHeader";
-import useKeyboardVisibility from "@/hooks/useKeyboardVisibility";
 import ScreenContainer from "@/ui/layout/ScreenContainer";
 
 const AddNewCard = () => {
@@ -12,7 +12,7 @@ const AddNewCard = () => {
     if (!deckId) return null;
 
     const router = useRouter();
-    const { inputRef, focusInput } = useKeyboardVisibility();
+    const { inputRef, focusInput } = useAutoFocusInput();
 
     const {
         question, answer, setQuestion, setAnswer, save

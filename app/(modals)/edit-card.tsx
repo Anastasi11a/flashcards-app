@@ -1,14 +1,14 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 
 import CardInputs from "@/components/CardInputs";
-import useKeyboardVisibility from "@/hooks/useKeyboardVisibility";
+import useAutoFocusInput from "@/hooks/useAutoFocusInput";
 import useCustomHeader from "@/hooks/useCustomHeader";
 import { useEditCardState } from "@/hooks/useEditCardState";
 import ScreenContainer from "@/ui/layout/ScreenContainer";
 
 const EditCard = () => {
     const router = useRouter();
-    const { inputRef, focusInput } = useKeyboardVisibility();
+    const { inputRef, focusInput } = useAutoFocusInput();
 
     const { deckId, cardId } = useLocalSearchParams<{ 
         deckId?: string; 

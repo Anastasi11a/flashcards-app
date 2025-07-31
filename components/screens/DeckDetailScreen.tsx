@@ -60,7 +60,7 @@ const DeckDetailScreen = ({ deckId, isMenuVisible, onCloseMenu }: Props) => {
     const menuButtons = useDeckMenuButtons({
         deckId,
         onAdd: handleAddPressed,
-        onEdit: handleEditTitlePressed,
+        onEditTitle: handleEditTitlePressed,
         onExport: handleExportDeck,
         onDelete: handleDeleteDeck,
     });

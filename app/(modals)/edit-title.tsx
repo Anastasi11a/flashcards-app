@@ -1,15 +1,15 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect } from "react";
 
+import useAutoFocusInput from "@/hooks/useAutoFocusInput";
 import useCustomHeader from "@/hooks/useCustomHeader";
 import { useEditTitleState } from "@/hooks/useEditTitleState";
-import useKeyboardVisibility from "@/hooks/useKeyboardVisibility";
 import DeckTitleInput from "@/ui/DeckTitleInput";
 import ScreenContainer from "@/ui/layout/ScreenContainer";
 
 const EditTitle = () => {
     const router = useRouter();
-    const { inputRef, focusInput } = useKeyboardVisibility();
+    const { inputRef, focusInput } = useAutoFocusInput();
     
     const { deckId } = useLocalSearchParams<{ deckId?: string }>();
     if (!deckId) return null;
