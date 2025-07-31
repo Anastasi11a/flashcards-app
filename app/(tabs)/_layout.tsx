@@ -37,7 +37,6 @@ export default function TabLayout() {
                     },
                     headerTransparent: true,
                     headerStyle: {
-                        backgroundColor: 'transparent',
                         height: Platform.select({
                             ios: 130,
                             android: 120,
