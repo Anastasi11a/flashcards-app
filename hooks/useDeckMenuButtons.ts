@@ -1,44 +1,45 @@
-import { useCallback } from "react";
+import { createElement, useCallback } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-interface DeckMenuButtonProps {
+interface ButtonProps {
     deckId: string;
     onAdd: () => void;
-    onEdit: () => void;
+    onEditTitle: () => void;
     onExport: () => void;
     onDelete: (deckId: string) => void;
 }
 
-export const useDeckMenuButtons = (props: DeckMenuButtonProps) => {
+export const useDeckMenuButtons = ({
+    deckId, onAdd, onEditTitle, onExport, onDelete }: ButtonProps) => {
     return useCallback(() => {
         const icon = (
             name: keyof typeof MaterialCommunityIcons.glyphMap,
             color = '#fff'
-        ) => <MaterialCommunityIcons name={name} size={24} color={color} />;
+        ) => createElement(MaterialCommunityIcons, { name, size: 24, color });
 
         return [
             { 
                 label: 'Add new card', 
                 icon: icon('playlist-plus'), 
-                onPress: props.onAdd 
+                onPress: onAdd,
             },
             { 
                 label: 'Edit title', 
                 icon: icon('playlist-edit'), 
-                onPress: props.onEdit 
+                onPress: onEditTitle,
 
             },
             {
                 label: 'Export', 
                 icon: icon('export-variant'), 
-                onPress: () => props.onExport(),
+                onPress: onExport,
             },
             { 
                 label: 'Remove', 
                 icon: icon('delete-sweep', '#ff4d4f'), 
-                onPress: () => props.onDelete(props.deckId),
+                onPress: () => onDelete(deckId),
                 isDestructive: true,
             },
         ];
-    }, [props.deckId, props.onAdd, props.onEdit, props.onDelete]);
+    }, [deckId, onAdd, onEditTitle, onExport, onDelete]);
 };
