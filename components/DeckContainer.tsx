@@ -1,7 +1,7 @@
 import { Card } from "@/data/decks";
-import MenuPopupButton from "./MenuPopupButton";
-import DeckListContainer from "./DeckListContainer";
+import DeckListContainer from "../ui/layout/DeckListContainer";
 import DeckList from "./DecksList";
+import MenuPopupButton from "./MenuPopupButton";
 
 interface Props {
     deckId: string;
@@ -33,6 +33,7 @@ const DeckContainer = ({
                     cards={deck.cards}
                     onDelete={(_, cardId) => onDeleteCard(cardId)}
                     onEdit={(_, cardId) => onEditCard(cardId)}
+                    isHeaderTransparent={true} 
                 />
             </DeckListContainer>
         </>
