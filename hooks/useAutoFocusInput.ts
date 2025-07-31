@@ -1,7 +1,7 @@
 import { useRef, useEffect } from 'react';
 import { TextInput } from 'react-native';
 
-const useKeyboardVisibility = () => {
+const useAutoFocusInput = () => {
     const inputRef = useRef<TextInput>(null);
 
     useEffect(() => {
@@ -19,4 +19,4 @@ const useKeyboardVisibility = () => {
     return { inputRef, focusInput };
 };
 
-export default useKeyboardVisibility;
+export default useAutoFocusInput;
