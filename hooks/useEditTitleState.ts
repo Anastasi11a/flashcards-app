@@ -14,7 +14,7 @@ export function useEditTitleState({ deckId }: Props) {
 
     useEffect(() => {
         setTitle(deck?.title || '');
-    }, [deckId, deck?.title]);
+    }, [deck?.title]);
 
     const save = () => {
         const trimmed = title.trim();
