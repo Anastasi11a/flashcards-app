@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { FlatList } from "react-native";
+import { useHeaderHeight } from "@react-navigation/elements";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import type SwipeableLegacyType from 'react-native-gesture-handler/Swipeable';
 
@@ -12,10 +13,20 @@ interface DeckListProps {
     cards: Card[];
     onDelete: (deckId: string, cardId: string) => void;
     onEdit?: (deckId: string, cardId: string) => void;
+    isHeaderTransparent?: boolean;
 }
 
-const DeckList = ({ deckId = '', cards, onDelete, onEdit }: DeckListProps) => {
+const DeckList = ({ 
+    deckId = '', 
+    cards,
+    isHeaderTransparent = false, 
+    onDelete,
+    onEdit, 
+}: DeckListProps) => {
     const swipeableRefs  = useRef<Record<string, SwipeableLegacyType | null>>({});
+    const headerHeight = useHeaderHeight();
+    const paddingTop = isHeaderTransparent ? headerHeight : 0;
+
     const [visibleAnswers, setVisibleAnswers] = useState<Record<string, boolean>>({});
     const [swipingCardId, setSwipingCardId] = useState<string | null>(null);
     
@@ -65,7 +76,7 @@ const DeckList = ({ deckId = '', cards, onDelete, onEdit }: DeckListProps) => {
             contentContainerStyle={{
                 gap: 4,
                 marginVertical: 16,
-                paddingTop: 0,
+                paddingTop: paddingTop,
                 paddingBottom: 140,
                 paddingHorizontal: 10,
             }}
