@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useDecks } from "@/context/DeckContext";
 
 interface Props {
@@ -14,26 +14,23 @@ export function useEditCardState({ deckId, cardId }: Props) {
     const [question, setQuestion] = useState(card?.question || "");
     const [answer, setAnswer] = useState(card?.answer || "");
 
+    const resetState = useCallback(() => {
+        setQuestion(card?.question || "");
+        setAnswer(card?.answer || "");
+    }, [card]);
+
     useEffect(() => {
-        if (card) {
-            setQuestion(card.question);
-            setAnswer(card.answer);
-        }
-    }, [cardId, card]);
+        resetState();
+    }, [resetState]);
 
     const save = () => {
         if (!deckId || !cardId || !question.trim() || !answer.trim()) return;
         editCard(deckId, cardId, question.trim(), answer.trim());
     };
 
-    const reset = () => {
-        setQuestion(card?.question || "");
-        setAnswer(card?.answer || "");
-    };
-
     return {
         question, answer,
         setQuestion, setAnswer,
-        save, reset,
+        save, reset: resetState,
     };
 };
