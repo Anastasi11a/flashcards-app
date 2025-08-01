@@ -1,19 +1,9 @@
-import MenuPopupView, { MenuOptionProps } from "@/ui/MenuPopupView";
+import MenuPopupView, { MenuPopupViewProps } from "@/ui/MenuPopupView";
 
-interface MenuPopupProps {
-    isVisible?: boolean;
-    buttons: MenuOptionProps[];
-    onClose?: () => void;
-}
+type MenuPopupProps = MenuPopupViewProps;
 
-const MenuPopupButton = ({ isVisible, buttons, onClose }: MenuPopupProps) => {
-    return (
-        <MenuPopupView
-            isVisible={isVisible}
-            buttons={buttons}
-            onClose={onClose}
-        />
-    );
+const MenuPopupButton = (props: MenuPopupProps) => {
+    return <MenuPopupView {...props} />;
 };
 
 export default MenuPopupButton;
