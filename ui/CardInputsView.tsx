@@ -6,8 +6,8 @@ import InputField from "@/components/InputField";
 import QuestionInput from "./QuestionInput";
 import AnswerInput from "./AnswerInput";
 
-export interface CardInputsViewProps {
-    inputRef?: React.Ref<TextInput>;
+export interface CardInputsProps {
+    inputRef: React.Ref<TextInput>;
     question: string;
     answer: string;
     onChangeQuestion: (text: string) => void;
@@ -16,7 +16,7 @@ export interface CardInputsViewProps {
 
 const CardInputsView = ({ 
     inputRef, question, answer, onChangeQuestion, onChangeAnswer
-}: CardInputsViewProps) => {
+}: CardInputsProps) => {
     return (
         <InputWrapper>
             <InputField
