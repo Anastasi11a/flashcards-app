@@ -1,23 +1,24 @@
-import { Card } from "@/data/decks";
+import { Deck } from "@/data/decks";
 import DeckListContainer from "../ui/layout/DeckListContainer";
 import DeckList from "./DecksList";
 import MenuPopupButton from "./MenuPopupButton";
 
+interface MenuButton {
+    label: string;
+    onPress: () => void;
+}
+
 interface Props {
-    deckId: string;
-    deck: { cards: Card[] }; 
+    deck: Deck;
     isMenuVisible: boolean;
-    menuButtons: { 
-        label: string; 
-        onPress: () => void 
-    }[];
+    menuButtons: MenuButton[];
     onCloseMenu: () => void;
     onDeleteCard: (cardId: string) => void;
     onEditCard: (cardId: string) => void;
 }
 
 const DeckContainer = ({ 
-    deckId, deck, isMenuVisible, menuButtons, 
+    deck, isMenuVisible, menuButtons, 
     onCloseMenu, onDeleteCard, onEditCard
  }: Props) => {
     return (
@@ -29,10 +30,9 @@ const DeckContainer = ({
             />
             <DeckListContainer>
                 <DeckList 
-                    deckId={deckId}
                     cards={deck.cards}
-                    onDelete={(_, cardId) => onDeleteCard(cardId)}
-                    onEdit={(_, cardId) => onEditCard(cardId)}
+                    onDelete={(card) => onDeleteCard(card.id)}
+                    onEdit={(card) => onEditCard(card.id)}
                     isHeaderTransparent={true} 
                 />
             </DeckListContainer>
