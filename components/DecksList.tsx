@@ -1,62 +1,60 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback } from "react";
 import { FlatList } from "react-native";
 import { useHeaderHeight } from "@react-navigation/elements";
 import Swipeable from "react-native-gesture-handler/Swipeable";
-import type SwipeableLegacyType from 'react-native-gesture-handler/Swipeable';
+import type SwipeableType from "react-native-gesture-handler/Swipeable";
 
 import { Card } from "@/data/decks";
 import SwipeOptions from "./SwipeOptions";
 import DeckCardItem from "@/ui/DeckCardItem";
+import DeckListEmpty from "@/ui/DeckListEmpty";
+
+type SwipeableRef = SwipeableType | null;
 
 interface DeckListProps {
-    deckId?: string;
     cards: Card[];
-    onDelete: (deckId: string, cardId: string) => void;
-    onEdit?: (deckId: string, cardId: string) => void;
+    onDelete: (card: Card) => void;
+    onEdit?: (card: Card) => void;
     isHeaderTransparent?: boolean;
 }
 
 const DeckList = ({ 
-    deckId = '', 
-    cards,
-    isHeaderTransparent = false, 
-    onDelete,
-    onEdit, 
+    cards, onDelete, onEdit, isHeaderTransparent = false 
 }: DeckListProps) => {
-    const swipeableRefs  = useRef<Record<string, SwipeableLegacyType | null>>({});
+    const swipeableRefs = useRef<Record<string, SwipeableRef>>({});
     const headerHeight = useHeaderHeight();
     const paddingTop = isHeaderTransparent ? headerHeight : 0;
 
     const [visibleAnswers, setVisibleAnswers] = useState<Record<string, boolean>>({});
     const [swipingCardId, setSwipingCardId] = useState<string | null>(null);
-    
+
     const toggleAnswer = (cardId: string) => {
         if (swipingCardId === cardId) return;
-        setVisibleAnswers((prev) => ({ 
-            ...prev, 
-            [cardId]: !prev[cardId] 
-        }));
+            setVisibleAnswers((prev) => ({
+                ...prev,
+                [cardId]: !prev[cardId],
+            })
+        );
     };
 
-    const renderRightActions = (
-        cardId: string,
-        swipeableRef: SwipeableLegacyType | null
-    ) => (
-        <SwipeOptions
-            cardId={cardId}
-            deckId={deckId}
-            onDelete={onDelete}
-            onEdit={onEdit}
-            swipeableRef={swipeableRef}
-        />
+    const renderRightActions = useCallback(
+        (card: Card, swipeableRef: SwipeableRef) => (
+            <SwipeOptions
+                card={card}
+                swipeableRef={swipeableRef}
+                onDelete={onDelete}
+                onEdit={onEdit}
+            />
+        ),
+        [onDelete, onEdit]
     );
 
     const renderItem = ({ item }: { item: Card }) => (
         <Swipeable
-            ref={(ref) => {swipeableRefs.current[item.id] = ref}}
-            renderRightActions={(_, __, swipeable) => 
-                renderRightActions(item.id, swipeable)
-            }
+            ref={(ref) => {
+                swipeableRefs.current[item.id] = ref;
+            }}
+            renderRightActions={(_, __, swipeable) => renderRightActions(item, swipeable)}
             onSwipeableWillOpen={() => setSwipingCardId(item.id)}
             onSwipeableClose={() => setSwipingCardId(null)}>
 
@@ -73,14 +71,15 @@ const DeckList = ({
         <FlatList
             data={cards}
             keyExtractor={(item) => item.id}
+            renderItem={renderItem}
             contentContainerStyle={{
                 gap: 4,
                 marginVertical: 16,
-                paddingTop: paddingTop,
+                paddingTop,
                 paddingBottom: 140,
                 paddingHorizontal: 10,
             }}
-            renderItem={renderItem}
+            ListEmptyComponent={<DeckListEmpty />}
         />
     );
 };
