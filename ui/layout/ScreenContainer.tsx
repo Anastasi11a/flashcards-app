@@ -7,7 +7,9 @@ interface ScreenContainerProps {
     withHeaderPadding?: boolean;
 }
 
-const ScreenContainer = ({ children, withHeaderPadding = false }: ScreenContainerProps) => {
+const ScreenContainer = ({ 
+    children, withHeaderPadding = false 
+}: ScreenContainerProps) => {
     const headerHeight = useHeaderHeight();
     const paddingTop = withHeaderPadding ? headerHeight + 16 : 20;
 
