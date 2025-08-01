@@ -1,24 +1,23 @@
-import { SwipeButtonView, SwipeButtonViewProps } from "@/ui/SwipeButtonView";
+import SwipeButtonView, { IconName } from "@/ui/SwipeButtonView";
 
 type IconType = 'edit' | 'delete';
-type IconName = SwipeButtonViewProps['iconName'];
 
-interface SwipeEditProps {
+interface SwipeButtonProps {
     iconType: IconType;
     iconName: IconName;
     onPress: () => void;
 }
 
-const SwipeButton = ({ iconName, iconType, onPress }: SwipeEditProps) => {
-    const gradientColors: [string, string] =
-        iconType === 'delete'
-            ? ['#ff5f6d', '#d11a2a']
-            : ['#42e695', '#035e04'];
+const gradientMap: Record<IconType, [string, string]> = {
+    delete: ['#ff5f6d', '#d11a2a'],
+    edit: ['#42e695', '#035e04'],
+};
 
+const SwipeButton = ({ iconName, iconType, onPress }: SwipeButtonProps) => {
     return (
         <SwipeButtonView
             iconName={iconName}
-            gradientColors={gradientColors}
+            gradientColors={gradientMap[iconType]}
             onPress={onPress}
         />
     ); 

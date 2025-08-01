@@ -4,14 +4,11 @@ import styled from "styled-components/native";
 import SwipeButton from "@/components/SwipeButton";
 
 interface SwipeOptionsViewProps {
-    showEdit: boolean;
     onDeletePress: () => void;
     onEditPress?: () => void;
 }
 
-const SwipeOptionsView = ({
-    showEdit, onDeletePress, onEditPress
-}: SwipeOptionsViewProps) => {
+const SwipeOptionsView = ({ onDeletePress, onEditPress }: SwipeOptionsViewProps) => {
     return (
         <ButtonRowContainer>
             <SwipeButton
@@ -19,7 +16,7 @@ const SwipeOptionsView = ({
                 iconType='delete'
                 onPress={onDeletePress}
             />
-            {showEdit && onEditPress && (
+            {onEditPress && (
                 <SwipeButton
                     iconName='playlist-edit'
                     iconType='edit'

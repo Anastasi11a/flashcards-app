@@ -3,15 +3,15 @@ import { LinearGradient } from "expo-linear-gradient";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import styled from "styled-components/native";
 
-type IconName = keyof typeof MaterialCommunityIcons.glyphMap;
+export type IconName = keyof typeof MaterialCommunityIcons.glyphMap;
 
-export interface SwipeButtonViewProps {
+interface SwipeButtonViewProps {
     iconName: IconName;
     gradientColors: [string, string];
-    onPress: () => void;
+    onPress: () => void; 
 }
 
-export const SwipeButtonView = ({ iconName, gradientColors, onPress }: SwipeButtonViewProps) => {
+const SwipeButtonView = ({ iconName, gradientColors, onPress }: SwipeButtonViewProps) => {
     return (
         <ButtonBackground colors={gradientColors}>
             <PressableArea onPress={onPress}>
@@ -20,6 +20,8 @@ export const SwipeButtonView = ({ iconName, gradientColors, onPress }: SwipeButt
         </ButtonBackground >
     ); 
 };
+
+export default SwipeButtonView;
 
 const ButtonBackground = styled(LinearGradient)`
     width: 64px;
