@@ -1,64 +1,59 @@
 import { useCallback } from "react";
 import { useRouter } from "expo-router";
 
+import type { Deck } from "@/data/decks";
 import DeckContainer from "../DeckContainer";
 import { useDecks } from "@/context/DeckContext";
 import { useDeckMenuButtons } from "@/hooks/useDeckMenuButtons";
 import { useConfirmDeleteDeck } from "@/hooks/useConfirmDeleteDeck";
 import { showExportOptions } from "@/utils/showExportOptions";
 
-interface Props {
-    deckId?: string;
+interface Props { 
+    deck: Deck;
     isMenuVisible: boolean;
     onCloseMenu: () => void;
 }
 
-const DeckDetailScreen = ({ deckId, isMenuVisible, onCloseMenu }: Props) => {
+const DeckDetailScreen = ({ deck, isMenuVisible, onCloseMenu }: Props) => {
     const router = useRouter();
-    const { decks, deleteCard } = useDecks();
-    const deck = decks.find((d) => d.id === deckId);
-    if (!deck || !deckId) return null;
-
+    const { deleteCard } = useDecks();
     const confirmDeleteDeck = useConfirmDeleteDeck();
 
     const handleEditCardPressed = (cardId: string) => {
         router.push({
             pathname: '/(modals)/edit-card',
-            params: { deckId, cardId },
+            params: { deckId: deck.id, cardId },
         });
     };
 
     const handleDeleteCard = (cardId: string) => {
-        deleteCard(deckId, cardId);
+        deleteCard(deck.id, cardId);
     };
 
-    const handleAddPressed = () => { 
-        onCloseMenu();
+    const handleAddPressed = () => {
         router.push({
             pathname: '/(modals)/add-new-card',
-            params: { deckId },
+            params: { deckId: deck.id },
         });
     };
-
+ 
     const handleEditTitlePressed = () => {
-        onCloseMenu();
         router.push({
             pathname: '/(modals)/edit-title',
-            params: { deckId },
+            params: { deckId: deck.id },
         });
     };
 
     const handleExportDeck = useCallback(() => {
-        if (deck) showExportOptions(deck, onCloseMenu);
-    }, [deck]);
+        showExportOptions(deck, onCloseMenu);
+    }, [deck, onCloseMenu]);
 
-    const handleDeleteDeck = (deckId: string) => {
-        onCloseMenu();
-        confirmDeleteDeck(deckId);
+    const handleDeleteDeck = () => {
+        confirmDeleteDeck(deck.id);
     };
 
     const menuButtons = useDeckMenuButtons({
-        deckId,
+        deckId: deck.id,
         onAdd: handleAddPressed,
         onEditTitle: handleEditTitlePressed,
         onExport: handleExportDeck,
@@ -67,7 +62,6 @@ const DeckDetailScreen = ({ deckId, isMenuVisible, onCloseMenu }: Props) => {
 
     return (
         <DeckContainer
-            deckId={deckId}
             deck={deck}
             isMenuVisible={isMenuVisible}
             menuButtons={menuButtons()}
