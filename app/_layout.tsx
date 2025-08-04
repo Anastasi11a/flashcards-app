@@ -21,7 +21,10 @@ export default function RootLayout() {
         <GestureHandlerRootView style={{ flex: 1 }}>
             <DeckProvider>
                 <Stack>
-                    <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                    <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
+                    <Stack.Screen name='(modals)/add-new-card' />
+                    <Stack.Screen name='(modals)/edit-card' />
+                    <Stack.Screen name="(modals)/edit-title" />
                 </Stack>
                 <StatusBar style='dark' />
             </DeckProvider>
