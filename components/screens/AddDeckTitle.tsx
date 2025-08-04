@@ -1,6 +1,8 @@
+import InputField from "../InputField";
 import useAutoFocusInput from "@/hooks/useAutoFocusInput";
-import DeckTitleInput from "@/ui/DeckTitleInput";
+import DeckTitleContainer from "@/ui/layout/DeckTitleContainer";
 import ScreenContainer from "@/ui/layout/ScreenContainer";
+import QuestionInput from "@/ui/QuestionInput";
 
 interface AddDeckTitleProps {
     title: string;
@@ -12,12 +14,15 @@ const AddDeckTitle = ({ title, setTitle }: AddDeckTitleProps) => {
 
     return (
         <ScreenContainer>
-            <DeckTitleInput
-                inputRef={inputRef}
-                title={title}
-                placeholder='Enter deck title'
-                onChangeText={setTitle}
-            />
+            <DeckTitleContainer>
+                <InputField
+                    inputRef={inputRef}
+                    value={title}
+                    maxLengthHint={35}
+                    InputComponent={QuestionInput}
+                    onChangeText={setTitle}
+                />
+            </DeckTitleContainer>
         </ScreenContainer>
     );
 };
