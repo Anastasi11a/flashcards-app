@@ -27,7 +27,12 @@ const MenuPopupView = ({ isVisible, buttons, onClose }: MenuPopupViewProps) => {
                 <StyledMenuView>
                     {buttons.map((btn, i) => (
                         <Fragment key={btn.label ?? i}>
-                            <StyledPressable onPress={btn.onPress}>
+                            <StyledPressable
+                                onPress={() => {
+                                    onClose?.();
+                                    btn.onPress?.();
+                                }}>
+                                    
                                 <Label $destructive={btn.isDestructive}>
                                     {btn.label}
                                 </Label>
