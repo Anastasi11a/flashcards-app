@@ -20,7 +20,7 @@ interface Props {
 const DeckContainer = ({ 
     deck, isMenuVisible, menuButtons, 
     onCloseMenu, onDeleteCard, onEditCard
- }: Props) => {
+}: Props) => {
     return (
         <>
             <MenuPopupButton
@@ -28,7 +28,7 @@ const DeckContainer = ({
                 buttons={menuButtons} 
                 onClose={onCloseMenu}
             />
-            <DeckListContainer>
+            <DeckListContainer> 
                 <DeckList 
                     cards={deck.cards}
                     onDelete={(card) => onDeleteCard(card.id)}
