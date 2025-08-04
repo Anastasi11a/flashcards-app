@@ -1,44 +1,38 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect } from "react";
 
-import CardInputs from "@/components/CardInputs";
 import { useAddCardState } from "@/hooks/useAddCardState";
 import useAutoFocusInput from "@/hooks/useAutoFocusInput";
 import useCustomHeader from "@/hooks/useCustomHeader";
 import ScreenContainer from "@/ui/layout/ScreenContainer";
+import CardInputsView from "@/ui/CardInputsView";
 
 const AddNewCard = () => {
     const { deckId } = useLocalSearchParams<{ deckId: string }>();
-    if (!deckId) return null;
-
     const router = useRouter();
+    
     const { inputRef, focusInput } = useAutoFocusInput();
 
     const {
-        question, answer, setQuestion, setAnswer, save
+        question, answer, 
+        setQuestion, setAnswer, 
+        save
     } = useAddCardState({ deckId, focusInput });
-
-    const handleSave = () => {
-        save();
-        router.back();
-    };
-
+ 
     useCustomHeader({
         title: 'Add New Card',
         headerTransparent: false,
         rightButton: {
             label: 'Save',
-            onPress: handleSave,
+            onPress: () => {
+                save();
+                router.back();
+            },
         },
     });
 
-    useEffect(() => {
-        focusInput();
-    }, []);
-
     return (
         <ScreenContainer>
-            <CardInputs
+            <CardInputsView
                 inputRef={inputRef}
                 question={question}
                 answer={answer}

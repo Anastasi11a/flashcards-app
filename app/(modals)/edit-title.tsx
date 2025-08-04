@@ -1,47 +1,43 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect } from "react";
 
+import InputField from "@/components/InputField";
+import { useEditTitleState } from "@/hooks/useEditTitleState";
 import useAutoFocusInput from "@/hooks/useAutoFocusInput";
 import useCustomHeader from "@/hooks/useCustomHeader";
-import { useEditTitleState } from "@/hooks/useEditTitleState";
-import DeckTitleInput from "@/ui/DeckTitleInput";
+import QuestionInput from "@/ui/QuestionInput";
+import DeckTitleContainer from "@/ui/layout/DeckTitleContainer";
 import ScreenContainer from "@/ui/layout/ScreenContainer";
 
 const EditTitle = () => {
+    const { deckId } = useLocalSearchParams<{ deckId: string }>();
     const router = useRouter();
-    const { inputRef, focusInput } = useAutoFocusInput();
-    
-    const { deckId } = useLocalSearchParams<{ deckId?: string }>();
-    if (!deckId) return null;
 
+    const { inputRef } = useAutoFocusInput();
     const { title, setTitle, save } = useEditTitleState({ deckId });
 
-    const handleSave = () => {
-        save();
-        router.back();
-    };
-
-    useCustomHeader({
+    useCustomHeader({  
         title: 'Edit Title',
         headerTransparent: true,
         rightButton: {
             label: 'Save',
-            onPress: handleSave,
+            onPress: () => {
+                save();
+                router.back();
+            },
         },
     });
 
-    useEffect(() => {
-        focusInput();
-    }, []);
-
     return (
         <ScreenContainer withHeaderPadding>
-            <DeckTitleInput
-                inputRef={inputRef}
-                title={title}
-                placeholder='Edit deck title'
-                onChangeText={setTitle}
-            />
+           <DeckTitleContainer>
+                <InputField
+                    inputRef={inputRef}
+                    value={title}
+                    maxLengthHint={35}
+                    InputComponent={QuestionInput}
+                    onChangeText={setTitle}
+                />
+           </DeckTitleContainer>
         </ScreenContainer>
     );
 };
