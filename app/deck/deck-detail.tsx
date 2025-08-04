@@ -1,15 +1,17 @@
 import { useState, useCallback } from "react";
 
-import DeckDetailScreen from "@/components/screens/DeckDetailScreen";
 import { useDecks } from "@/context/DeckContext";
+import DeckDetailScreen from "@/components/screens/DeckDetailScreen";
 import useCustomHeader from "@/hooks/useCustomHeader";
 
 const DeckScreen: React.FC = () => {
+    const [isMenuVisible, setMenuVisible] = useState(false);
+    
     const { decks, selectedDeckId } = useDecks(); 
     const deck = decks.find((d) => d.id === selectedDeckId);
 
-    const [isMenuVisible, setMenuVisible] = useState(false);
     const openMenu = useCallback(() => setMenuVisible(true), []);
+    const closeMenu = useCallback(() => setMenuVisible(false), []);
     
     useCustomHeader({ 
         title: deck?.title,
@@ -21,13 +23,13 @@ const DeckScreen: React.FC = () => {
         },
     });
     
-    if (!deck) return null;
+    if (!deck || !selectedDeckId) return null;
 
     return (
         <DeckDetailScreen 
-            deckId={selectedDeckId!} 
+            deck={deck}
             isMenuVisible={isMenuVisible}
-            onCloseMenu={() => setMenuVisible(false)}
+            onCloseMenu={closeMenu}
         />
     );
 };
