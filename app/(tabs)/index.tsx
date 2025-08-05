@@ -1,10 +1,10 @@
-import { FlatList, ListRenderItem } from "react-native";
 import { useRouter } from "expo-router";
+import { FlatList, ListRenderItem } from "react-native";
 
-import { Deck } from "@/data/decks";
 import { useDecks } from "@/context/DeckContext";
-import DeckListContainer from "@/components/DeckListContainer";
+import { Deck } from "@/data/decks";
 import DeckListItem from "@/ui/DeckListItem";
+import DeckListContainer from "@/ui/layout/DeckListContainer";
 
 export default function App() {
     const router = useRouter();
@@ -30,9 +30,9 @@ export default function App() {
                 renderItem={renderDeckItem}
                 contentContainerStyle={{
                     gap: 4, 
-                    paddingTop: 16, 
-                    paddingHorizontal: 10,
+                    paddingTop: 140, 
                     paddingBottom: 140, 
+                    paddingHorizontal: 10,
                 }}
             />
         </DeckListContainer>
