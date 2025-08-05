@@ -23,7 +23,12 @@ interface DeckContextProps {
     deleteDeck: (deckId: string) => Promise<void>;
     deleteCard: (deckId: string, cardId: string) => Promise<void>;
     editDeck: (deckId: string, newTitle: string) => Promise<void>;
-    editCard: (deckId: string, cardId: string, newQuestion: string, newAnswer: string) => Promise<void>;
+    editCard: (
+        deckId: string, 
+        cardId: string, 
+        newQuestion: string, 
+        newAnswer: string
+    ) => Promise<void>;
     importDeck: (deck: Deck) => Promise<void>;
 }
 
@@ -118,7 +123,18 @@ export const DeckProvider = ({ children }: { children: ReactNode }) => {
     };
 
     return (
-        <DeckContext.Provider value={{ decks, selectedDeckId, setSelectedDeckId, addDeck, addCard, deleteDeck, deleteCard, editDeck, editCard, importDeck }}>
+        <DeckContext.Provider value={{ 
+            decks, 
+            selectedDeckId, 
+            setSelectedDeckId, 
+            addDeck, 
+            addCard, 
+            deleteDeck, 
+            deleteCard, 
+            editDeck, 
+            editCard, 
+            importDeck 
+        }}>
             {children}
         </DeckContext.Provider>
     );

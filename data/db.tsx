@@ -1,4 +1,5 @@
 import * as SQLite from 'expo-sqlite';
+// import * as FileSystem from 'expo-file-system';
 import { Card, Deck, DeckRow, DBCard } from './decks';
 
 const getDB = async () => {
@@ -10,9 +11,12 @@ const getDB = async () => {
 export const initDatabase = async () => {
     const db = await getDB();
     await db.execAsync(`
+        PRAGMA foreign_keys = ON;
+
         CREATE TABLE IF NOT EXISTS decks (
             id TEXT PRIMARY KEY NOT NULL,
-            title TEXT NOT NULL
+            title TEXT NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         );
 
         CREATE TABLE IF NOT EXISTS cards (
@@ -20,11 +24,11 @@ export const initDatabase = async () => {
             deck_id TEXT NOT NULL,
             question TEXT NOT NULL,
             answer TEXT NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (deck_id) REFERENCES decks(id) ON DELETE CASCADE
         );
     `);
 };
-
 
 export const addDeck = async (
     id: string, title: string
@@ -106,8 +110,15 @@ export const importDeckToDB = async (
 export const getDecksWithCardsFromDB = async (): Promise<Deck[]> => {
     try {
         const db = await getDB();
-        const decksRaw = await db.getAllAsync<DeckRow>(`SELECT * FROM decks`);
-        const cardsRaw = await db.getAllAsync<DBCard>(`SELECT * FROM cards`);
+        // const decksRaw = await db.getAllAsync<DeckRow>(`SELECT * FROM decks`);
+        // const cardsRaw = await db.getAllAsync<DBCard>(`SELECT * FROM cards`);
+        const decksRaw = await db.getAllAsync<DeckRow>(
+            `SELECT * FROM decks ORDER BY datetime(created_at) DESC`
+        );
+
+        const cardsRaw = await db.getAllAsync<DBCard>(
+            `SELECT * FROM cards ORDER BY datetime(created_at) DESC`
+        );
 
         const decks: Deck[] = decksRaw.map((deckRow) => ({
             id: deckRow.id,
