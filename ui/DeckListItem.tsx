@@ -4,10 +4,16 @@ import styled from "styled-components/native";
 interface DeckListItemProps {
     title: string;
     onPress: () => void;
+    onLongPress?: () => void;
+    isActive?: boolean;
 }
 
-const DeckListItem = ({ title, onPress }: DeckListItemProps) => (
-    <DeckContainer onPress={onPress}>
+const DeckListItem = ({ title, onPress, onLongPress, isActive }: DeckListItemProps) => (
+    <DeckContainer 
+        onPress={onPress}
+        onLongPress={onLongPress}
+        $isActive={isActive}>
+
         <DeckTitle numberOfLines={1} ellipsizeMode='tail'>
             {title}
         </DeckTitle>
@@ -16,10 +22,10 @@ const DeckListItem = ({ title, onPress }: DeckListItemProps) => (
 
 export default DeckListItem;
 
-const DeckContainer = styled(Pressable)`
+const DeckContainer = styled(Pressable)<{ $isActive?: boolean }>`
     padding: 12px 16px;
     border-radius: 10px;
-    background-color: #25292e;
+    background-color: ${({ $isActive }) => ($isActive ? '#2f343a' : '#25292e')};
 `;
 
 const DeckTitle = styled(Text)`
