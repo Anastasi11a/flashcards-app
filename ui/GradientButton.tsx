@@ -4,13 +4,14 @@ import styled from "styled-components/native";
 
 interface GradientButtonProps {
     icon: React.ReactElement;
+    size?: number;
     colors: [string, string, ...string[]];
     onPress: () => void;
 }
 
-const GradientButton = ({ icon, colors, onPress }: GradientButtonProps) => {
+const GradientButton = ({ icon, size = 46, colors, onPress }: GradientButtonProps) => {
     return (
-        <GradientOverlay colors={colors}>
+        <GradientOverlay size={size} colors={colors}>
             <StyledPressable onPress={onPress}>
                 {icon}
             </StyledPressable>
@@ -20,9 +21,9 @@ const GradientButton = ({ icon, colors, onPress }: GradientButtonProps) => {
 
 export default GradientButton;
 
-const GradientOverlay = styled(LinearGradient)`
-    width: 46px;
-    height: 46px;
+const GradientOverlay = styled(LinearGradient)<{ size: number }>`
+    width: ${({ size }) => size}px;
+    height: ${({ size }) => size}px;
     border-radius: 16px;
     justify-content: center;
     align-items: center;
