@@ -3,6 +3,7 @@ import uuid from "uuid-random";
 
 import { Card, Deck } from "@/data/decks";
 import { 
+    getDB,
     initDatabase,
     importDeckToDB,
     getDecksWithCardsFromDB,
@@ -30,6 +31,7 @@ interface DeckContextProps {
         newAnswer: string
     ) => Promise<void>;
     importDeck: (deck: Deck) => Promise<void>;
+    reorderDecks: (newOrder: Deck[]) => void;
 }
 
 const DeckContext = createContext<DeckContextProps | undefined>(undefined);
@@ -122,6 +124,16 @@ export const DeckProvider = ({ children }: { children: ReactNode }) => {
         setDecks(updatedDecks);
     };
 
+    const reorderDecks = async (newOrder: Deck[]) => {
+        const db = await getDB();
+        const updatePromises = newOrder.map((deck, index) =>
+            db.runAsync(`UPDATE decks SET position = ? WHERE id = ?`, index, deck.id)
+        );
+        await Promise.all(updatePromises);
+
+        setDecks(newOrder);
+    };
+
     return (
         <DeckContext.Provider value={{ 
             decks, 
@@ -133,7 +145,8 @@ export const DeckProvider = ({ children }: { children: ReactNode }) => {
             deleteCard, 
             editDeck, 
             editCard, 
-            importDeck 
+            importDeck,
+            reorderDecks
         }}>
             {children}
         </DeckContext.Provider>

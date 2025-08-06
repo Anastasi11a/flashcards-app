@@ -1,11 +1,13 @@
 import * as SQLite from 'expo-sqlite';
-// import * as FileSystem from 'expo-file-system';
 import { Card, Deck, DeckRow, DBCard } from './decks';
 
-const getDB = async () => {
-    return await SQLite.openDatabaseAsync('flashcards.db', {
-        useNewConnection: true
-    });
+let dbInstance: SQLite.SQLiteDatabase | null = null;
+
+export const getDB = async () => {
+    if (!dbInstance) {
+        dbInstance = await SQLite.openDatabaseAsync('flashcards.db');
+    }
+    return dbInstance;
 };
 
 export const initDatabase = async () => {
@@ -16,6 +18,7 @@ export const initDatabase = async () => {
         CREATE TABLE IF NOT EXISTS decks (
             id TEXT PRIMARY KEY NOT NULL,
             title TEXT NOT NULL,
+            position INTEGER DEFAULT 0,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         );
 
@@ -30,14 +33,19 @@ export const initDatabase = async () => {
     `);
 };
 
-export const addDeck = async (
-    id: string, title: string
-): Promise<void> => {
+export const addDeck = async (id: string, title: string): Promise<void> => {
     const db = await getDB();
+
+    const result = await db.getFirstAsync<{ count: number }>(
+        `SELECT COUNT(*) as count FROM decks`
+    );
+    const count = result?.count ?? 0;
+
     await db.runAsync(
-        `INSERT INTO decks (id, title) VALUES (?, ?)`,
+        `INSERT INTO decks (id, title, position) VALUES (?, ?, ?)`,
         id,
-        title
+        title,
+        count
     );
 };
 
@@ -110,10 +118,9 @@ export const importDeckToDB = async (
 export const getDecksWithCardsFromDB = async (): Promise<Deck[]> => {
     try {
         const db = await getDB();
-        // const decksRaw = await db.getAllAsync<DeckRow>(`SELECT * FROM decks`);
-        // const cardsRaw = await db.getAllAsync<DBCard>(`SELECT * FROM cards`);
+        
         const decksRaw = await db.getAllAsync<DeckRow>(
-            `SELECT * FROM decks ORDER BY datetime(created_at) DESC`
+            `SELECT * FROM decks ORDER BY position ASC`
         );
 
         const cardsRaw = await db.getAllAsync<DBCard>(
