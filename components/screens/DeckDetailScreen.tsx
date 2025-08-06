@@ -65,6 +65,7 @@ const DeckDetailScreen = ({ deck, isMenuVisible, onCloseMenu }: Props) => {
             deck={deck}
             isMenuVisible={isMenuVisible}
             menuButtons={menuButtons()}
+            onAddCard={handleAddPressed}
             onCloseMenu={onCloseMenu}
             onDeleteCard={handleDeleteCard}
             onEditCard={handleEditCardPressed}

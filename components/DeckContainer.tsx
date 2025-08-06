@@ -1,7 +1,8 @@
 import { Deck } from "@/data/decks";
-import DeckListContainer from "../ui/layout/DeckListContainer";
 import DeckList from "./DecksList";
 import MenuPopupButton from "./MenuPopupButton";
+import DeckListContainer from "../ui/layout/DeckListContainer";
+import FloatingAddButton from "@/ui/FloatingAddButton";
 
 interface MenuButton {
     label: string;
@@ -12,6 +13,7 @@ interface Props {
     deck: Deck;
     isMenuVisible: boolean;
     menuButtons: MenuButton[];
+    onAddCard: () => void;
     onCloseMenu: () => void;
     onDeleteCard: (cardId: string) => void;
     onEditCard: (cardId: string) => void;
@@ -19,7 +21,7 @@ interface Props {
 
 const DeckContainer = ({ 
     deck, isMenuVisible, menuButtons, 
-    onCloseMenu, onDeleteCard, onEditCard
+    onAddCard, onCloseMenu, onDeleteCard, onEditCard
 }: Props) => {
     return (
         <>
@@ -35,6 +37,7 @@ const DeckContainer = ({
                     onEdit={(card) => onEditCard(card.id)}
                     isHeaderTransparent={true} 
                 />
+                <FloatingAddButton onPress={onAddCard} />
             </DeckListContainer>
         </>
     );
