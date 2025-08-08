@@ -13,10 +13,14 @@ import {
     deleteCard as dbDeleteCard,
     editDeck as dbEditDeck,
     editCard as dbEditCard,
+    saveDeckAsFavorite,
+    getFavoriteDeckIds,
+    removeDeckFromFavoritesInDB,
 } from "@/data/db";
 
 interface DeckContextProps {
     decks: Deck[];
+    savedDecks: Deck[];
     selectedDeckId: string | null;
     setSelectedDeckId: (id: string | null) => void;
     addDeck: (title: string, cards?: Card[]) => Promise<string>;
@@ -32,6 +36,9 @@ interface DeckContextProps {
     ) => Promise<void>;
     importDeck: (deck: Deck) => Promise<void>;
     reorderDecks: (newOrder: Deck[]) => void;
+    saveDeckToFavorites: (deckId: string) => Promise<void>;
+    removeDeckFromFavorites: (deckId: string) => Promise<void>;
+    isDeckFavorite: (deckId: string) => boolean;
 }
 
 const DeckContext = createContext<DeckContextProps | undefined>(undefined);
@@ -39,12 +46,18 @@ const DeckContext = createContext<DeckContextProps | undefined>(undefined);
 export const DeckProvider = ({ children }: { children: ReactNode }) => {
     const [decks, setDecks] = useState<Deck[]>([]);
     const [selectedDeckId, setSelectedDeckId] = useState<string | null>(null);
+    const [favoriteDeckIds, setFavoriteDeckIds] = useState<string[]>([]);
 
     useEffect(() => {
         const loadDecks = async () => {
             await initDatabase();
-            const data = await getDecksWithCardsFromDB();
-            setDecks(data);
+            const [allDecks, favoriteIds] = await Promise.all([
+                getDecksWithCardsFromDB(),
+                getFavoriteDeckIds()
+            ]);
+
+            setDecks(allDecks);
+            setFavoriteDeckIds(favoriteIds);
         };
         loadDecks();
     }, []);
@@ -134,9 +147,29 @@ export const DeckProvider = ({ children }: { children: ReactNode }) => {
         setDecks(newOrder);
     };
 
+    const saveDeckToFavorites = async (deckId: string) => {
+        if (!favoriteDeckIds.includes(deckId)) {
+            await saveDeckAsFavorite(deckId);
+            setFavoriteDeckIds(prev => [deckId, ...prev]);
+        }
+    };
+
+    const removeDeckFromFavorites = async (deckId: string) => {
+        if (favoriteDeckIds.includes(deckId)) {
+            await removeDeckFromFavoritesInDB(deckId);
+            setFavoriteDeckIds(prev => prev.filter(id => id !== deckId));
+        }
+    };
+
+    const isDeckFavorite = (deckId: string) => favoriteDeckIds.includes(deckId);
+    const savedDecks = favoriteDeckIds
+        .map(id => decks.find(deck => deck.id === id))
+        .filter((d): d is Deck => !!d)
+
     return (
         <DeckContext.Provider value={{ 
-            decks, 
+            decks,
+            savedDecks, 
             selectedDeckId, 
             setSelectedDeckId, 
             addDeck, 
@@ -146,7 +179,10 @@ export const DeckProvider = ({ children }: { children: ReactNode }) => {
             editDeck, 
             editCard, 
             importDeck,
-            reorderDecks
+            reorderDecks,
+            saveDeckToFavorites,
+            isDeckFavorite,
+            removeDeckFromFavorites,
         }}>
             {children}
         </DeckContext.Provider>

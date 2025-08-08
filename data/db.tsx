@@ -30,6 +30,12 @@ export const initDatabase = async () => {
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (deck_id) REFERENCES decks(id) ON DELETE CASCADE
         );
+
+        CREATE TABLE IF NOT EXISTS favorites (
+            id TEXT PRIMARY KEY NOT NULL,
+            added_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (id) REFERENCES decks(id) ON DELETE CASCADE
+        );
     `);
 };
 
@@ -49,9 +55,7 @@ export const addDeck = async (id: string, title: string): Promise<void> => {
     );
 };
 
-export const addCard = async (
-    card: Card, deckId: string
-): Promise<void> => {
+export const addCard = async (card: Card, deckId: string): Promise<void> => {
     const db = await getDB();
     await db.runAsync(
         `INSERT INTO cards (id, deck_id, question, answer) VALUES (?, ?, ?, ?)`,
@@ -62,9 +66,7 @@ export const addCard = async (
     );
 };
 
-export const editDeck = async (
-    deckId: string, newTitle: string
-): Promise<void> => {
+export const editDeck = async (deckId: string, newTitle: string): Promise<void> => {
     const db = await getDB();
     await db.runAsync(
         `UPDATE decks SET title = ? WHERE id = ?`,
@@ -85,9 +87,7 @@ export const editCard = async (
     );
 };
 
-export const deleteDeck = async (
-    deckId: string
-): Promise<void> => {
+export const deleteDeck = async (deckId: string): Promise<void> => {
     const db = await getDB();
     await db.runAsync(
         `DELETE FROM decks WHERE id = ?`,
@@ -95,9 +95,7 @@ export const deleteDeck = async (
     );
 };
 
-export const deleteCard = async (
-    cardId: string
-): Promise<void> => {
+export const deleteCard = async (cardId: string): Promise<void> => {
     const db = await getDB();
     await db.runAsync(
         `DELETE FROM cards WHERE id = ?`,
@@ -105,14 +103,44 @@ export const deleteCard = async (
     );
 };
 
-export const importDeckToDB = async (
-    deck: Deck
-): Promise<void> => {
+export const importDeckToDB = async (deck: Deck): Promise<void> => {
     await addDeck(deck.id, deck.title);
 
     for (const card of deck.cards) {
         await addCard(card, deck.id);
     }
+};
+
+export const saveDeckAsFavorite = async (deckId: string): Promise<void> => {
+    const db = await getDB();
+
+    const existing = await db.getFirstAsync<{ count: number }>(
+        `SELECT COUNT(*) as count FROM favorites WHERE id = ?`,
+        deckId
+    );
+
+    if (existing?.count === 0) {
+        await db.runAsync(
+            `INSERT INTO favorites (id) VALUES (?)`,
+            deckId
+        );
+    }
+};
+
+export const getFavoriteDeckIds = async (): Promise<string[]> => {
+    const db = await getDB();
+    const rows = await db.getAllAsync<{ id: string }>(
+        `SELECT id FROM favorites ORDER BY datetime(added_at) DESC`
+    );
+    return rows.map(row => row.id);
+};
+
+export const removeDeckFromFavoritesInDB = async (deckId: string): Promise<void> => {
+    const db = await getDB();
+    await db.runAsync(
+        `DELETE FROM favorites WHERE id = ?`,
+        deckId
+    );
 };
 
 export const getDecksWithCardsFromDB = async (): Promise<Deck[]> => {

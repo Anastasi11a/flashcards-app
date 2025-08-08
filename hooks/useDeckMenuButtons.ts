@@ -1,5 +1,7 @@
-import { createElement, useCallback } from "react";
+import { createElement } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+
+import { useDecks } from "@/context/DeckContext";
 
 interface ButtonProps {
     deckId: string;
@@ -9,37 +11,46 @@ interface ButtonProps {
     onDelete: (deckId: string) => void;
 }
 
-export const useDeckMenuButtons = ({
-    deckId, onAdd, onEditTitle, onExport, onDelete }: ButtonProps) => {
-    return useCallback(() => {
-        const icon = (
-            name: keyof typeof MaterialCommunityIcons.glyphMap,
-            color = '#fff'
-        ) => createElement(MaterialCommunityIcons, { name, size: 24, color });
+export const useDeckMenuButtons = ({ 
+    deckId, onAdd, onEditTitle, onExport, onDelete 
+}: ButtonProps) => {
+    const { saveDeckToFavorites, removeDeckFromFavorites, isDeckFavorite } = useDecks();
+    const isFavorite = isDeckFavorite(deckId);
 
-        return [
-            { 
-                label: 'Add new card', 
-                icon: icon('playlist-plus'), 
-                onPress: onAdd,
-            },
-            { 
-                label: 'Edit title', 
-                icon: icon('playlist-edit'), 
-                onPress: onEditTitle,
+    const icon = (
+        name: keyof typeof MaterialCommunityIcons.glyphMap,
+        color = '#fff'
+    ) => createElement(MaterialCommunityIcons, { name, size: 24, color });
 
-            },
-            {
-                label: 'Export', 
-                icon: icon('export-variant'), 
-                onPress: onExport,
-            },
-            { 
-                label: 'Remove', 
-                icon: icon('delete-sweep', '#ff4d4f'), 
-                onPress: () => onDelete(deckId),
-                isDestructive: true,
-            },
-        ];
-    }, [deckId, onAdd, onEditTitle, onExport, onDelete]);
+    return [
+        { 
+            label: 'Add new card', 
+            icon: icon('playlist-plus'), 
+            onPress: onAdd,
+        },
+        { 
+            label: 'Edit title', 
+            icon: icon('playlist-edit'), 
+            onPress: onEditTitle,
+
+        },
+        {
+            label: isFavorite ? 'Remove from favorites' : 'Add to favorites',
+            icon: isFavorite ? icon('bookmark') : icon('bookmark-outline'),
+            onPress: () => isFavorite 
+                ? removeDeckFromFavorites(deckId) 
+                : saveDeckToFavorites(deckId),
+        },
+        {
+            label: 'Export', 
+            icon: icon('export-variant'), 
+            onPress: onExport,
+        },
+        { 
+            label: 'Remove', 
+            icon: icon('delete-sweep', '#ff4d4f'), 
+            onPress: () => onDelete(deckId),
+            isDestructive: true,
+        },
+    ];
 };
