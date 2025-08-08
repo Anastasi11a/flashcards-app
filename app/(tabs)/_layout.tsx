@@ -1,15 +1,15 @@
 import { Tabs } from "expo-router";
-import { Platform } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 
 import { useDecks } from "@/context/DeckContext";
-import { handleImportDeck } from "@/utils/handleImportDeck";
+import createTabIcon from "@/components/TabBarIcon";
 import HeaderOptions from "@/components/HeaderOptions";
 import BlurBackground from "@/ui/BlurBackground";
+import { handleImportDeck } from "@/utils/handleImportDeck";
+import { tabBarStyle } from "@/utils/navigationStyles";
+import { createScreenHeader } from "@/ui/header/ScreenHeader";
 
 export default function TabLayout() {
     const { importDeck } = useDecks();
-
     const handleImport = () => handleImportDeck(importDeck);
 
     return (
@@ -17,59 +17,29 @@ export default function TabLayout() {
             screenOptions={{
                 headerShadowVisible: false,
                 tabBarActiveTintColor: '#0a7ea4',
-                tabBarStyle: Platform.select({
-                    ios: { position: 'absolute' },
-                    default: {},
-                }),
+                tabBarStyle,
                 tabBarBackground: () => <BlurBackground />,
             }}>
             <Tabs.Screen 
                 name='index' 
-                options={{ 
-                    title: 'Flashcards',
-                    headerTitleAlign: 'left',
-                    headerTitleStyle: {
-                        marginTop: 10,
-                        marginStart: 12,
-                        fontSize: 28,
-                        fontWeight: 'bold',
-                        color: '#e6e6e6',
-                    },
-                    headerTransparent: true,
-                    headerStyle: {
-                        height: Platform.select({
-                            ios: 130,
-                            android: 120,
-                            default: 120,
-                        }),
-                    },
-                    headerBackground: () => <BlurBackground />,
-                    headerRight: () => <HeaderOptions onImport={handleImport} />,
-                    tabBarLabel: 'Cards collection',
-                    tabBarIcon: ({ color, focused }) => (
-                        <Ionicons 
-                            name={focused ? 'home-sharp' : 'home-outline'} 
-                            color={color} 
-                            size={24}
-                        />
-                    ),
-                }} 
+                options={{
+                    ...createScreenHeader({
+                        title: 'Flashcards',
+                        rightComponent: <HeaderOptions onImport={handleImport} />,
+                    }),
+                    tabBarLabel: 'Collections',
+                    tabBarIcon: createTabIcon('reader-outline', 'reader'),
+                }}
             />
             <Tabs.Screen 
-                name='about' 
-                options={{ 
-                    title: 'About' ,
-                    tabBarIcon: ({ color, focused }) => (
-                        <Ionicons 
-                            name={focused 
-                                ? 'information-circle' 
-                                : 'information-circle-outline'
-                            } 
-                            color={color} 
-                            size={24} 
-                        />
-                    ),
-                }} 
+                name='about'
+                options={{
+                    ...createScreenHeader({
+                        title: 'Favorites',
+                    }),
+                    tabBarLabel: 'Bookmarks',
+                    tabBarIcon: createTabIcon('bookmark-outline', 'bookmark'),
+                }}
             />
         </Tabs>
     );

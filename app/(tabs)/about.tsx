@@ -1,21 +1,37 @@
-import { Text, View } from 'react-native';
-import styled from 'styled-components';
+import { useRouter } from "expo-router";
+import { FlatList } from "react-native";
 
-export default function AboutScreen() {
+import { useDecks } from "@/context/DeckContext";
+import DeckListItem from "@/ui/DeckListItem";
+import DeckListContainer from "@/ui/layout/DeckListContainer";
+
+export default function BookmarksPage() {
+    const router = useRouter();
+    const { savedDecks, setSelectedDeckId } = useDecks();
+
+    const handlePress = (deckId: string) => {
+        setSelectedDeckId(deckId);
+        router.push('/deck/deck-detail');
+    };
+
     return (
-        <StyledView>
-            <StyledText>About screen</StyledText>
-        </StyledView>
+        <DeckListContainer>
+            <FlatList
+                data={savedDecks}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+                    <DeckListItem
+                        title={item.title}
+                        onPress={() => handlePress(item.id)}
+                    />
+                )}
+                contentContainerStyle={{
+                    gap: 4,
+                    paddingTop: 140,
+                    paddingBottom: 140,
+                    paddingHorizontal: 10,
+                }}
+            />
+        </DeckListContainer>
     );
-}
-
-const StyledView = styled(View)`
-    flex: 1;
-    justify-content: center;
-    align-items: center;
-    background-color: '#25292e';
-`;
-
-const StyledText = styled(Text)`
-    color: #808080;
-`;
+};
