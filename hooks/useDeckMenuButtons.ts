@@ -14,7 +14,12 @@ interface ButtonProps {
 export const useDeckMenuButtons = ({ 
     deckId, onAdd, onEditTitle, onExport, onDelete 
 }: ButtonProps) => {
-    const { saveDeckToFavorites, removeDeckFromFavorites, isDeckFavorite } = useDecks();
+    const { 
+        saveDeckToFavorites, 
+        removeDeckFromFavorites, 
+        isDeckFavorite, 
+        sortOrder, toggleSortCards
+    } = useDecks();
     const isFavorite = isDeckFavorite(deckId);
 
     const icon = (
@@ -33,6 +38,15 @@ export const useDeckMenuButtons = ({
             icon: icon('playlist-edit'), 
             onPress: onEditTitle,
 
+        },
+        {
+            label: 'Sort',
+            icon: icon(
+                sortOrder === 'asc'
+                    ? 'sort-alphabetical-ascending-variant'
+                    : 'sort-alphabetical-descending-variant'
+            ),
+            onPress: () => toggleSortCards(deckId),
         },
         {
             label: isFavorite ? 'Remove from favorites' : 'Add to favorites',
