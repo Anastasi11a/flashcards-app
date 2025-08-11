@@ -12,7 +12,7 @@ export default HeaderTitleStyle;
 
 const StyledTitle = styled(Text)`
     margin-top: 10px;
-    margin-start: 12px;
+    margin-start: 24px;
     font-size: 28px;
     font-weight: bold;
     color: #0a7ea4;
