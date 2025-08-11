@@ -9,7 +9,7 @@ import DeckListContainer from "@/ui/layout/DeckListContainer";
 
 export default function App() {
     const router = useRouter();
-    const { decks, setSelectedDeckId, reorderDecks } = useDecks();
+    const { decks, setSelectedDeckId, reorderDecks, isDeckFavorite } = useDecks();
     const [localDecks, setLocalDecks] = useState(decks);
 
     useEffect(() => {
@@ -27,6 +27,7 @@ export default function App() {
             onPress={() => handlePress(item.id)}
             onLongPress={drag}
             isActive={isActive}
+            isFavorite={isDeckFavorite(item.id)}
         />
     );
 
