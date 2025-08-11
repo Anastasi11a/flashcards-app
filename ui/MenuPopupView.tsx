@@ -57,7 +57,7 @@ const Overlay = styled(View)`
 `;
 
 const StyledMenuView = styled(View)`
-    width: 220px;
+    width: 240px;
     margin: 110px 10px 0 0;
     padding-vertical: 6px;
     border-radius: 12px;
