@@ -2,7 +2,7 @@ import { useRouter } from "expo-router";
 import { FlatList } from "react-native";
 
 import { useDecks } from "@/context/DeckContext";
-import DeckListItem from "@/ui/DeckListItem";
+import DeckListItemContainer from "@/components/DeckListItemContainer";
 import DeckListContainer from "@/ui/layout/DeckListContainer";
 
 export default function BookmarksPage() {
@@ -20,7 +20,8 @@ export default function BookmarksPage() {
                 data={savedDecks}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
-                    <DeckListItem
+                    <DeckListItemContainer
+                        deckId={item.id}
                         title={item.title}
                         onPress={() => handlePress(item.id)}
                     />
