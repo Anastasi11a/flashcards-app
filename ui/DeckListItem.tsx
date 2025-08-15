@@ -1,6 +1,8 @@
 import { Text, Pressable, View } from "react-native";
-import { Entypo } from "@expo/vector-icons";
+import { Entypo, Ionicons } from "@expo/vector-icons";
 import styled from "styled-components/native";
+
+import { DECK_CONTAINER, CHECKBOX } from "@/constants/colors/gradient";
 
 export interface DeckListItemProps {
     title: string;
@@ -11,6 +13,9 @@ export interface DeckListItemProps {
     isFavorite?: boolean;
     isBookmarksPage?: boolean;
     showBookmarkIcon?: boolean;
+    selectMode?: boolean;
+    checked?: boolean;
+    onToggleCheck?: () => void;
 }
 
 const DeckListItem = ({ 
@@ -21,32 +26,46 @@ const DeckListItem = ({
     isActive, 
     isFavorite,
     isBookmarksPage = false,
-    showBookmarkIcon = true
+    showBookmarkIcon = true,
+    selectMode = false,
+    checked = false,
+    onToggleCheck
 }: DeckListItemProps) => (
     <DeckContainer 
-        onPress={onPress}
+        onPress={selectMode ? undefined : onPress}
         onLongPress={onLongPress}
         $isActive={isActive}
         $isBookmarksPage={isBookmarksPage}
     >
         <DirectionView>
-            {isFavorite && showBookmarkIcon ? (
-                <BookmarkIcon name='bookmark' />
-            ) : (
-                <BookmarkPlaceholder $isBookmarksPage={isBookmarksPage} />
-            )}
-
-            <TitleContainer>
-                <DeckTitle numberOfLines={1} ellipsizeMode='tail'>
-                    {title}
-                </DeckTitle>
-
-                {isBookmarksPage && cardCount != null && (
-                    <CardCount>
-                        {cardCount} {cardCount === 1 ? 'card' : 'cards'}
-                    </CardCount>
+            <LeftSection>
+                {isFavorite && showBookmarkIcon ? (
+                    <BookmarkIcon name='bookmark' />
+                ) : (
+                    <BookmarkPlaceholder $isBookmarksPage={isBookmarksPage} />
                 )}
-            </TitleContainer>
+
+                <TitleContainer>
+                    <DeckTitle numberOfLines={1} ellipsizeMode='tail'>
+                        {title}
+                    </DeckTitle>
+                    
+                    {isBookmarksPage && cardCount != null && (
+                        <CardCount>
+                            {cardCount} {cardCount === 1 ? 'card' : 'cards'}
+                        </CardCount>
+                    )}
+                </TitleContainer>
+            </LeftSection>
+
+            {selectMode && (
+                <CheckBoxPressable hitSlop={12} onPress={onToggleCheck}>
+                    <CheckBoxIcon 
+                        name={checked ? 'checkbox' : 'square-outline'} 
+                        color={checked ? CHECKBOX.CHECKED : CHECKBOX.UNCHECKED} 
+                    />
+                </CheckBoxPressable>
+            )}
         </DirectionView>
     </DeckContainer>
 );
@@ -61,16 +80,24 @@ const DeckContainer = styled(Pressable)<{
         $isBookmarksPage ? '10px 6px' : '12px 6px'};
     border-radius: 10px;
     background-color: ${({ $isActive }) => 
-        $isActive ? '#2f343a' : '#25292e'};
+        $isActive ? DECK_CONTAINER.ACTIVE : DECK_CONTAINER.INACTIVE};
 `;
 
 const DirectionView = styled(View)`
     flex-direction: row;
     align-items: center;
+    justify-content: space-between;
 `;
 
 const TitleContainer = styled(View)`
     flex: 1;
+`;
+
+const LeftSection = styled(View)`
+    flex: 1;
+    flex-direction: row;
+    margin-right: 6px;
+    align-items: center;
 `;
 
 const DeckTitle = styled(Text)`
@@ -100,3 +127,9 @@ const BookmarkPlaceholder = styled(View)<{
         $isBookmarksPage ? '10px' : '20px'}; 
     margin-right: 4px;
 `;
+
+const CheckBoxPressable = styled(Pressable)``;
+
+const CheckBoxIcon = styled(Ionicons).attrs({
+    size: 32,
+})``;
