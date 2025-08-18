@@ -1,8 +1,5 @@
-import { View } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import styled from "styled-components/native";
-
-import GradientButton from "../ui/GradientButton";
+import HeaderActionsView from "./header/HeaderActionsView";
 
 interface HeaderOptionsViewProps {
     onImport: () => void;
@@ -10,26 +7,27 @@ interface HeaderOptionsViewProps {
 }
 
 const HeaderOptionsView = ({ onImport, onCreate }: HeaderOptionsViewProps) => {
+    
     return (
-        <HeaderButtonContainer>
-            <GradientButton
-                icon={<Ionicons name='download-outline' size={24} color='#fff' />}
-                colors={['#474f59', '#25292e']}
-                onPress={onImport}
-            />
-            <GradientButton
-                icon={<MaterialIcons name='add' size={24} color="#fff" />}
-                colors={['#64d1f5', '#0a7ea4']}
-                onPress={onCreate}
-            />
-        </HeaderButtonContainer>
+        <HeaderActionsView
+            actions={[
+                {
+                    key: 'import',
+                    icon: Ionicons,
+                    iconName: 'download-outline',
+                    gradientVariant: 'GRAY',
+                    onPress: onImport,
+                },
+                {
+                    key: 'create',
+                    icon: MaterialIcons,
+                    iconName: 'add',
+                    gradientVariant: 'BLUE',
+                    onPress: onCreate,
+                },
+            ]}
+        />
     );
 };
 
 export default HeaderOptionsView;
-
-const HeaderButtonContainer = styled(View)`
-    flex-direction: row;
-    margin-right: 12px;
-    gap: 12px;    
-`;
