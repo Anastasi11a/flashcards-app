@@ -2,10 +2,15 @@ import { useDecks } from "@/context/DeckContext";
 import SelectButtonView from "@/ui/SelectButtonView";
 
 const SelectButtonContainer = () => {
-    const { selectMode, setSelectMode } = useDecks();
+    const { selectMode, setSelectMode, clearSelection } = useDecks();
 
     const handleSelectPressed = () => {
-        setSelectMode(!selectMode);
+        if (selectMode) {
+            clearSelection();
+            setSelectMode(false);
+        } else {
+            setSelectMode(true);
+        }
     };
     
     return (
