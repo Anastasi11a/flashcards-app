@@ -2,7 +2,7 @@ import { View } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import styled from "styled-components/native";
 
-import GradientButton from "./GradientButton";
+import ButtonGradientView from "./ButtonGradientView";
 
 interface Props {
     onPress: () => void;
@@ -11,16 +11,12 @@ interface Props {
 const FloatingAddButton = ({ onPress }: Props) => {
     return (
         <Container>
-            <GradientButton
-                icon={
-                    <MaterialCommunityIcons 
-                        name='playlist-plus' 
-                        size={28} 
-                        color="#fff" 
-                    />
-                }
-                size={52}
-                colors={['#64d1f5', '#0a7ea4']}
+            <ButtonGradientView
+                icon={MaterialCommunityIcons}
+                iconName='playlist-plus'
+                iconSize={28}
+                gradientVariant='BLUE'
+                buttonSize={52}
                 onPress={onPress}
             />
         </Container>
