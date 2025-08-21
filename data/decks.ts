@@ -15,3 +15,13 @@ export type Card = {
 export type DBCard = Card & {
     deck_id: string;
 };
+
+export type Folder = {
+    id: string;
+    title: string;
+};
+
+export type FolderWithDecks = Folder & {
+    deckIds: string[];
+    decks?: Deck[];
+}; 
