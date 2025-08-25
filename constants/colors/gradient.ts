@@ -1,6 +1,6 @@
-export const CHECKLIST = {
-    ACTIVE: ['#474f59', '#25292e'] as [string, string],
-    INACTIVE: ['#64d1f5', '#0a7ea4'] as [string, string],
+export const GRADIENTS = {
+    GRAY: ['#474f59', '#25292e'] as [string, string],
+    BLUE: ['#64d1f5', '#0a7ea4'] as [string, string],
 };
 
 export const DECK_CONTAINER = {
