@@ -20,8 +20,13 @@ const CreateFolder = () => {
         }
 
         try {
-            await addFolder(trimmedTitle);
-            router.back();
+            // await addFolder(trimmedTitle);
+            // router.back();
+            const folderId = await addFolder(trimmedTitle);
+            router.push({
+                pathname: '/folder/select',
+                params: { folderId },
+            })
         } catch (error) {
             console.error('Error creating folder:', error);
             Alert.alert('Failed to create folder');
