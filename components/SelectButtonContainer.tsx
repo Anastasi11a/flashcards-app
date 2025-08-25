@@ -1,22 +1,21 @@
 import { useDecks } from "@/context/DeckContext";
 import SelectButtonView from "@/ui/SelectButtonView";
 
-const SelectButtonContainer = () => {
-    const { selectMode, setSelectMode, clearSelection } = useDecks();
+interface Props {
+    allIds: string[];
+}
 
-    const handleSelectPressed = () => {
-        if (selectMode) {
-            clearSelection();
-            setSelectMode(false);
-        } else {
-            setSelectMode(true);
-        }
+const SelectButtonContainer = ({ allIds }: Props) => {
+    const { selection } = useDecks();
+
+    const handlePressed = () => {
+        selection.toggleAll(allIds);
     };
-    
+
     return (
         <SelectButtonView 
-            isActive={selectMode} 
-            onPress={handleSelectPressed} 
+            isActive={selection.allMode} 
+            onPress={handlePressed} 
         />
     );
 };
