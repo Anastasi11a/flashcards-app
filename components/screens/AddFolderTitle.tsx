@@ -18,10 +18,10 @@ const AddFolderTitle = ({ title, setTitle }: AddFolderTitleProps) => {
                 <FolderTitleInput
                     inputRef={inputRef}
                     value={title}
-                    maxLength={50}
+                    maxLength={38}
                     onChangeText={setTitle}
                 />
-                <FolderTitleCounter count={title.length} max={50} />
+                <FolderTitleCounter count={title.length} max={38} />
             </AddFolderWrapper>
         </ScreenContainer>
     );
