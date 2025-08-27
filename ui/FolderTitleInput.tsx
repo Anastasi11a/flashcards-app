@@ -2,6 +2,8 @@ import { View, TextInput, TextInputProps } from "react-native";
 import styled from "styled-components/native";
 
 import ClearButton from "./ClearButton";
+import { BaseContainer } from "@/constants/containers/BaseContainer";
+import { baseTextStyles } from "@/constants/text/textStyles";
 
 interface Props extends TextInputProps {
     inputRef?: React.Ref<TextInput>;
@@ -37,25 +39,17 @@ const CenteredWrapper = styled(View)`
     margin-bottom: 4px;
 `;
 
-const InputContainer = styled(View)`
+const InputContainer = styled(BaseContainer)`
     width: 220px;
-    height: 60px;
-    justify-content: center;
-    align-items: center;
-    border-radius: 10px;
-    background-color: #2f343a;
 `;
 
 const StyledInput = styled(TextInput).attrs({
     selectionColor: '#aaa',
 })`
+    ${baseTextStyles}
     width: 100%;
     height: 100%;
     padding: 12px 36px 12px 16px;
-    font-weight: 500;
-    line-height: 21px;
-    letter-spacing: 0.2px;
-    color: #fff;
 `;
 
 const ClearButtonWrapper = styled(View)`
