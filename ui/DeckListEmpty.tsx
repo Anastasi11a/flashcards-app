@@ -1,11 +1,13 @@
 import { View, Text } from "react-native";
 import styled from "styled-components/native";
 
-const DeckListEmpty = () => (
+interface Props {
+    children: React.ReactNode;
+}
+
+const DeckListEmpty = ({ children }: Props) => (
     <StyledContainer>
-        <StyledMessage>
-            No cards yet. Start by adding one!
-        </StyledMessage>
+        <StyledMessage>{children}</StyledMessage>
     </StyledContainer>
 );
 
@@ -13,6 +15,8 @@ export default DeckListEmpty;
 
 const StyledContainer = styled(View)`
     padding: 20px;
+    align-items: center;
+    justify-content: center;
 `;
 
 const StyledMessage = styled(Text)`
