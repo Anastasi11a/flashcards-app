@@ -15,6 +15,8 @@ const SelectButtonView = ({ isActive, onPress }: SelectButtonViewProps) => {
             <ButtonGradientView
                 icon={MaterialIcons}
                 iconName='checklist-rtl'
+                buttonSize={42}
+                borderRadius={10}
                 gradientVariant={isActive ? 'BLUE' : 'GRAY'}
                 onPress={onPress}
             />
@@ -25,5 +27,6 @@ const SelectButtonView = ({ isActive, onPress }: SelectButtonViewProps) => {
 export default SelectButtonView;
 
 const StyledButtonView = styled(View)`
-    margin-right: 12px;
+    margin-right: -6px;
+    margin-bottom: 12px;
 `;
