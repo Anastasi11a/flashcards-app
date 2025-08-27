@@ -11,10 +11,7 @@ export interface RightButtonProps {
 
 const HeaderRightButton = ({ onPress, label, iconName, textStyle }: RightButtonProps) => {
     return (
-        <TouchableOpacity
-            onPress={onPress}
-            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
-
+        <TouchableOpacity hitSlop={12} onPress={onPress}>
             {iconName ? (
                 <SimpleLineIcons name={iconName} size={18} color='#808080' />
             ) : (
