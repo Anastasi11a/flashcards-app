@@ -3,11 +3,17 @@ import { FlatList } from "react-native";
 
 import { useDecks } from "@/context/DeckContext";
 import DeckListItemContainer from "@/components/DeckListItemContainer";
+import FolderListItem from "@/components/FolderListItem";
 import DeckListContainer from "@/ui/layout/DeckListContainer";
+import { HEADER_HEIGHT, FOLDER_BAR_HEIGHT } from "@/constants/height/header";
+import { flatListContentStyle } from "@/constants/flatlist/flatListStyles";
 
 export default function BookmarksPage() {
     const router = useRouter();
-    const { savedDecks, setSelectedDeckId } = useDecks();
+    const { savedDecks, setSelectedDeckId, folders } = useDecks();
+
+    const hasFolders = folders.length > 0;
+    const listPaddingTop = HEADER_HEIGHT + (hasFolders ? FOLDER_BAR_HEIGHT : 10);
 
     const handlePress = (deckId: string) => {
         setSelectedDeckId(deckId);
@@ -16,6 +22,7 @@ export default function BookmarksPage() {
 
     return (
         <DeckListContainer>
+            <FolderListItem folders={folders} />
             <FlatList
                 data={savedDecks}
                 keyExtractor={(item) => item.id}
@@ -27,10 +34,8 @@ export default function BookmarksPage() {
                     />
                 )}
                 contentContainerStyle={{
-                    gap: 4,
-                    paddingTop: 140,
-                    paddingBottom: 140,
-                    paddingHorizontal: 10,
+                    paddingTop: listPaddingTop,
+                    ...flatListContentStyle,
                 }}
             />
         </DeckListContainer>
