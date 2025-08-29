@@ -14,10 +14,11 @@ export interface IconProps {
     iconColor?: string;
     gradientVariant?: GradientVariant;
     buttonSize?: number;
+    borderRadius?: number;
 }
 
 interface ButtonGradientViewProps extends IconProps{
-    onPress: () => void;
+    onPress?: () => void;
 }
 
 const ButtonGradientView = ({ 
@@ -27,12 +28,17 @@ const ButtonGradientView = ({
     iconColor = '#fff', 
     gradientVariant = 'BLUE',
     buttonSize = 46,
+    borderRadius = 16,
     onPress,
 }: ButtonGradientViewProps) => {
     const gradientColors = GRADIENTS[gradientVariant];
 
     return (
-        <GradientOverlay colors={gradientColors} size={buttonSize}>
+        <GradientOverlay 
+            colors={gradientColors} 
+            size={buttonSize}
+            borderRadius={borderRadius}
+        >
             <StyledPressable onPress={onPress}>
                 <Icon name={iconName} size={iconSize} color={iconColor} />
             </StyledPressable>
@@ -42,10 +48,13 @@ const ButtonGradientView = ({
 
 export default ButtonGradientView;
 
-const GradientOverlay = styled(LinearGradient)<{ size: number }>`
+const GradientOverlay = styled(LinearGradient)<{ 
+    size: number; 
+    borderRadius: number;
+}>`
     width: ${({ size }) => size}px;
     height: ${({ size }) => size}px;
-    border-radius: 16px;
+    border-radius: ${({ borderRadius }) => borderRadius}px;
     justify-content: center;
     align-items: center;
 `;
