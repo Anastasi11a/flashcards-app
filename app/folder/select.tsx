@@ -5,12 +5,14 @@ import { useLocalSearchParams } from "expo-router";
 import { useDecks } from "@/context/DeckContext";
 import useCustomHeader from "@/hooks/useCustomHeader";
 import SelectButtonContainer from "@/components/SelectButtonContainer";
-import ActionButtonsBar from "@/ui/ActionButtonsBar";
+import ActionButtonsBar from "@/components/ActionButtonsBar";
 import DeckListContainer from "@/ui/layout/DeckListContainer";
 import DeckListItem from "@/ui/DeckListItem";
+import { PADDING_TOP } from "@/constants/height/header";
+import { flatListContentStyle } from "@/constants/flatlist/flatListStyles";
 
 const SelectFolder = () => {
-    const { decks, selection } = useDecks();
+    const { savedDecks, selection } = useDecks();
     const { folderId } = useLocalSearchParams<{ folderId: string }>();
 
     useEffect(() => {
@@ -20,15 +22,17 @@ const SelectFolder = () => {
 
     useCustomHeader({
         title: 'Select Folders',
+        headerTransparent: true,
+        headerBlurEffect: 'regular',
         rightButton: () => (
-            <SelectButtonContainer allIds={decks.map((d) => d.id)}/>
+            <SelectButtonContainer allIds={savedDecks.map((d) => d.id)}/>
         ),
     });
 
     return (
         <DeckListContainer>
             <FlatList
-                data={decks}
+                data={savedDecks}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
                     <DeckListItem
@@ -40,13 +44,11 @@ const SelectFolder = () => {
                     />
                 )}
                 contentContainerStyle={{
-                    gap: 4,
-                    paddingTop: 12,
-                    paddingBottom: 140,
-                    paddingHorizontal: 10,
+                    paddingTop: PADDING_TOP,
+                    ...flatListContentStyle, 
                 }}
             />
-            {folderId ? <ActionButtonsBar folderId={folderId} /> : null}
+            <ActionButtonsBar folderId={folderId} />
         </DeckListContainer>
     );
 };
