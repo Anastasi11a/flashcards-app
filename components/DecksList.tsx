@@ -1,6 +1,5 @@
 import { useState, useRef, useCallback } from "react";
 import { FlatList } from "react-native";
-import { useHeaderHeight } from "@react-navigation/elements";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import type SwipeableType from "react-native-gesture-handler/Swipeable";
 
@@ -8,6 +7,7 @@ import { Card } from "@/data/decks";
 import SwipeOptions from "./SwipeOptions";
 import DeckCardItem from "@/ui/DeckCardItem";
 import DeckListEmpty from "@/ui/DeckListEmpty";
+import { flatListStyles } from "@/utils/contentContainerStyle";
 
 type SwipeableRef = SwipeableType | null;
 
@@ -19,11 +19,12 @@ interface DeckListProps {
 }
 
 const DeckList = ({ 
-    cards, onDelete, onEdit, isHeaderTransparent = false 
+    cards, 
+    onDelete, 
+    onEdit, 
+    isHeaderTransparent = false
 }: DeckListProps) => {
     const swipeableRefs = useRef<Record<string, SwipeableRef>>({});
-    const headerHeight = useHeaderHeight();
-    const paddingTop = isHeaderTransparent ? headerHeight : 0;
 
     const [visibleAnswers, setVisibleAnswers] = useState<Record<string, boolean>>({});
     const [swipingCardId, setSwipingCardId] = useState<string | null>(null);
@@ -72,14 +73,10 @@ const DeckList = ({
             data={cards}
             keyExtractor={(item) => item.id}
             renderItem={renderItem}
-            contentContainerStyle={{
-                gap: 4,
-                marginVertical: 16,
-                paddingTop,
-                paddingBottom: 140,
-                paddingHorizontal: 10,
-            }}
-            ListEmptyComponent={<DeckListEmpty />}
+            ListEmptyComponent={
+                <DeckListEmpty>No cards yet. Start by adding one!</DeckListEmpty>
+            }
+            contentContainerStyle={flatListStyles.deckList(isHeaderTransparent)}
         />
     );
 };
