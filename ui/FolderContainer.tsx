@@ -19,7 +19,11 @@ const FolderContainer = ({ title, count = 0, onPress }: Props) => {
                 {title}
             </FolderTitle>
 
-            <CountBadge icon={Ionicons} iconName='albums' count={count} />
+            <CountBadgeWrapper 
+                icon={Ionicons} 
+                iconName='albums' 
+                count={count} 
+            />
         </FolderButton>
     );
 };
@@ -29,14 +33,22 @@ export default FolderContainer;
 const FolderButton = styled(BaseContainer).attrs({
     as: TouchableOpacity,
 })`
+    position: relative;
     width: 160px;
     margin-right: 8px;
     align-items: flex-start;
-    padding: 12px 20px 6px;
+    
 `;
 
 const FolderTitle = styled(Text)`
     ${baseTextStyles}
     width: 100%;
     text-align: left;
+    padding: 4px 20px 16px;
+`;
+
+const CountBadgeWrapper = styled(CountBadge)`
+    position: absolute;
+    bottom: 6px;
+    left: 20px;
 `;
