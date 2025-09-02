@@ -1,38 +1,42 @@
-import { View, Text } from "react-native";
+import { Text, TouchableOpacity } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import styled from "styled-components/native";
+
+import CountBadge from "./CountBadge";
+import { BaseContainer } from "@/constants/containers/BaseContainer";
+import { baseTextStyles } from "@/constants/text/textStyles";
 
 interface Props {
     title: string;
+    count?: number;
+    onPress: () => void;
 }
 
-const FolderContainer = ({ title }: Props) => {
+const FolderContainer = ({ title, count = 0, onPress }: Props) => {
     return (
-        <FolderView>
+        <FolderButton onPress={onPress}>
             <FolderTitle numberOfLines={2} ellipsizeMode='tail'>
                 {title}
             </FolderTitle>
-        </FolderView>
+
+            <CountBadge icon={Ionicons} iconName='albums' count={count} />
+        </FolderButton>
     );
 };
 
 export default FolderContainer;
 
-const FolderView = styled(View)`
+const FolderButton = styled(BaseContainer).attrs({
+    as: TouchableOpacity,
+})`
     width: 160px;
-    height: 70px;
     margin-right: 8px;
-    justify-content: center;
-    align-items: center;
-    border-radius: 10px;
-    background-color: #2f343a;  
+    align-items: flex-start;
+    padding: 12px 20px 6px;
 `;
 
 const FolderTitle = styled(Text)`
+    ${baseTextStyles}
     width: 100%;
-    padding: 12px 16px;
-    font-weight: 500;
-    line-height: 18px;
-    letter-spacing: 0.2px;
-    color: #fff;
-    text-align: center;
+    text-align: left;
 `;
