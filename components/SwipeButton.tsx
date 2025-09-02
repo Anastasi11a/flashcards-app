@@ -1,4 +1,5 @@
 import SwipeButtonView, { IconName } from "@/ui/SwipeButtonView";
+import { GRADIENTS } from "@/constants/colors/gradient";
 
 type IconType = 'edit' | 'delete';
 
@@ -8,16 +9,14 @@ interface SwipeButtonProps {
     onPress: () => void;
 }
 
-const gradientMap: Record<IconType, [string, string]> = {
-    delete: ['#ff5f6d', '#d11a2a'],
-    edit: ['#42e695', '#035e04'],
-};
-
 const SwipeButton = ({ iconName, iconType, onPress }: SwipeButtonProps) => {
+    const gradientColors =
+        iconType === 'delete' ? GRADIENTS.DELETE : GRADIENTS.EDIT;
+
     return (
         <SwipeButtonView
             iconName={iconName}
-            gradientColors={gradientMap[iconType]}
+            gradientColors={gradientColors}
             onPress={onPress}
         />
     ); 

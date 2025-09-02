@@ -1,6 +1,8 @@
 export const GRADIENTS = {
     GRAY: ['#474f59', '#25292e'] as [string, string],
     BLUE: ['#64d1f5', '#0a7ea4'] as [string, string],
+    DELETE: ['#ff5f6d', '#d11a2a'] as [string, string],
+    EDIT: ['#42e695', '#035e04'] as [string, string],
 };
 
 export const DECK_CONTAINER = {
@@ -11,4 +13,9 @@ export const DECK_CONTAINER = {
 export const CHECKBOX = {
     CHECKED: '#64d1f5',
     UNCHECKED: '#b3b3b3',
+} as const;
+
+export const BUTTON_LABEL = {
+    ACTIVE: '#fff',
+    DISABLED: '#9aa0a6',
 } as const;
