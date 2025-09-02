@@ -1,16 +1,10 @@
 import { useState } from "react";
-import { FlatList } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { Swipeable } from "react-native-gesture-handler";
 
 import { useDecks } from "@/context/DeckContext";
 import useCustomHeader from "@/hooks/useCustomHeader";
-import DeckListContainer from "@/ui/layout/DeckListContainer";
-import DeckListItem from "@/ui/DeckListItem";
-import DeckListEmpty from "@/ui/DeckListEmpty";
-import SwipeOptionsView from "@/ui/SwipeOptionsView";
+import FolderDetailScreen from "@/components/screens/FolderDetailScreen";
 import RemoveFolderButton from "@/ui/RemoveFolderButton";
-import { flatListStyles } from "@/utils/contentContainerStyle";
 import { confirmRemoveFolder } from "@/utils/confirmRemoveFolder";
 
 const FolderDetail = () => {
@@ -45,39 +39,22 @@ const FolderDetail = () => {
         ? currentFolder?.decks ?? []
         : decks.filter(d => new Set(selection?.selectedIds ?? []).has(d.id));
 
-    const handlePress = (deckId: string) => {
+    const handlePressDeck = (deckId: string) => {
         setSelectedDeckId?.(deckId);
         router.push('/deck/deck-detail');
     };
 
-    const renderRightActions = (deckId: string) => (
-        <SwipeOptionsView
-            onDeletePress={() => {
-                if (!folderId) return;
-                removeDeckFromFolder(deckId, folderId);
-            }}
-        />
-    );
+    const handleDeleteDeck = (deckId: string) => {
+        if (!folderId) return;
+        removeDeckFromFolder(deckId, folderId);
+    };
 
     return (
-        <DeckListContainer>
-            <FlatList
-                data={shownDecks}
-                keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (
-                    <Swipeable renderRightActions={() => renderRightActions(item.id)}>
-                        <DeckListItem
-                            title={item.title}
-                            onPress={() => handlePress(item.id)}
-                            showCheckbox={false}
-                            showBookmarkIcon={false}
-                        />
-                    </Swipeable>
-                )}
-                ListEmptyComponent={<DeckListEmpty>No decks found</DeckListEmpty>}
-                contentContainerStyle={flatListStyles.folderDetail()}
-            />
-        </DeckListContainer>
+        <FolderDetailScreen
+            shownDecks={shownDecks}
+            onPressDeck={handlePressDeck}
+            onDeleteDeck={handleDeleteDeck}
+        />
     );
 };
 
