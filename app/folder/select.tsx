@@ -1,15 +1,10 @@
 import { useEffect } from "react";
-import { FlatList } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 
 import { useDecks } from "@/context/DeckContext";
 import useCustomHeader from "@/hooks/useCustomHeader";
+import SelectFolderScreen from "@/components/screens/SelectFolderScreen";
 import SelectButtonContainer from "@/components/SelectButtonContainer";
-import ActionButtonsBar from "@/components/ActionButtonsBar";
-import DeckListContainer from "@/ui/layout/DeckListContainer";
-import DeckListItem from "@/ui/DeckListItem";
-import { PADDING_TOP } from "@/constants/height/header";
-import { flatListContentStyle } from "@/constants/flatlist/flatListStyles";
 
 const SelectFolder = () => {
     const { savedDecks, selection } = useDecks();
@@ -30,26 +25,11 @@ const SelectFolder = () => {
     });
 
     return (
-        <DeckListContainer>
-            <FlatList
-                data={savedDecks}
-                keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (
-                    <DeckListItem
-                        title={item.title}
-                        checked={selection.selectedIds.includes(item.id)}
-                        onToggleCheck={() => selection.toggle(item.id)}
-                        showCheckbox={true} 
-                        showBookmarkIcon={false}
-                    />
-                )}
-                contentContainerStyle={{
-                    paddingTop: PADDING_TOP,
-                    ...flatListContentStyle, 
-                }}
-            />
-            <ActionButtonsBar folderId={folderId} />
-        </DeckListContainer>
+        <SelectFolderScreen
+            savedDecks={savedDecks}
+            selection={selection}
+            folderId={folderId}
+        />
     );
 };
 
