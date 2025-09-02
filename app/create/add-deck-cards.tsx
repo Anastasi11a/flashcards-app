@@ -8,22 +8,26 @@ import useCustomHeader from '@/hooks/useCustomHeader';
 
 export default function AddDeckCards() {
     const router = useRouter();
-    const { title, deckId: paramDeckId } = useLocalSearchParams<{ title: string; deckId?: string }>();
+    const { title, deckId: paramDeckId } = useLocalSearchParams<{ 
+        title: string; 
+        deckId?: string 
+    }>();
     const { addDeck } = useDecks();
     const [deckId, setDeckId] = useState<string | null>(paramDeckId ?? null);
 
     useEffect(() => {
         const createDeckIfNeeded = async () => {
             if (!deckId && title) {
-                try {
-                    const newDeckId = await addDeck(title);
-                    setDeckId(newDeckId);
-                } catch (error) {
-                    Alert.alert('Failed to create deck');
+                const newDeckId = await addDeck(title);
+                if (!newDeckId) {
+                    Alert.alert("Failed to create deck");
+                    return;
                 }
+                setDeckId(newDeckId);
             }
         };
         createDeckIfNeeded();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [deckId, title]);
 
     const handleCreateDeck = () => {
@@ -31,12 +35,11 @@ export default function AddDeckCards() {
             Alert.alert('Add at least one card');
             return;
         }
-
         router.push('/(tabs)');
     };
 
     useCustomHeader({
-        title: 'Cards list',
+        title: 'Create list',
         rightButton: {
             label: 'Save',
             onPress: handleCreateDeck,
