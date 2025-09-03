@@ -4,7 +4,7 @@ import { useDecks } from "@/context/DeckContext";
 import DeckDetailScreen from "@/components/screens/DeckDetailScreen";
 import useCustomHeader from "@/hooks/useCustomHeader";
 
-const DeckScreen: React.FC = () => {
+const DeckScreen = () => {
     const [isMenuVisible, setMenuVisible] = useState(false);
     
     const { decks, selectedDeckId } = useDecks(); 
