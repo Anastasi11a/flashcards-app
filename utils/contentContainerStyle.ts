@@ -1,7 +1,7 @@
 import { ViewStyle } from "react-native";
 import { headerStyle } from "./navigationStyles";
 
-const HEADER_DEFAULT = (headerStyle.height as number) ?? 120;
+export const HEADER_DEFAULT = (headerStyle.height as number) ?? 120;
 const HEADER_SELECT_FOLDER = 110;
 const HEADER_REGULAR = 100;
 
@@ -28,6 +28,12 @@ const base = (paddingTop: number): ViewStyle => ({
 });
 
 export const flatListStyles = {
+    appDecks: (): ViewStyle => ({
+        ...base(HEADER_DEFAULT),
+        marginVertical: TOKENS.deckListMarginVertical,
+        paddingBottom: TOKENS.deckListPaddingBottom,
+    }),
+
     bookmarks: (hasFolders: boolean): ViewStyle => {
         const pt =
             HEADER_DEFAULT + (hasFolders ? FOLDER_BAR_HEIGHT : NO_FOLDERS_EXTRA);
