@@ -17,7 +17,6 @@ const EditTitle = () => {
 
     useCustomHeader({  
         title: 'Edit Title',
-        headerTransparent: true,
         rightButton: {
             label: 'Save',
             onPress: () => {
@@ -28,7 +27,7 @@ const EditTitle = () => {
     });
 
     return (
-        <ScreenContainer withHeaderPadding>
+        <ScreenContainer>
            <DeckTitleContainer>
                 <InputField
                     inputRef={inputRef}
