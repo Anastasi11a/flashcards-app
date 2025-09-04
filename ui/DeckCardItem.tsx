@@ -1,21 +1,19 @@
 import { Text, Pressable } from "react-native";
 import styled from "styled-components/native";
 
-interface DeckCardItemProps {
+interface Props {
     isAnswerVisible: boolean;
     question: string;
     answer: string;
     onPress: () => void;
 }
 
-const DeckCardItem = ({ 
-    isAnswerVisible, question, answer, onPress 
-}: DeckCardItemProps) => (
+const DeckCardItem = ({ isAnswerVisible, question, answer, onPress }: Props) => (
     <DeckContainer onPress={onPress}>
         <StyledQuestion>{question}</StyledQuestion>
-        {isAnswerVisible && 
+        {isAnswerVisible && (
             <StyledAnswer>{answer}</StyledAnswer>
-        }
+        )}
     </DeckContainer>
 );
 
@@ -24,23 +22,23 @@ export default DeckCardItem;
 const DeckContainer = styled(Pressable)`
     padding: 12px 16px;
     border-radius: 10px;
-    background-color: #25292e;
+    background-color: #252930;
 `;
 
-const StyledInput = styled(Text)`
-    line-height: 22px;
-    letter-spacing: 0.4px;
+const BaseText = styled(Text)`
+    font-size: 16px;
+    line-height: 21px;
+    letter-spacing: 0.3px;
     text-align-vertical: top;
 `; 
 
-const StyledQuestion = styled(StyledInput)`
-    font-size: 18px;
-    font-weight: bold;
-    color: #0a7ea4;
+const StyledQuestion = styled(BaseText)`
+    font-weight: 600;
+    color: #4da6ff;
 `;
 
-const StyledAnswer = styled(StyledInput)`
-    margin-top: 10px;
-    font-size: 16px;
+const StyledAnswer = styled(BaseText)`
+    margin-top: 12px;
+    font-weight: 400;
     color: #e6e6e6;
 `;
