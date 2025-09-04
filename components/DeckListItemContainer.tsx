@@ -6,7 +6,7 @@ type ContainerProps = Pick<DeckListItemProps, 'title' | 'onPress' | 'onLongPress
 };
 
 const DeckListItemContainer = ({ deckId, ...rest }: ContainerProps) => {
-    const { isDeckFavorite, savedDecks } = useDecks();
+    const { favorites, savedDecks } = useDecks();
 
     const deck = savedDecks.find(d => d.id === deckId);
     const cardCount = deck ? deck.cards.length : 0;
@@ -14,7 +14,7 @@ const DeckListItemContainer = ({ deckId, ...rest }: ContainerProps) => {
     return (
         <DeckListItem
             {...rest}
-            isFavorite={isDeckFavorite(deckId)}
+            isFavorite={favorites.isFavorite(deckId)}
             cardCount={cardCount}
             isBookmarksPage={true}
             showBookmarkIcon={false}
