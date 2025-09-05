@@ -1,15 +1,17 @@
-import { Text, View, Dimensions } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 import styled from "styled-components/native";
+
+import { TitleText } from "../common/TitleText";
 
 interface Props {
     title: string;
 }
 
 const HeaderTitle = ({ title }: Props) => {
-    const screenWidth = Dimensions.get('window').width;
+    const { width } =useWindowDimensions();
 
     return (
-        <TitleContainer style={{ maxWidth: screenWidth - 146 }}>
+        <TitleContainer $maxWidth={width - 146}>
             <StyledTitle numberOfLines={2}>{title}</StyledTitle>
         </TitleContainer>
     );
@@ -17,16 +19,13 @@ const HeaderTitle = ({ title }: Props) => {
 
 export default HeaderTitle;
 
-const TitleContainer = styled(View)`
+const TitleContainer = styled(View)<{ $maxWidth: number }>`
     align-items: center;
     justify-content: center;
+    max-width: ${({ $maxWidth }) => $maxWidth}px;
 `;
 
-const StyledTitle = styled(Text)`
-    font-size: 18px;
-    font-weight: bold;
+const StyledTitle = styled(TitleText)`
     text-align: center;
-    line-height: 22px;
-    letter-spacing: 0.4px;
-    color: #e6e6e6;
+    line-height: 21px;
 `;
