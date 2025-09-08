@@ -12,13 +12,13 @@ export default function AddDeckCards() {
         title: string; 
         deckId?: string 
     }>();
-    const { addDeck } = useDecks();
+    const { actions } = useDecks();
     const [deckId, setDeckId] = useState<string | null>(paramDeckId ?? null);
 
     useEffect(() => {
         const createDeckIfNeeded = async () => {
             if (!deckId && title) {
-                const newDeckId = await addDeck(title);
+                const newDeckId = await actions.addDeck(title);
                 if (!newDeckId) {
                     Alert.alert("Failed to create deck");
                     return;
