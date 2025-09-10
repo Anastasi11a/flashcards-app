@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useRouter } from "expo-router";
 import { Alert } from "react-native";
 
@@ -7,22 +6,23 @@ import AddTitle from "@/components/screens/AddTitle";
 import useCustomHeader from "@/hooks/useCustomHeader";
 
 const AddDeckTitleScreen = () => {
-    const { actions } = useDecks();
-    const [title, setTitle] = useState('');
+    const { actions, draftTitle } = useDecks();
     const router = useRouter();
 
     const handleNextPressed = async () => {
-        const trimmedTitle = title.trim();
+        const trimmedTitle = draftTitle.value.trim();
 
         if (trimmedTitle === '') {
-            Alert.alert('Please enter a deck title.');
+            Alert.alert('Please enter a deck title');
             return;
         }
 
-        const deckId = await actions.addDeck(title);
+        const deckId = await actions.addDeck(trimmedTitle);
+        draftTitle.clear();
+
         router.push({ 
             pathname: '/create/add-deck-cards', 
-            params: { title, deckId } 
+            params: { title: trimmedTitle, deckId } 
         });
     };
 
@@ -34,7 +34,12 @@ const AddDeckTitleScreen = () => {
         },
     });
 
-    return <AddTitle title={title} setTitle={setTitle} />
+    return (
+        <AddTitle 
+            title={draftTitle.value} 
+            setTitle={draftTitle.set} 
+        />
+    );
 };
 
 export default AddDeckTitleScreen;

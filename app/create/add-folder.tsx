@@ -1,47 +1,46 @@
-import { useState } from "react";
 import { useRouter } from "expo-router";
 import { Alert } from "react-native";
 
 import { useDecks } from "@/context/DeckContext";
-import AddFolderTitle from "@/components/screens/AddFolderTitle";
 import useCustomHeader from "@/hooks/useCustomHeader";
+import AddTitle from "@/components/screens/AddTitle";
 
-const CreateFolder = () => {
-    const { addFolder } = useDecks();
-    const [title, setTitle] = useState('');
+const CreateFolder = () => {    
+    const { draftTitle, folder } = useDecks();
     const router = useRouter();
 
     const handleConfirmPressed = async () => {
-        const trimmedTitle = title.trim();
+        const trimmedTitle = draftTitle.value.trim();
 
-        if (trimmedTitle === '') {
+        if (!trimmedTitle) {
             Alert.alert('Please enter a folder title');
             return;
         }
 
-        try {
-            // await addFolder(trimmedTitle);
-            // router.back();
-            const folderId = await addFolder(trimmedTitle);
-            router.push({
-                pathname: '/folder/select',
-                params: { folderId },
-            })
-        } catch (error) {
-            console.error('Error creating folder:', error);
-            Alert.alert('Failed to create folder');
-        }
+        const folderId = await folder.addFolder(trimmedTitle).catch(() => null);
+        if (!folderId) return;
+        draftTitle.clear();
+
+        router.push({
+            pathname: '/folder/select',
+            params: { folderId },
+        });
     };
 
     useCustomHeader({
         title: 'Folder Title',
         rightButton: {
-            label: 'Confirm',
+            label: 'Next',
             onPress: handleConfirmPressed,
         },
     });
 
-    return <AddFolderTitle title={title} setTitle={setTitle} />
+    return (
+        <AddTitle 
+            title={draftTitle.value} 
+            setTitle={draftTitle.set} 
+        />
+    );
 };
 
 export default CreateFolder;
