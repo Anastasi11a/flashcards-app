@@ -1,37 +1,17 @@
-import { useRouter } from "expo-router";
-import { Alert } from "react-native";
-
 import { useDecks } from "@/context/DeckContext";
-import useCustomHeader from "@/hooks/useCustomHeader";
 import AddTitle from "@/components/screens/AddTitle";
+import useCustomHeader from "@/hooks/useCustomHeader";
+import { useSubmitDraftTitle } from "@/hooks/useSubmitDraftTitle";
 
-const CreateFolder = () => {    
-    const { draftTitle, folder } = useDecks();
-    const router = useRouter();
-
-    const handleConfirmPressed = async () => {
-        const trimmedTitle = draftTitle.value.trim();
-
-        if (!trimmedTitle) {
-            Alert.alert('Please enter a folder title');
-            return;
-        }
-
-        const folderId = await folder.addFolder(trimmedTitle).catch(() => null);
-        if (!folderId) return;
-        draftTitle.clear();
-
-        router.push({
-            pathname: '/folder/select',
-            params: { folderId },
-        });
-    };
+const CreateFolder = () => {
+    const { draftTitle } = useDecks();
+    const { submit } = useSubmitDraftTitle();
 
     useCustomHeader({
         title: 'Folder Title',
         rightButton: {
             label: 'Next',
-            onPress: handleConfirmPressed,
+            onPress: () => submit('folder'),
         },
     });
 
