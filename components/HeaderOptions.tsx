@@ -1,15 +1,22 @@
 import { useRouter } from "expo-router";
+
+import { useDecks } from "@/context/DeckContext";
+import { handleImportDeck } from "@/utils/handleImportDeck";
 import HeaderOptionsView from "@/ui/header/HeaderOptionsView";
 
-interface HeaderOptionsProps {
-    onImport: () => void;
-}
-
-const HeaderOptions = ({ onImport }: HeaderOptionsProps) => {
+const HeaderOptions = () => {
+    const { actions } = useDecks();
     const router = useRouter();
-    const handleCreate = () => router.push('/create/add-deck-title');
 
-    return <HeaderOptionsView onImport={onImport} onCreate={handleCreate} />;
+    const handleImport = () => handleImportDeck(actions.importDeck)
+    const handleCreate = () => router.push('/(modals)/add-deck-title');
+
+    return (
+        <HeaderOptionsView 
+            onImport={handleImport} 
+            onCreate={handleCreate} 
+        />
+    );
 };
 
 export default HeaderOptions;

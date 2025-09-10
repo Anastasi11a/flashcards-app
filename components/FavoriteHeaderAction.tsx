@@ -3,7 +3,7 @@ import AddFolderButton from "@/ui/AddFolderButton";
 
 const FavoriteHeaderAction = () => {
     const router = useRouter();
-    const handleCreate = () => router.push('/create/add-folder');
+    const handleCreate = () => router.push('/(modals)/add-folder');
 
     return <AddFolderButton onPress={handleCreate} />;
 };

@@ -1,18 +1,13 @@
 import { Tabs } from "expo-router";
 
-import { useDecks } from "@/context/DeckContext";
-import createTabIcon from "@/components/TabBarIcon";
-import HeaderOptions from "@/components/HeaderOptions";
 import FavoriteHeaderAction from "@/components/FavoriteHeaderAction";
-import BlurBackground from "@/ui/BlurBackground";
-import { handleImportDeck } from "@/utils/handleImportDeck";
-import { tabBarStyle } from "@/utils/navigationStyles";
+import HeaderOptions from "@/components/HeaderOptions";
+import createTabIcon from "@/components/TabBarIcon";
+import BlurBackground from "@/ui/background/BlurBackground";
 import { createScreenHeader } from "@/ui/header/ScreenHeader";
+import { tabBarStyle } from "@/utils/navigationStyles";
 
-export default function TabLayout() {
-    const { importDeck } = useDecks();
-    const handleImport = () => handleImportDeck(importDeck);
- 
+export default function TabLayout() { 
     return (
         <Tabs
             screenOptions={{
@@ -26,7 +21,7 @@ export default function TabLayout() {
                 options={{
                     ...createScreenHeader({
                         title: 'Flashcards',
-                        rightComponent: <HeaderOptions onImport={handleImport} />,
+                        rightComponent: <HeaderOptions />,
                     }),
                     tabBarLabel: 'Collections',
                     tabBarIcon: createTabIcon('reader-outline', 'reader'),
@@ -36,7 +31,7 @@ export default function TabLayout() {
                 name='about'
                 options={{
                     ...createScreenHeader({
-                        title: 'Favorites',
+                        title: 'Albums',
                         rightComponent: <FavoriteHeaderAction />,
                     }),
                     tabBarLabel: 'Bookmarks',
