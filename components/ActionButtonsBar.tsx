@@ -1,17 +1,14 @@
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useDecks } from "@/context/DeckContext";
 import ActionButtonsBarView from "@/ui/ActionButtonsBarView";
 
-interface ActionButtonsBarProps {
-    folderId: string;
-}
-
-const ActionButtonsBar = ({ folderId }: ActionButtonsBarProps) => {
+const ActionButtonsBar = () => {
     const insets = useSafeAreaInsets();
     const router = useRouter();
-    const { selection, moveDecksToFolder, copyDecksToFolder } = useDecks();
+    const { folderId } = useLocalSearchParams<{ folderId: string }>();
+    const { selection, folder } = useDecks();
 
     const hasSelection = (selection?.selectedIds?.length ?? 0) > 0;
 
@@ -32,6 +29,7 @@ const ActionButtonsBar = ({ folderId }: ActionButtonsBarProps) => {
     };
 
     const handleSaveEmptyFolder = () => {
+        if (!folderId) return;
         navigateToFolder(folderId);
     };
 
@@ -39,9 +37,8 @@ const ActionButtonsBar = ({ folderId }: ActionButtonsBarProps) => {
         <ActionButtonsBarView
             insets={insets}
             hasSelection={hasSelection}
-            onCopy={() => handleAction(copyDecksToFolder)}
-            onMove={() => handleAction(moveDecksToFolder)}
-            onSaveEmptyFolder={handleSaveEmptyFolder}
+            onMove={() => handleAction(folder.moveDecksToFolder)}
+            onSave={handleSaveEmptyFolder}
         />
     );
 };
