@@ -15,12 +15,16 @@ type Params = {
 
 const CardModal = () => {
     const { deckId, cardId } = useLocalSearchParams<Params>();
-    const { inputRef, focusInput } = useAutoFocusInput();
-
-    const addState = useAddCardState({ deckId, focusInput });
-    const editState = useEditCardState({ deckId, cardId: cardId || '' });
+    const { inputRef } = useAutoFocusInput();
 
     const isEditMode = Boolean(cardId);
+
+    const addState = useAddCardState();
+    const editState = useEditCardState({
+        deckId: deckId!,
+        cardId: cardId ?? '',
+    });
+
     const { question, answer, setQuestion, setAnswer, save } = isEditMode
         ? editState
         : addState;
@@ -31,7 +35,7 @@ const CardModal = () => {
         title: isEditMode ? 'Edit Card' : 'Add New Card',
         headerTransparent: false,
         rightButton: {
-            label: 'Save',
+            label: 'Done',
             onPress: onSave,
         },
     });
