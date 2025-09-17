@@ -3,26 +3,26 @@ import type Swipeable from 'react-native-gesture-handler/Swipeable';
 import { Card } from "@/data/decks";
 import SwipeOptionsView from '@/ui/SwipeOptionsView';
 
-interface SwipeOptionsProps {
+export interface SwipeOptionsProps  {
     card: Card;
     swipeableRef?: Swipeable | null;
-    onDelete: (card: Card) => void;
-    onEdit?: (card: Card) => void;
+    onDelete: (cardId: string) => void;
+    onEdit?: (cardId: string) => void;
 }
 
 const SwipeOptions = ({ card, swipeableRef, onDelete, onEdit }: SwipeOptionsProps) => {
-    const handleDelete = () => onDelete(card);
+    const handleDelete = () => onDelete(card.id);
 
     const handleEdit = () => {
         if (!onEdit) return;
-        onEdit(card);
+        onEdit(card.id);
         swipeableRef?.close();
     };
 
     return (
         <SwipeOptionsView
-            onDeletePress={handleDelete}
-            onEditPress={onEdit ? handleEdit : undefined}
+            onDelete={handleDelete}
+            onEdit={onEdit ? handleEdit : undefined}
         />
     );
 };

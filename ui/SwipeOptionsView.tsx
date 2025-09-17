@@ -1,28 +1,29 @@
 import { View } from "react-native";
 import styled from "styled-components/native";
 
-import SwipeButton from "@/components/SwipeButton";
+import SwipeButtonView from "./buttons/SwipeButtonView";
+import { GRADIENTS } from "@/constants/colors/gradient";
 
-interface SwipeOptionsViewProps {
-    onDeletePress: () => void;
-    onEditPress?: () => void;
+interface Props {
+    onDelete: () => void;
+    onEdit?: () => void;
 }
 
-const SwipeOptionsView = ({ onDeletePress, onEditPress }: SwipeOptionsViewProps) => {
+const SwipeOptionsView = ({ onDelete, onEdit }: Props) => {
     return (
         <ButtonRowContainer>
-            <SwipeButton
-                iconName='delete-sweep'
-                iconType='delete'
-                onPress={onDeletePress}
-            />
-            {onEditPress && (
-                <SwipeButton
-                    iconName='playlist-edit'
-                    iconType='edit'
-                    onPress={onEditPress}
+            {onEdit && (
+                <SwipeButtonView
+                    label='Edit'
+                    gradientColors={GRADIENTS.SWIPE}
+                    onPress={onEdit}
                 />
             )}
+            <SwipeButtonView
+                label='Delete'
+                gradientColors={GRADIENTS.DELETE}
+                onPress={onDelete}
+            />
         </ButtonRowContainer>
     );
 };
