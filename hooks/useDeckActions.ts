@@ -6,34 +6,22 @@ import { useDecks } from "@/context/DeckContext";
 import { useDeckMenuButtons } from "@/hooks/useDeckMenuButtons";
 import { useConfirmDeleteDeck } from "@/hooks/useConfirmDeleteDeck";
 import { showExportOptions } from "@/utils/showExportOptions";
+import { navigateToAddCard, navigateToEditCard } from "@/utils/cardNavigation";
 
 export const useDeckActions = (deck: Deck, closeMenu: () => void) => {
     const router = useRouter();
-    const { deleteCard } = useDecks();
+    const { actions } = useDecks();
+
     const confirmDeleteDeck = useConfirmDeleteDeck();
 
-    const onAddCard = () => {
-        router.push({
-            pathname: '/(modals)/add-new-card',
-            params: { deckId: deck.id },
-        });
-    };
-
-    const onEditCard = (cardId: string) => {
-        router.push({
-            pathname: '/(modals)/edit-card',
-            params: { deckId: deck.id, cardId },
-        });
-    };
-
-    const onDeleteCard = (cardId: string) => {
-        deleteCard(deck.id, cardId);
-    };
+    const onAddCard = () => navigateToAddCard(deck.id);
+    const onEditCard = (cardId: string) => navigateToEditCard(deck.id, cardId);
+    const onDeleteCard = (cardId: string) => actions.deleteCard(cardId);
 
     const onEditTitle = () => {
         router.push({
-            pathname: '/(modals)/edit-title',
-            params: { deckId: deck.id },
+            pathname: '/(modals)/title',
+            params: { deckId: deck.id, mode: 'edit' }, 
         });
     };
 
@@ -41,9 +29,7 @@ export const useDeckActions = (deck: Deck, closeMenu: () => void) => {
         showExportOptions(deck, closeMenu);
     }, [deck, closeMenu]);
 
-    const onDeleteDeck = () => {
-        confirmDeleteDeck(deck.id);
-    };
+    const onDeleteDeck = () => confirmDeleteDeck(deck.id);
 
     const menuButtons = useDeckMenuButtons({
         deckId: deck.id,
@@ -53,5 +39,10 @@ export const useDeckActions = (deck: Deck, closeMenu: () => void) => {
         onDelete: onDeleteDeck,
     });
 
-    return { onAddCard, onEditCard, onDeleteCard, menuButtons };
+    return {
+        menuButtons,
+        onAddCard, 
+        onEditCard,
+        onDeleteCard
+    };
 };
