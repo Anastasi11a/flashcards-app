@@ -25,10 +25,7 @@ const CardModal = () => {
         cardId: cardId ?? '',
     });
 
-    const { question, answer, setQuestion, setAnswer, save } = isEditMode
-        ? editState
-        : addState;
-
+    const { cardState, save } = isEditMode ? editState : addState;
     const { onSave } = useSaveModal(save);
 
     useCustomHeader({
@@ -44,10 +41,7 @@ const CardModal = () => {
         <ScreenContainer>
             <CardInputsView
                 inputRef={inputRef}
-                question={question}
-                answer={answer}
-                onChangeQuestion={setQuestion}
-                onChangeAnswer={setAnswer}
+                cardState={cardState}
             />
         </ScreenContainer>
     );
