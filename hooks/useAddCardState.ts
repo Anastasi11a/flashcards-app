@@ -1,16 +1,21 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import uuid from "uuid-random";
 
 import { Card } from "@/data/decks";
 import { useDecks } from "@/context/DeckContext";
 
-interface Props {
-    deckId: string;
-    focusInput?: () => void;
-}
+export function useAddCardState() {
+    const { decks, actions, activeDeckId } = useDecks();
 
-export function useAddCardState({ deckId, focusInput }: Props) {
-    const { addCard } = useDecks();
+    if (!activeDeckId) {
+        throw new Error('useAddCardState requires an activeDeckId in context');
+    }
+
+    const deck = useMemo(
+        () => decks.find((d) => d.id === activeDeckId),
+        [decks, activeDeckId]
+    );
+    const cards = deck?.cards ?? [];
 
     const [question, setQuestion] = useState('');
     const [answer, setAnswer] = useState('');
@@ -26,19 +31,22 @@ export function useAddCardState({ deckId, focusInput }: Props) {
             answer: trimmedA,
         };
 
-        addCard(deckId, newCard);
-        focusInput?.();
-        reset();
-    };
-
-    const reset = () => {
+        actions.addCard(activeDeckId, newCard);
         setQuestion('');
         setAnswer('');
     };
 
+    const deleteCard = (cardId: string) => actions.deleteCard(cardId);
+
     return {
-        question, answer,
-        setQuestion, setAnswer,
-        save, reset,
+        cardState: {
+            question,
+            answer,
+            setQuestion,
+            setAnswer,
+        },
+        cards,
+        save,
+        deleteCard,
     };
 };
