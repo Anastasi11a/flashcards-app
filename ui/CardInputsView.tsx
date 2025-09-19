@@ -3,47 +3,46 @@ import type { TextInput } from "react-native";
 import styled from "styled-components/native";
 
 import InputField from "@/components/InputField";
-import QuestionInput from "./QuestionInput";
-import AnswerInput from "./AnswerInput";
+import GradientContainer from "./container/GradientContainer";
+import Input from "./input/Input";
 
 export interface CardInputsProps {
     inputRef: React.Ref<TextInput>;
-    question: string;
-    answer: string;
-    onChangeQuestion: (text: string) => void;
-    onChangeAnswer: (text: string) => void;
+    cardState: {
+        question: string;
+        answer: string;
+        setQuestion: (text: string) => void;
+        setAnswer: (text: string) => void;
+    };
 }
 
-const CardInputsView = ({ 
-    inputRef, question, answer, onChangeQuestion, onChangeAnswer
-}: CardInputsProps) => {
+const CardInputsView = ({ inputRef, cardState }: CardInputsProps) => {
+    const { question, answer, setQuestion, setAnswer } = cardState;
+
     return (
-        <InputWrapper>
+        <GradientContainer>
             <InputField
                 inputRef={inputRef}
                 value={question}
+                variant='question'
                 placeholder='Type a question or something else'
-                InputComponent={QuestionInput}
+                InputComponent={Input}
                 maxLengthHint={75}
-                onChangeText={onChangeQuestion}
+                onChangeText={setQuestion}
             />
             <Divider />
             <InputField
                 value={answer}
+                variant='answer'
                 placeholder='Type a description or something else'
-                InputComponent={AnswerInput}
-                onChangeText={onChangeAnswer}
+                InputComponent={Input}
+                onChangeText={setAnswer}
             />
-        </InputWrapper>
+        </GradientContainer>
     );
 };
 
 export default CardInputsView;
-
-const InputWrapper = styled(View)`
-    border-radius: 16px;
-    background-color: #25292e;
-`;
 
 const Divider = styled(View)`
     width: 92%;
