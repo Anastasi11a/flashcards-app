@@ -1,6 +1,6 @@
 import AddCardButton from "@/ui/buttons/AddCardButton";
-import CardInputsView, { CardInputsProps } from "@/ui/CardInputsView";
 import CardInputContainer from "@/ui/container/CardInputContainer";
+import CardInputsView, { CardInputsProps } from "@/ui/input/CardInputsView";
 
 interface AddCardFormProps extends CardInputsProps {
     onSave: () => void;
