@@ -3,32 +3,37 @@ import AddCardForm from "../AddCardForm";
 import { AddCardsList } from "../DecksList";
 import { useAddCardState } from "@/hooks/useAddCardState";
 import useAutoFocusInput from "@/hooks/useAutoFocusInput";
-import KeyboardAvoidingContainer from "@/ui/container/KeyboardAvoidingContainer";
+import { ScreenContainer } from "@/ui/container/ScreenContainer";
 import { navigateToEditCard } from "@/utils/cardNavigation";
 
-const AddCardsScreen = () => {
+const AddCards = () => {
     const { activeDeckId } = useDecks();
-    const { inputRef } = useAutoFocusInput();
+    const { inputRef, focusInput } = useAutoFocusInput();
     const { cardState, cards, save, deleteCard } = useAddCardState();
+
+    const handleSave = () => {
+        save();
+        focusInput();
+    };
 
     const handleEditCard = (cardId: string) => {
         navigateToEditCard(activeDeckId!, cardId);
     };
 
     return (
-        <KeyboardAvoidingContainer>
+        <ScreenContainer>
             <AddCardForm
                 inputRef={inputRef}
                 cardState={cardState}
-                onSave={save}
+                onSave={handleSave}
             />
             <AddCardsList
                 cards={cards}
                 onEdit={handleEditCard}
                 onDelete={deleteCard}
             />
-        </KeyboardAvoidingContainer>
+        </ScreenContainer>
     );
 };
 
-export default AddCardsScreen;
+export default AddCards;
