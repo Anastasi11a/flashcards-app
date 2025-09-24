@@ -1,11 +1,8 @@
+import React, { ReactNode } from "react";
 import { LinearGradient } from 'expo-linear-gradient';
 import styled from "styled-components/native";
 
-interface Props {
-    children: React.ReactNode;
-}
-
-const GradientContainer = ({ children }: Props) => {
+const GradientContainer = ({ children }: { children: ReactNode }) => {
     return (
         <GradientOverlay colors={['#2f343a', '#25292e']}>
             {children}

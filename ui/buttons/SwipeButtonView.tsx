@@ -5,14 +5,14 @@ import styled from "styled-components/native";
 
 import { titleText } from "@/constants/text/textStyles";
 
-export interface SwipeBtnProps {
+interface Props {
     iconName?: keyof typeof MaterialCommunityIcons.glyphMap;
     label?: string;
     gradientColors: [string, string];
     onPress: () => void; 
 }
 
-const SwipeButtonView = ({ iconName, label, gradientColors, onPress }: SwipeBtnProps) => {
+const SwipeButtonView = ({ iconName, label, gradientColors, onPress }: Props) => {
     return (
         <ButtonBackground colors={gradientColors}>
             <PressableArea onPress={onPress}>
