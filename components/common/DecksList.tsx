@@ -5,14 +5,16 @@ import Swipeable from "react-native-gesture-handler/Swipeable";
 
 import { Card } from "@/data/decks";
 import CardContainer from "@/ui/container/CardContainer";
-import DeckListEmpty from "@/ui/DeckListEmpty";
+import MessageContainer from "@/ui/container/MessageContainer";
+import SwipeButtons from "@/ui/buttons/SwipeButtons";
 import { flatListStyles } from "@/utils/contentContainerStyle";
-import SwipeOptions, { SwipeOptionsProps } from "./SwipeOptions";
 
 type SwipeableRef = SwipeableType | null;
-type DeckListProps = Omit<SwipeOptionsProps, 'card' | 'swipeableRef'> & {
+type DeckListProps = {
     cards: Card[];
     variant?: 'regular' | 'transparent';
+    onEdit?: (cardId: string) => void;
+    onDelete: (cardId: string) => void;
 };
 
 const DeckList = ({ cards, variant = 'regular', onEdit, onDelete }: DeckListProps) => {
@@ -31,11 +33,15 @@ const DeckList = ({ cards, variant = 'regular', onEdit, onDelete }: DeckListProp
 
     const renderRightActions = useCallback(
         (card: Card, swipeableRef: SwipeableRef) => (
-            <SwipeOptions
-                card={card}
-                swipeableRef={swipeableRef}
-                onDelete={onDelete}
-                onEdit={onEdit}
+            <SwipeButtons
+                onEdit={onEdit 
+                    ? () => { 
+                        onEdit(card.id); 
+                        swipeableRef?.close(); 
+                    } 
+                    : undefined
+                }
+                onDelete={() => onDelete(card.id)}
             />
         ),
         [onDelete, onEdit]
@@ -75,7 +81,7 @@ const DeckList = ({ cards, variant = 'regular', onEdit, onDelete }: DeckListProp
             keyExtractor={(item) => item.id}
             renderItem={renderItem}
             ListEmptyComponent={
-                <DeckListEmpty>No cards yet. Start by adding one!</DeckListEmpty>
+                <MessageContainer>No cards yet. Start by adding one!</MessageContainer>
             }
             contentContainerStyle={flatListStyles.deckList(variant)}
         />
