@@ -1,10 +1,17 @@
-import React, { ReactNode } from "react";
 import { LinearGradient } from 'expo-linear-gradient';
 import styled from "styled-components/native";
 
-const GradientContainer = ({ children }: { children: ReactNode }) => {
+interface Props {
+    children: React.ReactNode;
+    padded?: boolean;
+}
+
+const GradientContainer = ({ children, padded = false }: Props) => {
     return (
-        <GradientOverlay colors={['#2f343a', '#25292e']}>
+        <GradientOverlay 
+            padded={padded} 
+            colors={['#2f343a', '#25292e']}
+        >
             {children}
         </GradientOverlay>
     );
@@ -12,8 +19,8 @@ const GradientContainer = ({ children }: { children: ReactNode }) => {
 
 export default GradientContainer;
 
-const GradientOverlay = styled(LinearGradient)`
-    padding: 10px 12px 8px;
+const GradientOverlay = styled(LinearGradient)<{ padded: boolean }>`
+    padding: ${({ padded }) => (padded ? '10px 12px 8px' : '0')};
     border-radius: 10px;
     overflow: hidden;
 `;
