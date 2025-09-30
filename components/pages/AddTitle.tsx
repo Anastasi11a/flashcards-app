@@ -1,27 +1,28 @@
-import { useLocalSearchParams } from "expo-router";
-
-import { useDecks } from "@/context/DeckContext";
 import useAutoFocusInput from "@/hooks/useAutoFocusInput";
 import { useEditTitleState } from "@/hooks/useEditTitleState";
 import { KeyboardScreenContainer } from "@/ui/container/ScreenContainer";
 import TitleInput from "@/ui/input/TitleInput";
 import { TitleParams } from "@/utils/navigation/navigation";
 
-const AddTitle = () => {
-    const { deckId, mode } = useLocalSearchParams<TitleParams>();
-    const { inputRef } = useAutoFocusInput();
-    const { draftTitle } = useDecks();
-    const editState = useEditTitleState({ deckId });
+interface Props {
+    mode: TitleParams['mode'];
+    editState: ReturnType<typeof useEditTitleState>;
+    draftTitle: string;
+    setDraftTitle: (value: string) => void;
+}
 
-    const title = mode === 'edit' ? editState.title : draftTitle.value;
-    const setTitle = mode === 'edit' ? editState.setTitle : draftTitle.set;
+const AddTitle = ({ mode, editState, draftTitle, setDraftTitle }: Props) => {
+    const { inputRef } = useAutoFocusInput();
+
+    const title = mode === 'edit' ? editState.title : draftTitle;
+    const setTitle = mode === 'edit' ? editState.setTitle : setDraftTitle;
 
     return (
         <KeyboardScreenContainer>
             <TitleInput 
-                ref={inputRef}
-                title={title}
-                setTitle={setTitle}
+                ref={inputRef} 
+                title={title} 
+                setTitle={setTitle} 
             />
         </KeyboardScreenContainer>
     );
