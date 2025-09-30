@@ -1,14 +1,16 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState, useMemo } from "react";
+import { useLocalSearchParams } from "expo-router";
 
 import { useDecks } from "@/context/DeckContext";
-import DeckContent from "@/components/screens/DeckContent";
+import DeckContent from "@/components/pages/DeckContent";
 import useCustomHeader from "@/hooks/useCustomHeader";
 
 const DeckScreen = () => {
     const [isMenuVisible, setMenuVisible] = useState(false);
-    
-    const { decks, activeDeckId } = useDecks(); 
-    const deck = decks.find((d) => d.id === activeDeckId);
+    const { deckId } = useLocalSearchParams<{ deckId: string }>();
+
+    const { decks } = useDecks();
+    const deck = useMemo(() => decks.find((d) => d.id === deckId), [decks, deckId]);
 
     const openMenu = useCallback(() => setMenuVisible(true), []);
     const closeMenu = useCallback(() => setMenuVisible(false), []);
@@ -23,7 +25,7 @@ const DeckScreen = () => {
         },
     });
     
-    if (!deck || !activeDeckId) return null;
+    if (!deck) return null;
 
     return (
         <DeckContent
