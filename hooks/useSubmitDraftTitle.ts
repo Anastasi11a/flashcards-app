@@ -1,37 +1,31 @@
 import { Alert } from "react-native";
 import { useRouter } from "expo-router";
+import uuid from "uuid-random";
 
 import { useDecks } from "@/context/DeckContext";
 
 export const useSubmitDraftTitle = () => {
-    const { actions, folder, draftTitle } = useDecks();
+    const { actions, folderActions } = useDecks();
     const router = useRouter();
 
-    const submit = async (type: 'deck' | 'folder') => {
-        const trimmed = draftTitle.value.trim();
+    const submit = async (type: 'deck' | 'folder', title: string) => {
+        const trimmed = title.trim();
 
         if (!trimmed) {
             Alert.alert(`Please enter a ${type} title`);
             return;
         }
 
-        let id: string | null = null;
-
+        const id = uuid();
+        
         if (type === 'deck') {
-            id = await actions.addDeck(trimmed);
-        } else {
-            id = await folder.addFolder(trimmed).catch(() => null);
-        }
-
-        if (!id) return;
-        draftTitle.clear();
-
-        if (type === 'deck') {
+            await actions.addDeck(id, trimmed);
             router.push({
-                pathname: '/create/add-deck-cards',
+                pathname: '/(modals)/add-deck',
                 params: { title: trimmed, deckId: id },
             });
         } else {
+            await folderActions.addFolder(id, trimmed);
             router.push({
                 pathname: '/folder/select',
                 params: { folderId: id },

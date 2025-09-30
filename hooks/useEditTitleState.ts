@@ -1,27 +1,26 @@
-import { useEffect, useState } from "react";
-
+import { useState, useEffect, useCallback } from "react";
 import { useDecks } from "@/context/DeckContext";
 
-interface Props {
-    deckId: string;
-}
-
-export function useEditTitleState({ deckId }: Props) {
-    const { decks, editDeck } = useDecks();
+export function useEditTitleState({ deckId }: { deckId?: string }) {
+    const { decks, actions } = useDecks();
     const deck = decks.find((d) => d.id === deckId);
 
-    const [title, setTitle] = useState(deck?.title || '');
+    const [title, setTitle] = useState(deck?.title ?? '');
 
     useEffect(() => {
-        setTitle(deck?.title || '');
-    }, [deck?.title]);
+        if (deck?.title !== undefined) {
+            setTitle(deck.title);
+        }
+    }, [deck?.title, deckId]);
 
-    const save = () => {
+    const save = useCallback(() => {
+        if (!deckId) return;
+
         const trimmed = title.trim();
-        if (!trimmed || !deckId) return;
+        if (!trimmed) return;
 
-        editDeck(deckId, trimmed);
-    };
+        actions.editDeck(deckId, trimmed);
+    }, [deckId, title, actions]);
 
     return { title, setTitle, save };
 };
