@@ -1,12 +1,12 @@
 import { useLocalSearchParams } from "expo-router";
 
-import useCustomHeader from "@/hooks/useCustomHeader";
-import useAutoFocusInput from "@/hooks/useAutoFocusInput";
 import { useAddCardState } from "@/hooks/useAddCardState";
+import useAutoFocusInput from "@/hooks/useAutoFocusInput";
+import useCustomHeader from "@/hooks/useCustomHeader";
 import { useEditCardState } from "@/hooks/useEditCardState";
 import { useSaveModal } from "@/hooks/useSaveModal";
-import ScreenContainer from "@/ui/layout/ScreenContainer";
-import CardInputsView from "@/ui/CardInputsView";
+import { KeyboardScreenContainer } from "@/ui/container/ScreenContainer";
+import CardInputs from "@/ui/input/CardInputs";
 
 type Params = {
     deckId: string;
@@ -17,9 +17,9 @@ const CardModal = () => {
     const { deckId, cardId } = useLocalSearchParams<Params>();
     const { inputRef } = useAutoFocusInput();
 
-    const isEditMode = Boolean(cardId);
+    const isEditMode = cardId !== undefined;
 
-    const addState = useAddCardState();
+    const addState = useAddCardState(deckId!);
     const editState = useEditCardState({
         deckId: deckId!,
         cardId: cardId ?? '',
@@ -38,12 +38,12 @@ const CardModal = () => {
     });
 
     return (
-        <ScreenContainer>
-            <CardInputsView
+        <KeyboardScreenContainer>
+            <CardInputs
                 inputRef={inputRef}
                 cardState={cardState}
             />
-        </ScreenContainer>
+        </KeyboardScreenContainer>
     );
 };
 
