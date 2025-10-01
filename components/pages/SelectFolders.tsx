@@ -1,3 +1,4 @@
+import { useState, useCallback } from "react";
 import { FlatList } from "react-native";
 
 import { useDecks } from "@/context/DeckContext";
@@ -7,7 +8,21 @@ import { ScreenContainer } from "@/ui/container/ScreenContainer";
 import { flatListStyles } from "@/utils/contentContainerStyle";
 
 const SelectFolders = () => {
-    const { decks, selection } = useDecks();
+    const { decks } = useDecks();
+    const [selectedIds, setSelectedIds] = useState<string[]>([]);
+
+    const toggle = useCallback(
+        (deckId: string) => {
+            setSelectedIds((prev) =>
+                prev.includes(deckId)
+                ? prev.filter((id) => id !== deckId)
+                : [...prev, deckId]
+            );
+        },
+        [setSelectedIds]
+    );
+
+    const clear = useCallback(() => setSelectedIds([]), []);
 
     return (
         <ScreenContainer>
@@ -17,15 +32,15 @@ const SelectFolders = () => {
                 renderItem={({ item }) => (
                     <DeckContainer
                         title={item.title}
-                        checked={selection.selectedIds.includes(item.id)}
-                        onToggleCheck={() => selection.toggle(item.id)}
+                        checked={selectedIds.includes(item.id)}
+                        onToggleCheck={() => toggle(item.id)}
                         showCheckbox={true}
                         showCountBadge={false}
                     />
                 )}
                 contentContainerStyle={flatListStyles.selectFolder()}
             />
-            <FolderActionBar />
+            <FolderActionBar selectedIds={selectedIds} clearSelection={clear} />
         </ScreenContainer>
     );
 };
