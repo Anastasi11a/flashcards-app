@@ -4,21 +4,17 @@ import uuid from "uuid-random";
 import { Card } from "@/data/decks";
 import { useDecks } from "@/context/DeckContext";
 
-export function useAddCardState() {
-    const { decks, actions, activeDeckId } = useDecks();
-
-    if (!activeDeckId) {
-        throw new Error('useAddCardState requires an activeDeckId in context');
-    }
-
-    const deck = useMemo(
-        () => decks.find((d) => d.id === activeDeckId),
-        [decks, activeDeckId]
-    );
-    const cards = deck?.cards ?? [];
-
+export function useAddCardState(deckId: string) {
     const [question, setQuestion] = useState('');
     const [answer, setAnswer] = useState('');
+    const { decks, actions } = useDecks();
+
+    const deck = useMemo(
+        () => decks.find((d) => d.id === deckId),
+        [decks, deckId]
+    );
+
+    const cards = deck?.cards ?? [];
 
     const save = () => {
         const trimmedQ = question.trim();
@@ -31,7 +27,7 @@ export function useAddCardState() {
             answer: trimmedA,
         };
 
-        actions.addCard(activeDeckId, newCard);
+        actions.addCard(newCard, deckId);
         setQuestion('');
         setAnswer('');
     };
