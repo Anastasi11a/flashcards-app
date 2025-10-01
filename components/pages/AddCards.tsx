@@ -1,15 +1,18 @@
-import { useDecks } from "@/context/DeckContext";
-import AddCardForm from "../AddCardForm";
-import { AddCardsList } from "../DecksList";
+import { useLocalSearchParams } from "expo-router";
+
+import { AddCardsList } from "../common/DecksList";
 import { useAddCardState } from "@/hooks/useAddCardState";
 import useAutoFocusInput from "@/hooks/useAutoFocusInput";
+import AddCardButton from "@/ui/buttons/AddCardButton";
+import CardInputContainer from "@/ui/container/CardInputContainer";
 import { ScreenContainer } from "@/ui/container/ScreenContainer";
-import { navigateToEditCard } from "@/utils/cardNavigation";
+import CardInputs from "@/ui/input/CardInputs";
+import { navigateToEditCard } from "@/utils/navigation/navigation";
 
 const AddCards = () => {
-    const { activeDeckId } = useDecks();
+    const { deckId } = useLocalSearchParams<{ deckId: string }>();
     const { inputRef, focusInput } = useAutoFocusInput();
-    const { cardState, cards, save, deleteCard } = useAddCardState();
+    const { cardState, cards, save, deleteCard } = useAddCardState(deckId!);
 
     const handleSave = () => {
         save();
@@ -17,16 +20,16 @@ const AddCards = () => {
     };
 
     const handleEditCard = (cardId: string) => {
-        navigateToEditCard(activeDeckId!, cardId);
+        navigateToEditCard(deckId!, cardId);
     };
 
     return (
         <ScreenContainer>
-            <AddCardForm
-                inputRef={inputRef}
-                cardState={cardState}
-                onSave={handleSave}
-            />
+            <CardInputContainer> 
+                <CardInputs inputRef={inputRef} cardState={cardState} />
+                <AddCardButton label='Add Card' onPress={handleSave} />
+            </CardInputContainer>
+
             <AddCardsList
                 cards={cards}
                 onEdit={handleEditCard}

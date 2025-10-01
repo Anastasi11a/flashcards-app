@@ -1,28 +1,27 @@
-import { useEffect } from "react";
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useMemo } from "react";
+import { useLocalSearchParams } from 'expo-router';
 import { Alert } from 'react-native';
 
 import { useDecks } from '@/context/DeckContext';
 import AddCards from '@/components/pages/AddCards';
 import useCustomHeader from '@/hooks/useCustomHeader';
+import { navigateToDecks } from "@/utils/navigation/navigation";
 
 export default function AddDeckCards() {
-    const router = useRouter();
     const { deckId } = useLocalSearchParams<{ deckId: string}>();
-    const { activeDeckId, setActiveDeckId } = useDecks();
+    const { decks } = useDecks();
 
-    useEffect(() => {
-        if (deckId) {
-            setActiveDeckId(deckId);
-        }
-    }, [deckId, setActiveDeckId]);
+    const activeDeck = useMemo(
+        () => decks.find((d) => d.id === deckId),
+        [decks, deckId]
+    );
 
     const handleCreateDeck = () => {
-        if (!activeDeckId) {
+        if (!activeDeck || activeDeck.cards.length === 0) {
             Alert.alert('Add at least one card');
             return;
         }
-        router.push('/(tabs)');
+        navigateToDecks();
     };
 
     useCustomHeader({
@@ -33,7 +32,7 @@ export default function AddDeckCards() {
         },
     });
 
-    if (!activeDeckId) return null;
+    if (!activeDeck) return null;
 
     return <AddCards />
 };
