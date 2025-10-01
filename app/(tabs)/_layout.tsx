@@ -1,13 +1,14 @@
 import { Tabs } from "expo-router";
 
-import FavoriteHeaderAction from "@/components/FavoriteHeaderAction";
-import HeaderOptions from "@/components/HeaderOptions";
-import createTabIcon from "@/components/TabBarIcon";
+import DeckHeaderActions from "@/components/options/DeckHeaderActions";
 import BlurBackground from "@/ui/background/BlurBackground";
-import { createScreenHeader } from "@/ui/header/ScreenHeader";
+import AddFolderButton from "@/ui/buttons/AddFolderButton";
+import { buildHeaderConfig } from "@/ui/header/BuildHeaderConfig";
 import { tabBarStyle } from "@/utils/navigationStyles";
+import { navigateToAddFolder } from "@/utils/navigation/navigation"; 
+import { tabIcon } from "@/utils/icon/tabIcons";
 
-export default function TabLayout() { 
+export default function TabLayout() {
     return (
         <Tabs
             screenOptions={{
@@ -16,26 +17,26 @@ export default function TabLayout() {
                 tabBarStyle,
                 tabBarBackground: () => <BlurBackground />,
             }}>
-            <Tabs.Screen 
+            <Tabs.Screen
                 name='index' 
                 options={{
-                    ...createScreenHeader({
+                    ...buildHeaderConfig({
                         title: 'Flashcards',
-                        rightComponent: <HeaderOptions />,
+                        rightComponent: <DeckHeaderActions />,
                     }),
                     tabBarLabel: 'Collections',
-                    tabBarIcon: createTabIcon('reader-outline', 'reader'),
+                    tabBarIcon: tabIcon('reader-outline', 'reader'),
                 }}
             />
             <Tabs.Screen 
                 name='about'
                 options={{
-                    ...createScreenHeader({
+                    ...buildHeaderConfig({
                         title: 'Albums',
-                        rightComponent: <FavoriteHeaderAction />,
+                        rightComponent: <AddFolderButton onPress={navigateToAddFolder} />,
                     }),
-                    tabBarLabel: 'Bookmarks',
-                    tabBarIcon: createTabIcon('bookmark-outline', 'bookmark'),
+                    tabBarLabel: 'Albums',
+                    tabBarIcon: tabIcon('albums-outline', 'albums'),
                 }}
             />
         </Tabs>
