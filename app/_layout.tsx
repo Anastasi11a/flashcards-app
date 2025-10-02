@@ -5,6 +5,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { DeckProvider } from "@/context/DeckContext";
 import { useLoadFont } from "@/hooks/useLoadFont";
+import { TitleParams } from "@/utils/navigation/navigation";
 
 export default function RootLayout() {
     const assetsLoaded = useLoadFont();
@@ -22,9 +23,19 @@ export default function RootLayout() {
             <DeckProvider>
                 <Stack>
                     <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
-                    <Stack.Screen name='(modals)/add-new-card' />
-                    <Stack.Screen name='(modals)/edit-card' />
-                    <Stack.Screen name="(modals)/edit-title" />
+                    <Stack.Screen 
+                        name='(modals)/card' 
+                        options={{ presentation: 'modal' }}
+                    />
+                    <Stack.Screen 
+                        name='(modals)/title'
+                        options={({ route }) => {
+                            const params = route.params as TitleParams | undefined;
+                            return {
+                                presentation: params?.presentation || 'card',
+                            };
+                        }}
+                    />
                 </Stack>
                 <StatusBar style='dark' />
             </DeckProvider>
