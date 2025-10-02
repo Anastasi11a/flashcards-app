@@ -1,61 +1,40 @@
-import { useState } from "react";
-import { useRouter, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 
 import { useDecks } from "@/context/DeckContext";
+import FolderContent from "@/components/pages/FolderContent";
 import useCustomHeader from "@/hooks/useCustomHeader";
-import FolderDetailScreen from "@/components/screens/FolderDetailScreen";
-import RemoveFolderButton from "@/ui/RemoveFolderButton";
-import { confirmRemoveFolder } from "@/utils/confirmRemoveFolder";
+import { useConfirmDelete } from "@/hooks/useConfirmDelete";
+import { navigateBackToFolders } from "@/utils/navigation/navigation";
 
 const FolderDetail = () => {
-    const [resetGradient, setResetGradient] = useState(false);
-
-    const router = useRouter();
     const { folderId } = useLocalSearchParams<{ folderId?: string }>();
-    const { 
-        folders, decks, setSelectedDeckId, selection, removeFolder, removeDeckFromFolder 
-    } = useDecks();
+    const { folders, folderActions } = useDecks();
 
     const currentFolder = folders.find(f => f.id === folderId);
 
-    const handleRemoveFolder = async () => {
-        if (!folderId) return;
-        confirmRemoveFolder(folderId, router, removeFolder, setResetGradient);
-    };
+    const confirmDelete = useConfirmDelete({
+        onConfirm: (id) => {
+            folderActions.removeFolder(id);
+            navigateBackToFolders();
+        },
+    });
 
     useCustomHeader({
         title: currentFolder?.title,
         headerTransparent: true,
-        headerBlurEffect: 'regular',
-        rightButton: () => (
-            <RemoveFolderButton reset={resetGradient} onPress={handleRemoveFolder} />
-        ),
-        leftButton: { 
-            onPress: () => router.replace('/(tabs)/about')
+        headerBlurEffect: 'dark',
+        leftButton: { onPress: navigateBackToFolders },
+        rightButton: {
+            label: 'Delete',
+            onPress: () => {
+                if (folderId) confirmDelete('folder', folderId);
+            },
         },
     });
 
-    const shownDecks = folderId
-        ? currentFolder?.decks ?? []
-        : decks.filter(d => new Set(selection?.selectedIds ?? []).has(d.id));
+    if (!folderId || !currentFolder) return null;
 
-    const handlePressDeck = (deckId: string) => {
-        setSelectedDeckId?.(deckId);
-        router.push('/deck/deck-detail');
-    };
-
-    const handleDeleteDeck = (deckId: string) => {
-        if (!folderId) return;
-        removeDeckFromFolder(deckId, folderId);
-    };
-
-    return (
-        <FolderDetailScreen
-            shownDecks={shownDecks}
-            onPressDeck={handlePressDeck}
-            onDeleteDeck={handleDeleteDeck}
-        />
-    );
+    return <FolderContent folderId={folderId} />;
 };
 
 export default FolderDetail;
