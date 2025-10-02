@@ -5,11 +5,24 @@ import SwipeButtonView from "./SwipeButtonView";
 import { GRADIENTS } from "@/constants/colors/gradient";
 
 interface Props {
+    isPressed?: boolean;
+    isDeleteGradient?: boolean;
     onEdit?: () => void;
     onDelete: () => void;
 }
 
-const SwipeButtons = ({ onEdit, onDelete }: Props) => {
+const SwipeButtons = ({
+    isPressed = false, 
+    isDeleteGradient = true,
+    onEdit, 
+    onDelete 
+}: Props) => {
+    const deleteGradient = isDeleteGradient
+        ? GRADIENTS.DELETE
+        : isPressed
+            ? GRADIENTS.DELETE
+            : GRADIENTS.GRAY;
+
     return (
         <ButtonRowContainer>
             {onEdit && (
@@ -21,7 +34,7 @@ const SwipeButtons = ({ onEdit, onDelete }: Props) => {
             )}
             <SwipeButtonView
                 label='Delete'
-                gradientColors={GRADIENTS.DELETE}
+                gradientColors={deleteGradient}
                 onPress={onDelete}
             />
         </ButtonRowContainer>
