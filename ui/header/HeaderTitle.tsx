@@ -1,14 +1,10 @@
-import { View, useWindowDimensions } from "react-native";
+import { Text, View, useWindowDimensions } from "react-native";
 import styled from "styled-components/native";
 
-import { TitleText } from "../common/TitleText";
+import { titleText } from "@/constants/text/textStyles";
 
-interface Props {
-    title: string;
-}
-
-const HeaderTitle = ({ title }: Props) => {
-    const { width } =useWindowDimensions();
+const HeaderTitle = ({ title }: { title: string }) => {
+    const { width } = useWindowDimensions();
 
     return (
         <TitleContainer $maxWidth={width - 146}>
@@ -25,7 +21,8 @@ const TitleContainer = styled(View)<{ $maxWidth: number }>`
     max-width: ${({ $maxWidth }) => $maxWidth}px;
 `;
 
-const StyledTitle = styled(TitleText)`
+const StyledTitle = styled(Text)`
+    ${titleText}
     text-align: center;
     line-height: 21px;
 `;
