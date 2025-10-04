@@ -13,9 +13,9 @@ interface Props {
 const CardContainer = ({ isAnswerVisible, question, answer, onPress }: Props) => (
     <GradientContainer>
         <Pressable onPress={onPress}>
-            <StyledQuestion>{question}</StyledQuestion>
+            <StyledInput $variant='question'>{question}</StyledInput>
             {isAnswerVisible && (
-                <StyledAnswer>{answer}</StyledAnswer>
+                <StyledInput $variant='answer'>{answer}</StyledInput>
             )}
         </Pressable>
     </GradientContainer>
@@ -23,20 +23,13 @@ const CardContainer = ({ isAnswerVisible, question, answer, onPress }: Props) =>
 
 export default CardContainer;
 
-const BaseText = styled(Text)`
+const StyledInput = styled(Text)<{ $variant: 'question' | 'answer' }>`
+    padding: 12px;
     font-size: 16px;
     line-height: 21px;
     letter-spacing: 0.3px;
     text-align-vertical: top;
-`;
 
-const StyledQuestion = styled(BaseText)`
-    font-weight: 700;
-    color: #4da6ffea;
-`;
-
-const StyledAnswer = styled(BaseText)`
-    margin-top: 12px;
-    font-weight: 500;
-    color: #e6e6e6;
+    font-weight: ${({ $variant }) => ($variant === 'question' ? '700' : '500')};
+    color: ${({ $variant }) => ($variant === 'question' ? '#4da6ffea' : '#e6e6e6')};
 `;
