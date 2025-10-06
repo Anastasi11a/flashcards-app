@@ -1,9 +1,9 @@
 import { Deck } from "@/data/decks";
+import { DeckContentList } from "../common/DecksList";
 import { useDeckActions } from "@/hooks/useDeckActions";
-import { DeckContentList } from "../DecksList";
-import MenuPopupButton from "../MenuPopupButton";
 import FloatingAddButton from "@/ui/buttons/FloatingAddButton";
-import BackgroundScreenView from "@/ui/container/BackgroundScreenView";
+import MenuPopupButton from "@/ui/buttons/MenuPopupButton";
+import { ScreenContainer } from "@/ui/container/ScreenContainer";
 
 interface Props {
     deck: Deck;
@@ -17,7 +17,7 @@ const DeckContent = ({ deck, isMenuVisible, onCloseMenu }: Props) => {
     );
 
     return (
-        <BackgroundScreenView>
+        <ScreenContainer>
             <MenuPopupButton
                 isVisible={isMenuVisible}
                 buttons={menuButtons}
@@ -29,7 +29,7 @@ const DeckContent = ({ deck, isMenuVisible, onCloseMenu }: Props) => {
                 onDelete={onDeleteCard}
             />
             <FloatingAddButton onPress={onAddCard} />
-        </BackgroundScreenView>
+        </ScreenContainer>
     );
 };
 
