@@ -1,35 +1,45 @@
-import { useCallback } from "react";
-import { useRouter } from "expo-router";
+import { useState, useCallback } from "react";
 
 import type { Deck } from "@/data/decks";
 import { useDecks } from "@/context/DeckContext";
+import { useConfirmDelete } from "@/hooks/useConfirmDelete";
 import { useDeckMenuButtons } from "@/hooks/useDeckMenuButtons";
-import { useConfirmDeleteDeck } from "@/hooks/useConfirmDeleteDeck";
 import { showExportOptions } from "@/utils/showExportOptions";
-import { navigateToAddCard, navigateToEditCard } from "@/utils/cardNavigation";
+import { 
+    navigateToAddCard, 
+    navigateToEditCard, 
+    navigateToEditTitle 
+} from "@/utils/navigation/navigation";
 
 export const useDeckActions = (deck: Deck, closeMenu: () => void) => {
-    const router = useRouter();
-    const { actions } = useDecks();
+    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
-    const confirmDeleteDeck = useConfirmDeleteDeck();
+    const { actions } = useDecks();
+    const confirmDelete = useConfirmDelete();
 
     const onAddCard = () => navigateToAddCard(deck.id);
     const onEditCard = (cardId: string) => navigateToEditCard(deck.id, cardId);
     const onDeleteCard = (cardId: string) => actions.deleteCard(cardId);
-
-    const onEditTitle = () => {
-        router.push({
-            pathname: '/(modals)/title',
-            params: { deckId: deck.id, mode: 'edit' }, 
-        });
-    };
+    const onEditTitle = () => navigateToEditTitle(deck.id);
 
     const onExport = useCallback(() => {
         showExportOptions(deck, closeMenu);
     }, [deck, closeMenu]);
 
-    const onDeleteDeck = () => confirmDeleteDeck(deck.id);
+    const onDeleteDeck = () => confirmDelete('deck', deck.id);
+
+    const onSortCards = () => {
+        const nextOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+
+        const sortedCards = [...deck.cards].sort((a, b) =>
+            nextOrder === 'asc'
+                ? a.question.localeCompare(b.question, undefined, { sensitivity: 'base' })
+                : b.question.localeCompare(a.question, undefined, { sensitivity: 'base' })
+        );
+
+        actions.reorderCards(deck.id, sortedCards).catch(console.error);
+        setSortOrder(nextOrder);
+    };
 
     const menuButtons = useDeckMenuButtons({
         deckId: deck.id,
@@ -37,12 +47,16 @@ export const useDeckActions = (deck: Deck, closeMenu: () => void) => {
         onEditTitle,
         onExport,
         onDelete: onDeleteDeck,
+        onSort: onSortCards,
+        currentSortOrder: sortOrder
     });
 
     return {
         menuButtons,
         onAddCard, 
         onEditCard,
-        onDeleteCard
+        onDeleteCard,
+        onSortCards,
+        sortOrder,
     };
 };
