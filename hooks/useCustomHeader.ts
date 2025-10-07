@@ -9,7 +9,7 @@ interface CustomHeaderProps {
     title?: string | null;
     enabled?: boolean;
     headerTransparent?: boolean;
-    headerBlurEffect?: 'regular';
+    headerBlurEffect?: 'dark';
     leftButton?: LeftButtonProps | (() => React.ReactNode);
     rightButton?: RightButtonProps | (() => React.ReactNode);
 }
@@ -36,7 +36,7 @@ const useCustomHeader = ({
                 ? undefined
                 : { backgroundColor: "#1a1c20" },
             headerBackTitleVisible: false,
-            headerLeft: headerLeft ? headerLeft : () => createElement(HeaderLeftButton),
+            headerLeft: headerLeft ?? (() => createElement(HeaderLeftButton)),
             headerTitle: () => createElement(HeaderTitle, { title }),
             headerRight: rightButton
                 ? typeof rightButton === 'function'
