@@ -1,22 +1,17 @@
 import { ViewStyle } from "react-native";
 import { headerStyle } from "./navigationStyles";
 
-export const HEADER_DEFAULT = (headerStyle.height as number) ?? 120;
-const HEADER_SELECT_FOLDER = 110;
-const HEADER_REGULAR = 100;
-
-const FOLDER_ITEM_HEIGHT = 80;
-const FOLDER_BAR_PADDING_BOTTOM = 12;
-const FOLDER_BAR_HEIGHT = FOLDER_ITEM_HEIGHT + FOLDER_BAR_PADDING_BOTTOM;
-
-const NO_FOLDERS_EXTRA = 10;
+const HEADER_HEIGHTS = {
+    DEFAULT: (headerStyle.height as number) ?? 120,
+    REGULAR: 100,
+    FOLDER_CONTENT: 110,
+};
 
 const TOKENS = {
-    gap: 4,
-    folderBarPaddingTop: 12,
+    gap: 6,
     paddingHorizontal: 10,
-    deckListPaddingBottom: 140,
-    deckListMarginVertical: 16,
+    marginVertical: 16,
+    paddingBottom: 140,
 };
 
 const base = (paddingTop: number): ViewStyle => ({
@@ -27,30 +22,48 @@ const base = (paddingTop: number): ViewStyle => ({
     justifyContent: 'flex-start'
 });
 
-export const flatListStyles = {
-    appDecks: (): ViewStyle => ({
-        ...base(HEADER_DEFAULT),
-        marginVertical: TOKENS.deckListMarginVertical,
-        paddingBottom: TOKENS.deckListPaddingBottom,
+const makeStyle = (paddingTop: number, withDeckList = true): ViewStyle => ({
+    ...base(paddingTop),
+    ...(withDeckList && {
+        marginVertical: TOKENS.marginVertical,
+        paddingBottom: TOKENS.paddingBottom,
     }),
+});
 
-    bookmarks: (hasFolders: boolean): ViewStyle => {
-        const pt =
-            HEADER_DEFAULT + (hasFolders ? FOLDER_BAR_HEIGHT : NO_FOLDERS_EXTRA);
-        return base(pt);
+const memo = new Map<string, ViewStyle>();
+const getMemoizedStyle = (key: string, creator: () => ViewStyle): ViewStyle => {
+    const cached = memo.get(key);
+    if (cached) return cached;
+
+    const style = creator();
+    memo.set(key, style);
+    return style;
+};
+
+type FlatListStyles = {
+    appDecks: () => ViewStyle;
+    deckList: (variant: 'regular' | 'transparent') => ViewStyle;
+    selectFolder: () => ViewStyle;
+    folderDetail: () => ViewStyle;
+};
+
+export const flatListStyles: FlatListStyles = {
+    appDecks: () => 
+        getMemoizedStyle('appDecks', () => makeStyle(HEADER_HEIGHTS.DEFAULT)),
+
+    deckList: (variant) => {
+        const key = `deckList_${variant}`;
+        return getMemoizedStyle(key, () =>
+            makeStyle(variant === 'transparent' ? HEADER_HEIGHTS.REGULAR : 0),
+        );
     },
+        
+    selectFolder: () => 
+        getMemoizedStyle('selectFolder', () => makeStyle(HEADER_HEIGHTS.REGULAR)),
 
-    selectFolder: (): ViewStyle => base(HEADER_SELECT_FOLDER),
-    folderDetail: (): ViewStyle => base(HEADER_SELECT_FOLDER),
-
-    deckList: (isHeaderTransparent = false): ViewStyle => ({
-        ...base(isHeaderTransparent ? HEADER_REGULAR : 0),
-        marginVertical: TOKENS.deckListMarginVertical,
-        paddingBottom: TOKENS.deckListPaddingBottom,
-    }),
-
-    folderBar: (): ViewStyle => ({
-        paddingHorizontal: TOKENS.paddingHorizontal,
-        paddingTop: TOKENS.folderBarPaddingTop,
-    }),
+    folderDetail: () => 
+        getMemoizedStyle('folderDetail', () => makeStyle(
+            HEADER_HEIGHTS.FOLDER_CONTENT, 
+            false
+        )),
 };
