@@ -1,63 +1,39 @@
 import { createElement } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-import { useDecks } from "@/context/DeckContext";
-
 interface ButtonProps {
     deckId: string;
     onAdd: () => void;
     onEditTitle: () => void;
     onExport: () => void;
     onDelete: (deckId: string) => void;
+    onSort?: () => void;
+    currentSortOrder?: 'asc' | 'desc';
 }
 
 export const useDeckMenuButtons = ({ 
-    deckId, onAdd, onEditTitle, onExport, onDelete 
+    deckId, onAdd, onEditTitle, onExport, onDelete, onSort, currentSortOrder 
 }: ButtonProps) => {
-    const { 
-        saveDeckToFavorites, 
-        removeDeckFromFavorites, 
-        isDeckFavorite, 
-        sortOrder, toggleSortCards
-    } = useDecks();
-    const isFavorite = isDeckFavorite(deckId);
-
     const icon = (
         name: keyof typeof MaterialCommunityIcons.glyphMap,
         color = '#fff'
     ) => createElement(MaterialCommunityIcons, { name, size: 24, color });
 
-    return [
-        { 
-            label: 'Add new card', 
+    const buttons = [
+        {
+            label: 'Add Card', 
             icon: icon('playlist-plus'), 
             onPress: onAdd,
         },
         { 
-            label: 'Edit title', 
+            label: 'Rename title', 
             icon: icon('playlist-edit'), 
             onPress: onEditTitle,
 
-        },
-        {
-            label: 'Sort',
-            icon: icon(
-                sortOrder === 'asc'
-                    ? 'sort-alphabetical-ascending-variant'
-                    : 'sort-alphabetical-descending-variant'
-            ),
-            onPress: () => toggleSortCards(deckId),
-        },
-        {
-            label: isFavorite ? 'Remove from favorites' : 'Add to favorites',
-            icon: isFavorite ? icon('bookmark') : icon('bookmark-outline'),
-            onPress: () => isFavorite 
-                ? removeDeckFromFavorites(deckId) 
-                : saveDeckToFavorites(deckId),
-        },
+        },       
         {
             label: 'Export', 
-            icon: icon('export-variant'), 
+            icon: icon('export-variant'),
             onPress: onExport,
         },
         { 
@@ -67,4 +43,18 @@ export const useDeckMenuButtons = ({
             isDestructive: true,
         },
     ];
+
+    if (onSort && currentSortOrder) {
+        buttons.splice(2, 0, {
+            label: 'Sort',
+            icon: icon(
+                currentSortOrder === 'asc'
+                    ? 'sort-alphabetical-ascending-variant'
+                    : 'sort-alphabetical-descending-variant'
+            ),
+            onPress: onSort,
+        });
+    }
+
+    return buttons;
 };
