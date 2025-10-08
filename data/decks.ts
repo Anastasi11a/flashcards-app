@@ -24,4 +24,4 @@ export type Folder = {
 export type FolderWithDecks = Folder & {
     deckIds: string[];
     decks?: Deck[];
-}; 
+};
