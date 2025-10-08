@@ -5,7 +5,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { DeckProvider } from "@/context/DeckContext";
 import { useLoadFont } from "@/hooks/useLoadFont";
-import { TitleParams } from "@/utils/navigation/navigation";
+import { TitleParams, FolderParams } from "@/utils/navigation/navigation";
 
 export default function RootLayout() {
     const assetsLoaded = useLoadFont();
@@ -24,16 +24,33 @@ export default function RootLayout() {
                 <Stack>
                     <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
                     <Stack.Screen 
+                        name='(modals)/add-deck' 
+                        options={{ gestureEnabled: false }} 
+                    />
+                    <Stack.Screen 
                         name='(modals)/card' 
                         options={{ presentation: 'modal' }}
                     />
-                    <Stack.Screen 
+                    <Stack.Screen
                         name='(modals)/title'
                         options={({ route }) => {
                             const params = route.params as TitleParams | undefined;
                             return {
                                 presentation: params?.presentation || 'card',
+                                gestureEnabled: false,
                             };
+                        }}
+                    />
+                    <Stack.Screen
+                        name='folder/select'
+                        options={{ gestureEnabled: false }}
+                    />
+                    <Stack.Screen
+                        name='folder/folder-detail'
+                        options={({ route }) => {
+                            const params = route?.params as FolderParams | undefined;
+                            const fromCreate = params?.fromCreate === 'true';
+                            return { gestureEnabled: !fromCreate };
                         }}
                     />
                 </Stack>
@@ -41,4 +58,4 @@ export default function RootLayout() {
             </DeckProvider>
         </GestureHandlerRootView>
     );
-}
+};
