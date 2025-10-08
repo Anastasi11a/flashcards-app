@@ -1,196 +1,169 @@
-import { useState, useEffect, useContext, createContext, ReactNode } from "react";
-import uuid from "uuid-random";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { Deck, Card, Folder, FolderWithDecks } from "@/data/decks";
+import * as db from "@/data/db";
 
-import { Card, Deck } from "@/data/decks";
-import { 
-    getDB,
-    initDatabase,
-    importDeckToDB,
-    getDecksWithCardsFromDB,
-    addDeck as dbAddDeck,
-    addCard as dbAddCard,
-    deleteDeck as dbDeleteDeck,
-    deleteCard as dbDeleteCard,
-    editDeck as dbEditDeck,
-    editCard as dbEditCard,
-    saveDeckAsFavorite,
-    getFavoriteDeckIds,
-    removeDeckFromFavoritesInDB,
-} from "@/data/db";
-
-interface DeckContextProps {
+type DeckContextType = {
     decks: Deck[];
-    savedDecks: Deck[];
-    selectedDeckId: string | null;
-    setSelectedDeckId: (id: string | null) => void;
-    addDeck: (title: string, cards?: Card[]) => Promise<string>;
-    addCard: (deckId: string, card: Card) => Promise<void>;
-    deleteDeck: (deckId: string) => Promise<void>;
-    deleteCard: (deckId: string, cardId: string) => Promise<void>;
-    editDeck: (deckId: string, newTitle: string) => Promise<void>;
-    editCard: (
-        deckId: string, 
-        cardId: string, 
-        newQuestion: string, 
-        newAnswer: string
-    ) => Promise<void>;
-    importDeck: (deck: Deck) => Promise<void>;
-    reorderDecks: (newOrder: Deck[]) => void;
-    saveDeckToFavorites: (deckId: string) => Promise<void>;
-    removeDeckFromFavorites: (deckId: string) => Promise<void>;
-    isDeckFavorite: (deckId: string) => boolean;
-}
+    folders: FolderWithDecks[];
+    actions: {
+        addDeck: (id: string, title: string) => Promise<void>;
+        editDeck: (deckId: string, newTitle: string) => Promise<void>;
+        deleteDeck: (deckId: string) => Promise<void>;
+        addCard: (card: Card, deckId: string) => Promise<void>;
+        editCard: (
+            cardId: string, newQuestion: string, newAnswer: string
+        ) => Promise<void>;
+        deleteCard: (cardId: string) => Promise<void>;
+        importDeck: (deck: Deck) => Promise<void>;
+        reorderDecks: (newOrder: Deck[]) => Promise<void>;
+        reorderCards: (deckId: string, sortedCards: Card[]) => Promise<void>;
+    };
+    folderActions: {
+        addFolder: (id: string, title: string) => Promise<void>;
+        removeFolder: (folderId: string) => Promise<void>;
+        addDeckToFolder: (folderId: string, deckId: string) => Promise<void>;
+        removeDeckFromFolder: (folderId: string, deckId: string) => Promise<void>;
+        moveDecksToFolder: (deckIds: string[], targetFolderId: string) => Promise<void>;
+        reorderFolders: (newOrder: Folder[]) => Promise<void>;
+    };
+    reload: () => Promise<void>;
+};
 
-const DeckContext = createContext<DeckContextProps | undefined>(undefined);
+const DeckContext = createContext<DeckContextType | undefined>(undefined);
 
-export const DeckProvider = ({ children }: { children: ReactNode }) => {
+export const DeckProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [decks, setDecks] = useState<Deck[]>([]);
-    const [selectedDeckId, setSelectedDeckId] = useState<string | null>(null);
-    const [favoriteDeckIds, setFavoriteDeckIds] = useState<string[]>([]);
+    const [folders, setFolders] = useState<FolderWithDecks[]>([]);
 
-    useEffect(() => {
-        const loadDecks = async () => {
-            await initDatabase();
-            const [allDecks, favoriteIds] = await Promise.all([
-                getDecksWithCardsFromDB(),
-                getFavoriteDeckIds()
-            ]);
-
-            setDecks(allDecks);
-            setFavoriteDeckIds(favoriteIds);
-        };
-        loadDecks();
-    }, []);
-
-    const addDeck = async (title: string, cards: Card[] = []) => {
-        const id = uuid();
-        await dbAddDeck(id, title);
-        for (const card of cards) {
-            await dbAddCard(card, id);
-        }
-        setDecks(prev => [{ id, title, cards }, ...prev]);
-        return id;
+    const loadData = async () => {
+        const [decksFromDb, foldersFromDb] = await Promise.all([
+            db.getDecks(),
+            db.getFoldersWithDecks(),
+        ]);
+        setDecks(decksFromDb);
+        setFolders(foldersFromDb);
     };
 
-    const addCard = async (deckId: string, newCard: Card) => {
-        await dbAddCard(newCard, deckId);
-        setDecks(prev =>
-            prev.map(deck =>
-            deck.id === deckId
-                ? { ...deck, cards: [newCard, ...deck.cards] }
-                : deck
-            )
-        );
+    useEffect(() => {
+        (async () => {
+            await db.initDatabase();
+            await loadData();
+        })();
+    }, []);
+
+    // --- Decks ---
+    const addDeck = async (id: string, title: string) => {
+        await db.addDeck(id, title);
+        await loadData();
     };
 
     const editDeck = async (deckId: string, newTitle: string) => {
-        await dbEditDeck(deckId, newTitle);
-        setDecks(prev =>
-            prev.map(deck =>
-            deck.id === deckId ? { ...deck, title: newTitle } : deck
-            )
-        );
+        await db.editDeck(deckId, newTitle);
+        await loadData();
     };
 
-    const editCard = async (
-        deckId: string,
-        cardId: string,
-        newQuestion: string,
-        newAnswer: string
-    ) => {
-        await dbEditCard(cardId, newQuestion, newAnswer);
-        setDecks(prev =>
-            prev.map(deck =>
-            deck.id === deckId
-                ? {
-                    ...deck,
-                    cards: deck.cards.map(card =>
-                    card.id === cardId
-                        ? { ...card, question: newQuestion, answer: newAnswer }
-                        : card
-                    ),
-                }
-                : deck
-            )
-        );
-    };
-    
     const deleteDeck = async (deckId: string) => {
-        await dbDeleteDeck(deckId);
-        setDecks(prev => prev.filter(deck => deck.id !== deckId));
+        await db.deleteDeck(deckId);
+        await loadData();
     };
 
-    const deleteCard = async (deckId: string, cardId: string) => {
-        await dbDeleteCard(cardId);
-        setDecks(prev =>
-            prev.map(deck =>
-            deck.id === deckId
-                ? { ...deck, cards: deck.cards.filter(card => card.id !== cardId) }
-                : deck
-            )
-        );
+    const addCard = async (card: Card, deckId: string) => {
+        await db.addCard(card, deckId);
+        await loadData();
+    };
+
+    const editCard = async (cardId: string, newQuestion: string, newAnswer: string) => {
+        await db.editCard(cardId, newQuestion, newAnswer);
+        await loadData();
+    };
+
+    const deleteCard = async (cardId: string) => {
+        await db.deleteCard(cardId);
+        await loadData();
     };
 
     const importDeck = async (deck: Deck) => {
-        await importDeckToDB(deck);
-        const updatedDecks = await getDecksWithCardsFromDB();
-        setDecks(updatedDecks);
+        await db.importDeckToDB(deck);
+        await loadData();
     };
 
     const reorderDecks = async (newOrder: Deck[]) => {
-        const db = await getDB();
-        const updatePromises = newOrder.map((deck, index) =>
-            db.runAsync(`UPDATE decks SET position = ? WHERE id = ?`, index, deck.id)
-        );
-        await Promise.all(updatePromises);
-
-        setDecks(newOrder);
+        await db.updateDeckPositions(newOrder);
+        await loadData();
     };
 
-    const saveDeckToFavorites = async (deckId: string) => {
-        if (!favoriteDeckIds.includes(deckId)) {
-            await saveDeckAsFavorite(deckId);
-            setFavoriteDeckIds(prev => [deckId, ...prev]);
-        }
+    const reorderCards = async (deckId: string, sortedCards: Card[]) => {
+        await db.reorderCards(deckId, sortedCards);
+        await loadData();
     };
 
-    const removeDeckFromFavorites = async (deckId: string) => {
-        if (favoriteDeckIds.includes(deckId)) {
-            await removeDeckFromFavoritesInDB(deckId);
-            setFavoriteDeckIds(prev => prev.filter(id => id !== deckId));
-        }
+    // --- Folders ---
+    const addFolder = async (id: string, title: string) => {
+        await db.addFolder(id, title);
+        await loadData();
     };
 
-    const isDeckFavorite = (deckId: string) => favoriteDeckIds.includes(deckId);
-    const savedDecks = favoriteDeckIds
-        .map(id => decks.find(deck => deck.id === id))
-        .filter((d): d is Deck => !!d)
+    const removeFolder = async (folderId: string) => {
+        await db.removeFolder(folderId);
+        await loadData();
+    };
+
+    const addDeckToFolder = async (folderId: string, deckId: string) => {
+        await db.addDeckToFolder(folderId, deckId);
+        await loadData();
+    };
+
+    const removeDeckFromFolder = async (folderId: string, deckId: string) => {
+        await db.removeDeckFromFolder(folderId, deckId);
+        await loadData();
+    };
+
+    const moveDecksToFolder = async (deckIds: string[], targetFolderId: string) => {
+        await db.moveDecksToFolder(deckIds, targetFolderId);
+        await loadData();
+    };
+
+    const reorderFolders = async (newOrder: Folder[]) => {
+        await db.updateFolderPositions(newOrder);
+        await loadData();
+    };
 
     return (
-        <DeckContext.Provider value={{ 
-            decks,
-            savedDecks, 
-            selectedDeckId, 
-            setSelectedDeckId, 
-            addDeck, 
-            addCard, 
-            deleteDeck, 
-            deleteCard, 
-            editDeck, 
-            editCard, 
-            importDeck,
-            reorderDecks,
-            saveDeckToFavorites,
-            isDeckFavorite,
-            removeDeckFromFavorites,
-        }}>
-            {children}
+        <DeckContext.Provider
+            value={{
+                decks,
+                folders,
+                actions: {
+                    addDeck,
+                    editDeck,
+                    deleteDeck,
+                    addCard,
+                    editCard,
+                    deleteCard,
+                    importDeck,
+                    reorderDecks,
+                    reorderCards,
+                },
+                folderActions: {
+                    addFolder,
+                    removeFolder,
+                    addDeckToFolder,
+                    removeDeckFromFolder,
+                    moveDecksToFolder,
+                    reorderFolders,
+                },
+                reload: loadData,
+            }}
+        >
+        {children}
         </DeckContext.Provider>
     );
-}
+};
 
-export const useDecks = () => {
+export const useDecks = (): DeckContextType => {
     const context = useContext(DeckContext);
-    if (!context) throw new Error('useDecks must be used within a DeckProvider');
+    if (!context) {
+        throw new Error("useDecks must be used within a DeckProvider");
+    }
     return context;
 };
