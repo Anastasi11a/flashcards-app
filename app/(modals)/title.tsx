@@ -21,13 +21,13 @@ const TitleModal = () => {
 
     const handleSave = async () => {
         if (isEdit) {
-            onSave();
+            await onSave();
         } else if (isFolder) {
-            await submit('folder', draftTitle);
-            setDraftTitle('');
+            const success = await submit('folder', draftTitle);
+            if (success) setDraftTitle('');
         } else {
-            await submit('deck', draftTitle);
-            setDraftTitle('');
+            const success = await submit('deck', draftTitle);
+            if (success) setDraftTitle('');
         }
     };
 
