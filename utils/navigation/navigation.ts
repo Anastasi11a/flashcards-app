@@ -15,6 +15,13 @@ export const navigateToDecks = () => {
     router.push('/(tabs)');
 };
 
+export const navigateToAddDeck = (deckId: string, title: string) => {
+    router.push({
+        pathname: '/(modals)/add-deck',
+        params: { title, deckId },
+    });
+};
+
 export const navigateToCreateDeck = () => {
     router.push({
         pathname: '/(modals)/title',
@@ -54,6 +61,13 @@ export const navigateToAddFolder = () => {
     router.push({
         pathname: '/(modals)/title',
         params: { mode: 'create-folder' },
+    });
+};
+
+export const navigateToFolderSelection = (folderId: string) => {
+    router.push({
+        pathname: '/folder/select',
+        params: { folderId },
     });
 };
 
