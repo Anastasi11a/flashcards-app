@@ -24,12 +24,12 @@ const FolderActionBar = ({ selectedIds, clearSelection }: Props) => {
         if (!hasSelection || !currentFolderId) return;
         await action(selectedIds, currentFolderId);
         clearSelection();
-        navigateToFolder(currentFolderId);
+        navigateToFolder(currentFolderId, true);
     };
 
     const handleSaveEmptyFolder = () => {
         if (!currentFolderId) return;
-        navigateToFolder(currentFolderId);
+        navigateToFolder(currentFolderId, true);
     };
 
     return (
