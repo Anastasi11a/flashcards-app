@@ -198,6 +198,15 @@ export const addDeckToFolder = async (
     );
 };
 
+export const editFolder = async (folderId: string, newTitle: string): Promise<void> => {
+    const db = await getDB();
+    await db.runAsync(
+        `UPDATE folders SET title = ? WHERE id = ?`,
+        newTitle,
+        folderId
+    );
+};
+
 export const removeFolder = async (folderId: string): Promise<void> => {
     const db = await getDB();
     await db.runAsync(`DELETE FROM folders WHERE id = ?`, folderId);

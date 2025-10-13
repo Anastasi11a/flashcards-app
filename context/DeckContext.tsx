@@ -20,8 +20,9 @@ type DeckContextType = {
     };
     folderActions: {
         addFolder: (id: string, title: string) => Promise<void>;
-        removeFolder: (folderId: string) => Promise<void>;
         addDeckToFolder: (folderId: string, deckId: string) => Promise<void>;
+        editFolder: (folderId: string, newTitle: string) => Promise<void>;
+        removeFolder: (folderId: string) => Promise<void>;
         removeDeckFromFolder: (folderId: string, deckId: string) => Promise<void>;
         moveDecksToFolder: (deckIds: string[], targetFolderId: string) => Promise<void>;
         reorderFolders: (newOrder: Folder[]) => Promise<void>;
@@ -103,13 +104,18 @@ export const DeckProvider: React.FC<{ children: React.ReactNode }> = ({ children
         await loadData();
     };
 
-    const removeFolder = async (folderId: string) => {
-        await db.removeFolder(folderId);
+    const addDeckToFolder = async (folderId: string, deckId: string) => {
+        await db.addDeckToFolder(folderId, deckId);
         await loadData();
     };
 
-    const addDeckToFolder = async (folderId: string, deckId: string) => {
-        await db.addDeckToFolder(folderId, deckId);
+    const editFolder = async (folderId: string, newTitle: string) => {
+        await db.editFolder(folderId, newTitle);
+        await loadData();
+    };
+
+    const removeFolder = async (folderId: string) => {
+        await db.removeFolder(folderId);
         await loadData();
     };
 
@@ -146,8 +152,9 @@ export const DeckProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 },
                 folderActions: {
                     addFolder,
-                    removeFolder,
                     addDeckToFolder,
+                    editFolder,
+                    removeFolder,
                     removeDeckFromFolder,
                     moveDecksToFolder,
                     reorderFolders,
