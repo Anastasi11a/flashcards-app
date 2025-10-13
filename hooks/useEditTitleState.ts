@@ -4,39 +4,55 @@ import { Alert } from "react-native";
 import { useDecks } from "@/context/DeckContext";
 import { SaveHandler } from "./useSaveModal";
 
-export function useEditTitleState({ deckId }: { deckId?: string }) {
-    const { decks, actions } = useDecks();
-    const deck = decks.find((d) => d.id === deckId);
+interface Props {
+    id?: string;
+    type?: 'deck' | 'folder';
+}
 
-    const [title, setTitle] = useState(deck?.title ?? '');
+export function useEditTitleState({ id, type }: Props) {
+    const { decks, folders, actions, folderActions } = useDecks();
+
+    const item = type === 'folder'
+        ? folders.find((f) => f.id === id)
+        : decks.find((d) => d.id === id);
+
+    const [title, setTitle] = useState(item?.title ?? '');
 
     useEffect(() => {
-        if (deck?.title !== undefined) {
-            setTitle(deck.title);
+        if (item?.title !== undefined) {
+            setTitle(item.title);
         }
-    }, [deck?.title, deckId]);
+    }, [item?.title, id]);
 
     const save: SaveHandler = useCallback(async () => {
-        if (!deckId) return false;
+        if (!id || !type) return false;
 
         const trimmed = title.trim();
         if (!trimmed) return false;
 
-        const isDuplicate = decks.some(
-            (d) => d.title.toLowerCase() === trimmed.toLowerCase() && d.id !== deckId
+        const list = type === 'folder' ? folders : decks;
+        const isDuplicate = list.some(
+            (entry) => 
+                entry.title.toLowerCase() === trimmed.toLowerCase() && 
+                entry.id !== id
         );
 
         if (isDuplicate) {
             Alert.alert(
                 'Duplicate Title',
-                'A deck with this title already exists. Please choose another name'
+                `A ${type} with this title already exists. Please choose another name.`
             );
             return false;
         }
 
-        await actions.editDeck(deckId, trimmed);
+        if (type === 'folder') {
+            await folderActions.editFolder(id, trimmed);
+        } else {
+            await actions.editDeck(id, trimmed);
+        }
+
         return true;
-    }, [deckId, title, actions, decks]);
+    }, [id, type, title, actions, folderActions, decks, folders]);
 
     return { title, setTitle, save };
 };
