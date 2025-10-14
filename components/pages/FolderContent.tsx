@@ -1,41 +1,26 @@
-import { useMemo } from "react";
-import { FlatList } from "react-native";
-import { Swipeable } from "react-native-gesture-handler";
-
-import { useDecks } from "@/context/DeckContext";
-import DeckContainer from "@/ui/container/DeckContainer";
-import MessageContainer from "@/ui/container/MessageContainer";
+import type { FolderWithDecks } from "@/data/decks";
+import FolderList from "../common/FolderList";
+import { useFolderActions } from "@/hooks/useFolderActions";
+import MenuPopupButton from "@/ui/buttons/MenuPopupButton";
 import { ScreenContainer } from "@/ui/container/ScreenContainer";
-import { flatListStyles } from "@/utils/contentContainerStyle";
-import { navigateToCards } from "@/utils/navigation/navigation";
 
-const FolderContent = ({ folderId }: { folderId?: string }) => {
-    const { decks, folders } = useDecks();
+interface Props {
+    folder: FolderWithDecks;
+    isMenuVisible: boolean;
+    onCloseMenu: () => void;
+}
 
-    const shownDecks = useMemo(() => {
-        if (folderId) {
-            return folders.find(f => f.id === folderId)?.decks ?? [];
-        }
-        return decks;
-    }, [folderId, folders, decks]);
+const FolderContent = ({ folder, isMenuVisible, onCloseMenu }: Props) => {
+    const { menuButtons } = useFolderActions(folder, onCloseMenu);
 
     return (
         <ScreenContainer>
-            <FlatList
-                data={shownDecks}
-                keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (
-                    <Swipeable>
-                        <DeckContainer
-                            title={item.title}
-                            showCountBadge={false}
-                            onPress={() => navigateToCards(item.id)}
-                        />
-                    </Swipeable>
-                )}
-                ListEmptyComponent={<MessageContainer>No decks found</MessageContainer>}
-                contentContainerStyle={flatListStyles.folderDetail()}
+            <MenuPopupButton
+                isVisible={isMenuVisible}
+                buttons={menuButtons}
+                onClose={onCloseMenu}
             />
+            <FolderList folderId={folder.id} />
         </ScreenContainer>
     );
 };
