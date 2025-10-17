@@ -1,7 +1,8 @@
 import { router } from "expo-router";
 
 export type TitleParams = {
-    deckId?: string;
+    id?: string;
+    type?: 'deck' | 'folder';
     mode: 'edit' | 'create-deck' | 'create-folder';
     presentation?: 'modal' | 'card';
 };
@@ -12,7 +13,7 @@ export type FolderParams = {
 };
 
 export const navigateToDecks = () => {
-    router.push('/(tabs)');
+    router.replace('/(tabs)');
 };
 
 export const navigateToAddDeck = (deckId: string, title: string) => {
@@ -50,10 +51,13 @@ export const navigateToEditCard = (deckId: string, cardId: string) => {
     });
 };
 
-export const navigateToEditTitle = (deckId: string) => {
+export const navigateToEditTitle = (
+    id: string,
+    type: 'deck' | 'folder'
+) => {
     router.push({
         pathname: '/(modals)/title',
-        params: { deckId, mode: 'edit', presentation: 'modal' },
+        params: { id, type, mode: 'edit', presentation: 'modal' },
     });
 };
 
