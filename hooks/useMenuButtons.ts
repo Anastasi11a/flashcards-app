@@ -14,7 +14,7 @@ interface DeckExtras {
     onAdd?: () => void;
     onExport?: () => void;
     onSort?: () => void;
-    currentSortOrder?: SortOrder;
+    currentSortOrder?: 'asc' | 'desc';
 }
 
 type MenuProps = CommonMenuProps & Partial<DeckExtras>;
@@ -50,11 +50,11 @@ export const useMenuButtons = ({
         onPress: onEditTitle,
     });
 
-    if (type === 'deck' && onSort && currentSortOrder) {
+    if (onSort) {
         buttons.push({
             label: 'Sort',
             icon: icon(
-                currentSortOrder === 'asc'
+                currentSortOrder === 'desc'
                 ? 'sort-alphabetical-ascending-variant'
                 : 'sort-alphabetical-descending-variant'
             ),
