@@ -13,12 +13,13 @@ import {
 } from '@/utils/navigation/navigation';
 
 import type { Deck, FolderWithDecks } from '@/data/decks';
+import type { SortOrder } from './useMenuButtons';
 
 export const useMenuOptions = <T extends Deck | FolderWithDecks>(
     entity: T,
     closeMenu: () => void,
 ) => {
-    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+    const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
 
     const { actions, folderActions } = useDecks();
     const confirmDelete = useConfirmDelete();
@@ -64,26 +65,28 @@ export const useMenuOptions = <T extends Deck | FolderWithDecks>(
         }
     }, [isDeck, entity, closeMenu]);
 
-    const onSortCards = isDeck
+    const onSort = isDeck
         ? () => {
-            const nextOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+            const nextOrder: SortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
             const sortedCards = [...(entity as Deck).cards].sort((a, b) =>
                 nextOrder === 'asc'
-                    ? a.question.localeCompare(
-                        b.question, 
-                        undefined,
-                        { sensitivity: 'base' }
-                    )
-                    : b.question.localeCompare(
-                        a.question, 
-                        undefined, 
-                        { sensitivity: 'base' }
-                    )
+                    ? a.question.localeCompare(b.question)
+                    : b.question.localeCompare(a.question)
             );
             actions.reorderCards(id, sortedCards).catch(console.error);
             setSortOrder(nextOrder);
         }
-        : undefined;
+        : () => {
+            const nextOrder: SortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+            const sortedDeck = [...(entity as FolderWithDecks).decks ?? []].sort((a, b) =>
+                    nextOrder === 'asc'
+                        ? a.title.localeCompare(b.title)
+                        : b.title.localeCompare(a.title)
+                );
+            folderActions.updateFolderDeckOrder(entity.id, sortedDeck)
+                .catch(console.error);
+            setSortOrder(nextOrder);
+        };
 
     const menuButtons = useMenuButtons({
         id,
@@ -92,20 +95,20 @@ export const useMenuOptions = <T extends Deck | FolderWithDecks>(
         onEditTitle,
         onExport,
         onDelete,
-        onSort: onSortCards,
-        currentSortOrder: isDeck ? sortOrder : undefined,
+        onSort,
+        currentSortOrder: sortOrder,
     });
 
     return {
         menuButtons,
         onEditTitle,
         onDelete,
+        onSort,
+        sortOrder,
         ...(isDeck && {
             onAddCard,
             onEditCard,
             onDeleteCard,
-            onSortCards,
-            sortOrder,
         }),
     };
 };
