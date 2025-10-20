@@ -1,6 +1,6 @@
 import { Alert } from "react-native";
 
-type DeleteTarget = 'deck' | 'folder';
+export type DeleteTarget = 'deck' | 'folder' | 'deckFromFolder' | 'card';
 
 interface ConfirmDeleteOptions {
     onCancel?: (id: string) => void;
@@ -9,18 +9,34 @@ interface ConfirmDeleteOptions {
 
 export const useConfirmDelete = (options: ConfirmDeleteOptions = {}) => {
     const confirmDelete = (type: DeleteTarget, id: string): Promise<boolean> => {
-        const title = type === 'deck' ? 'Delete Deck' : 'Delete Folder';
-        const message =
-            type === 'deck'
-                ? 'Are you sure you want to delete this deck?'
-                : 'Are you sure you want to delete this folder?';
+        let title = '';
+        let message = '';
+
+        switch (type) {
+            case 'deck':
+                title = 'Delete Deck';
+                message = 'Are you sure you want to delete this deck?';
+                break;
+            case 'folder':
+                title = 'Delete Folder';
+                message = 'Are you sure you want to delete this folder?';
+                break;
+            case 'deckFromFolder':
+                title = 'Remove Deck from Folder';
+                message = 'This will only remove the deck from this folder.';
+                break;
+            case 'card':
+                title = 'Delete Card';
+                message = 'Are you sure you want to delete this card?';
+                break;
+        }
 
         return new Promise<boolean>((resolve) => {
             Alert.alert(
                 title,
                 message,
                 [
-                    { 
+                    {
                         text: 'Cancel',
                         style: 'cancel',
                         onPress: () => {
@@ -28,18 +44,18 @@ export const useConfirmDelete = (options: ConfirmDeleteOptions = {}) => {
                             resolve(false);
                         },
                     },
-                    { 
+                    {
                         text: 'Delete',
                         style: 'destructive',
-                        onPress: () => {
-                            options.onConfirm?.(id);
+                        onPress: async () => {
+                            await options.onConfirm?.(id);
                             resolve(true);
-                        } 
+                        },
                     },
                 ],
                 { cancelable: true }
             );
-        })
+        });
     };
 
     return confirmDelete;
