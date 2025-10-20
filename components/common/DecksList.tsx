@@ -1,9 +1,10 @@
 import { useCallback, useRef, useState } from "react";
 import { FlatList } from "react-native";
-import type SwipeableType from "react-native-gesture-handler/Swipeable";
 import Swipeable from "react-native-gesture-handler/Swipeable";
+import type SwipeableType from "react-native-gesture-handler/Swipeable";
 
 import { Card } from "@/data/decks";
+import { useConfirmDelete } from "@/hooks/useConfirmDelete";
 import CardContainer from "@/ui/container/CardContainer";
 import MessageContainer from "@/ui/container/MessageContainer";
 import SwipeButtons from "@/ui/buttons/SwipeButtons";
@@ -19,6 +20,7 @@ type DeckListProps = {
 
 const DeckList = ({ cards, variant = 'regular', onEdit, onDelete }: DeckListProps) => {
     const swipeableRefs = useRef<Record<string, SwipeableRef>>({});
+    const confirmDelete = useConfirmDelete();
 
     const [activeAnswerId, setActiveAnswerId] = useState<string | null>(null);
     const [swipingCardId, setSwipingCardId] = useState<string | null>(null);
@@ -41,10 +43,16 @@ const DeckList = ({ cards, variant = 'regular', onEdit, onDelete }: DeckListProp
                     } 
                     : undefined
                 }
-                onDelete={() => onDelete(card.id)}
+                onDelete={async () => {
+                    const confirmed = await confirmDelete('card', card.id);
+                    if (confirmed) {
+                        onDelete(card.id);
+                    }
+                    swipeableRef?.close();
+                }}
             />
         ),
-        [onDelete, onEdit]
+        [onEdit, onDelete, confirmDelete]
     );
 
     const renderItem = useCallback(
