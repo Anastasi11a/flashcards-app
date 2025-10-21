@@ -51,6 +51,7 @@ export const initDatabase = async () => {
         CREATE TABLE IF NOT EXISTS folder_decks (
             folder_id TEXT NOT NULL,
             deck_id TEXT NOT NULL,
+            position INTEGER DEFAULT 0,
             PRIMARY KEY (folder_id, deck_id),
             FOREIGN KEY (folder_id) REFERENCES folders(id) ON DELETE CASCADE,
             FOREIGN KEY (deck_id) REFERENCES decks(id) ON DELETE CASCADE
@@ -251,29 +252,54 @@ export const updateFolderPositions = async (newOrder: Folder[]): Promise<void> =
     await Promise.all(updatePromises);
 };
 
+export const updateFolderDeckOrder = async (
+    folderId: string,
+    sortedDecks: Deck[]
+): Promise<void> => {
+    const db = await getDB();
+    const updatePromises = sortedDecks.map((deck, index) =>
+        db.runAsync(
+            `UPDATE folder_decks SET position = ? WHERE folder_id = ? AND deck_id = ?`,
+            index,
+            folderId,
+            deck.id
+        )
+    );
+    await Promise.all(updatePromises);
+};
+
 export const getFoldersWithDecks = async (): Promise<FolderWithDecks[]> => {
     const db = await getDB();
 
     const folders = await db.getAllAsync<Folder>(
         `SELECT * FROM folders ORDER BY position ASC`
     );
-    const folderDecks = await db.getAllAsync<{ folder_id: string; deck_id: string }>(
-        `SELECT * FROM folder_decks`
-    );
+    const folderDecks = await db.getAllAsync<{ 
+        folder_id: string; 
+        deck_id: string; 
+        position: number;
+    }>(`
+        SELECT * FROM folder_decks
+        ORDER BY folder_id ASC, position ASC
+    `);
     const decksRaw = await db.getAllAsync<DeckRow>(`SELECT * FROM decks`);
     const cardsRaw = await db.getAllAsync<DBCard>(`SELECT * FROM cards`);
 
     const decks = buildDecks(decksRaw, cardsRaw);
 
     return folders.map(folder => {
-        const deckIds = folderDecks
+        const folderDeckList = folderDecks
             .filter(fd => fd.folder_id === folder.id)
-            .map(fd => fd.deck_id);
+            .sort((a, b) => a.position - b.position);
+
+        const folderDecksSorted = folderDeckList
+            .map(fd => decks.find(d => d.id === fd.deck_id))
+            .filter((d): d is Deck => !!d);
 
         return {
             ...folder,
-            deckIds,
-            decks: decks.filter(d => deckIds.includes(d.id)),
+            deckIds: folderDeckList.map(fd => fd.deck_id),
+            decks: folderDecksSorted,
         };
     });
 };
