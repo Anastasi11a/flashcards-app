@@ -1,24 +1,21 @@
 import type { FolderWithDecks } from "@/data/decks";
+import { useMenu } from "@/context/MenuContext";
 import FolderList from "../common/FolderList";
-import { useFolderActions } from "@/hooks/useFolderActions";
+import { useMenuOptions } from "@/hooks/useMenuOptions";
 import MenuPopupButton from "@/ui/buttons/MenuPopupButton";
 import { ScreenContainer } from "@/ui/container/ScreenContainer";
 
-interface Props {
-    folder: FolderWithDecks;
-    isMenuVisible: boolean;
-    onCloseMenu: () => void;
-}
+const FolderContent = ({ entity: folder }: { entity: FolderWithDecks }) => {
+    const { isMenuVisible, closeMenu } = useMenu();
 
-const FolderContent = ({ folder, isMenuVisible, onCloseMenu }: Props) => {
-    const { menuButtons } = useFolderActions(folder, onCloseMenu);
+    const { menuButtons } = useMenuOptions(folder, closeMenu);
 
     return (
         <ScreenContainer>
             <MenuPopupButton
                 isVisible={isMenuVisible}
                 buttons={menuButtons}
-                onClose={onCloseMenu}
+                onClose={closeMenu}
             />
             <FolderList folderId={folder.id} />
         </ScreenContainer>
