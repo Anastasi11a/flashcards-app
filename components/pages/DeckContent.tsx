@@ -1,19 +1,16 @@
 import { Deck } from "@/data/decks";
 import { DeckContentList } from "../common/DecksList";
-import { useDeckActions } from "@/hooks/useDeckActions";
+import { useMenu } from "@/context/MenuContext";
+import { useMenuOptions } from "@/hooks/useMenuOptions";
 import FloatingAddButton from "@/ui/buttons/FloatingAddButton";
 import MenuPopupButton from "@/ui/buttons/MenuPopupButton";
 import { ScreenContainer } from "@/ui/container/ScreenContainer";
 
-interface Props {
-    deck: Deck;
-    isMenuVisible: boolean;
-    onCloseMenu: () => void;
-}
+const DeckContent = ({ entity: deck }: { entity: Deck }) => {
+    const { isMenuVisible, closeMenu } = useMenu();
 
-const DeckContent = ({ deck, isMenuVisible, onCloseMenu }: Props) => {
-    const { menuButtons, onAddCard, onEditCard, onDeleteCard } = useDeckActions(
-        deck, onCloseMenu
+    const { menuButtons, onAddCard, onEditCard, onDeleteCard } = useMenuOptions(
+        deck, closeMenu
     );
 
     return (
@@ -21,14 +18,14 @@ const DeckContent = ({ deck, isMenuVisible, onCloseMenu }: Props) => {
             <MenuPopupButton
                 isVisible={isMenuVisible}
                 buttons={menuButtons}
-                onClose={onCloseMenu}
+                onClose={closeMenu}
             />
             <DeckContentList
                 cards={deck.cards}
                 onEdit={onEditCard}
-                onDelete={onDeleteCard}
+                onDelete={onDeleteCard!}
             />
-            <FloatingAddButton onPress={onAddCard} />
+            <FloatingAddButton onPress={onAddCard!} />
         </ScreenContainer>
     );
 };
