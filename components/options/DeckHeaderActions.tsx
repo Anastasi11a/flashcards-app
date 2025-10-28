@@ -6,8 +6,8 @@ import { handleImportDeck } from "@/utils/handleImportDeck";
 import { navigateToCreateDeck } from "@/utils/navigation/navigation";
 
 const DeckHeaderActions = () => {
-    const { actions } = useDecks();
-    const handleImport = () => handleImportDeck(actions.importDeck);
+    const { decks, actions } = useDecks();
+    const handleImport = () => handleImportDeck(actions.importDeck, decks);
 
     return (
         <HeaderActionButtons
