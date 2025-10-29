@@ -26,7 +26,10 @@ const CardModal = () => {
     });
 
     const { cardState, save } = isEditMode ? editState : addState;
-    const { onSave } = useSaveModal(save);
+    const { onSave } = useSaveModal(async () => {
+        await Promise.resolve(save());
+        return true;
+    });
 
     useCustomHeader({
         title: isEditMode ? 'Edit Card' : 'Add New Card',
