@@ -12,6 +12,7 @@ import { navigateToCards } from "@/utils/navigation/navigation";
 
 const FolderList = ({ folderId }: { folderId?: string }) => {
     const { decks, folders, actions, folderActions } = useDecks();
+
     const confirmDelete = useConfirmDelete();
     const swipeableRefs = useRef<Record<string, Swipeable | null>>({});
 
@@ -64,15 +65,24 @@ const FolderList = ({ folderId }: { folderId?: string }) => {
                     renderRightActions={(_, __, swipeable) =>
                         renderRightActions(item.id, swipeable)
                     }
+                    onSwipeableWillOpen={() => {
+                        Object.entries(swipeableRefs.current).forEach(([id, ref]) => {
+                            if (id !== item.id) ref?.close();
+                        });
+                    }}
                 >
                     <DeckContainer
                         title={item.title}
                         showCountBadge={false}
-                        onPress={() => navigateToCards(item.id)}
+                        onPress={() => navigateToCards(item.id, folderId)}
                     />
                 </Swipeable>
             )}
-            ListEmptyComponent={<MessageContainer>No decks found</MessageContainer>}
+            ListEmptyComponent={
+                <MessageContainer>
+                    No decks found
+                </MessageContainer>
+            }
             contentContainerStyle={flatListStyles.folderDetail()}
         />
     );
