@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { Deck, Card, Folder, FolderWithDecks } from "@/data/decks";
 import * as db from "@/data/db";
 
@@ -20,12 +20,12 @@ type DeckContextType = {
     };
     folderActions: {
         addFolder: (id: string, title: string) => Promise<void>;
-        addDeckToFolder: (folderId: string, deckId: string) => Promise<void>;
         editFolder: (folderId: string, newTitle: string) => Promise<void>;
         removeFolder: (folderId: string) => Promise<void>;
         removeDeckFromFolder: (folderId: string, deckId: string) => Promise<void>;
         moveDecksToFolder: (deckIds: string[], targetFolderId: string) => Promise<void>;
         reorderFolders: (newOrder: Folder[]) => Promise<void>;
+        updateFolderDeckOrder: (folderId: string, sortedDecks: Deck[]) => Promise<void>;
     };
     reload: () => Promise<void>;
 };
@@ -36,133 +36,143 @@ export const DeckProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [decks, setDecks] = useState<Deck[]>([]);
     const [folders, setFolders] = useState<FolderWithDecks[]>([]);
 
-    const loadData = async () => {
-        const [decksFromDb, foldersFromDb] = await Promise.all([
+    const reload = useCallback(async (): Promise<void> => {
+        const [allDecks, allFolders] = await Promise.all([
             db.getDecks(),
             db.getFoldersWithDecks(),
         ]);
-        setDecks(decksFromDb);
-        setFolders(foldersFromDb);
-    };
+        setDecks(allDecks);
+        setFolders(allFolders);
+    }, []);
 
     useEffect(() => {
         (async () => {
             await db.initDatabase();
-            await loadData();
+            await reload();
         })();
-    }, []);
+    }, [reload]);
 
     // --- Decks ---
-    const addDeck = async (id: string, title: string) => {
-        await db.addDeck(id, title);
-        await loadData();
-    };
+    const actions = {
+        addDeck: useCallback(async (
+            id: string, title: string
+        ) => {
+            await db.addDeck(id, title);
+            await reload();
+        }, [reload]),
 
-    const editDeck = async (deckId: string, newTitle: string) => {
-        await db.editDeck(deckId, newTitle);
-        await loadData();
-    };
+        editDeck: useCallback(async (
+            deckId: string, newTitle: string
+        ) => {
+            await db.editDeck(deckId, newTitle);
+            await reload();
+        }, [reload]),
 
-    const deleteDeck = async (deckId: string) => {
-        await db.deleteDeck(deckId);
-        await loadData();
-    };
+        deleteDeck: useCallback(async (
+            deckId: string
+        ) => {
+            await db.deleteDeck(deckId);
+            await reload();
+        }, [reload]),
 
-    const addCard = async (card: Card, deckId: string) => {
-        await db.addCard(card, deckId);
-        await loadData();
-    };
+        addCard: useCallback(async (
+            card: Card, deckId: string
+        ) => {
+            await db.addCard(card, deckId);
+            await reload();
+        }, [reload]),
 
-    const editCard = async (cardId: string, newQuestion: string, newAnswer: string) => {
-        await db.editCard(cardId, newQuestion, newAnswer);
-        await loadData();
-    };
+        editCard: useCallback(async (
+            cardId: string, newQuestion: string, newAnswer: string
+        ) => {
+            await db.editCard(cardId, newQuestion, newAnswer);
+            await reload();
+        }, [reload]),
 
-    const deleteCard = async (cardId: string) => {
-        await db.deleteCard(cardId);
-        await loadData();
-    };
+        deleteCard: useCallback(async (
+            cardId: string
+        ) => {
+            await db.deleteCard(cardId);
+            await reload();
+        }, [reload]),
 
-    const importDeck = async (deck: Deck) => {
-        await db.importDeckToDB(deck);
-        await loadData();
-    };
+        importDeck: useCallback(async (
+            deck: Deck
+        ) => {
+            await db.importDeckToDB(deck);
+            await reload();
+        }, [reload]),
 
-    const reorderDecks = async (newOrder: Deck[]) => {
-        await db.updateDeckPositions(newOrder);
-        await loadData();
-    };
+        reorderDecks: useCallback(async (
+            newOrder: Deck[]
+        ) => {
+            await db.updateDeckPositions(newOrder);
+            await reload();
+        }, [reload]),
 
-    const reorderCards = async (deckId: string, sortedCards: Card[]) => {
-        await db.reorderCards(deckId, sortedCards);
-        await loadData();
+        reorderCards: useCallback(async (
+            deckId: string, sortedCards: Card[]
+        ) => {
+            await db.reorderCards(deckId, sortedCards);
+            await reload();
+        }, [reload]),
     };
 
     // --- Folders ---
-    const addFolder = async (id: string, title: string) => {
-        await db.addFolder(id, title);
-        await loadData();
-    };
+    const folderActions = {
+        addFolder: useCallback(async (
+            id: string, title: string
+        ) => {
+            await db.addFolder(id, title);
+            await reload();
+        }, [reload]),
 
-    const addDeckToFolder = async (folderId: string, deckId: string) => {
-        await db.addDeckToFolder(folderId, deckId);
-        await loadData();
-    };
+        editFolder: useCallback(async (
+            folderId: string, newTitle: string
+        ) => {
+            await db.editFolder(folderId, newTitle);
+            await reload();
+        }, [reload]),
 
-    const editFolder = async (folderId: string, newTitle: string) => {
-        await db.editFolder(folderId, newTitle);
-        await loadData();
-    };
+        removeFolder: useCallback(async (
+            folderId: string
+        ) => {
+            await db.removeFolder(folderId);
+            await reload();
+        }, [reload]),
 
-    const removeFolder = async (folderId: string) => {
-        await db.removeFolder(folderId);
-        await loadData();
-    };
+        removeDeckFromFolder: useCallback(async (
+            folderId: string, deckId: string
+        ) => {
+            await db.removeDeckFromFolder(folderId, deckId);
+            await reload();
+        }, [reload]),
 
-    const removeDeckFromFolder = async (folderId: string, deckId: string) => {
-        await db.removeDeckFromFolder(folderId, deckId);
-        await loadData();
-    };
+        moveDecksToFolder: useCallback(async (
+            deckIds: string[], targetFolderId: string
+        ) => {
+            await db.moveDecksToFolder(deckIds, targetFolderId);
+            await reload();
+        }, [reload]),
 
-    const moveDecksToFolder = async (deckIds: string[], targetFolderId: string) => {
-        await db.moveDecksToFolder(deckIds, targetFolderId);
-        await loadData();
-    };
+        reorderFolders: useCallback(async (
+            newOrder: Folder[]
+        ) => {
+            await db.updateFolderPositions(newOrder);
+            await reload();
+        }, [reload]),
 
-    const reorderFolders = async (newOrder: Folder[]) => {
-        await db.updateFolderPositions(newOrder);
-        await loadData();
+        updateFolderDeckOrder: useCallback(async (
+            folderId: string, sortedDecks: Deck[]
+        ) => { 
+            await db.updateFolderDeckOrder(folderId, sortedDecks); 
+            await reload(); 
+        }, [reload]),
     };
 
     return (
-        <DeckContext.Provider
-            value={{
-                decks,
-                folders,
-                actions: {
-                    addDeck,
-                    editDeck,
-                    deleteDeck,
-                    addCard,
-                    editCard,
-                    deleteCard,
-                    importDeck,
-                    reorderDecks,
-                    reorderCards,
-                },
-                folderActions: {
-                    addFolder,
-                    addDeckToFolder,
-                    editFolder,
-                    removeFolder,
-                    removeDeckFromFolder,
-                    moveDecksToFolder,
-                    reorderFolders,
-                },
-                reload: loadData,
-            }}
-        >
-        {children}
+        <DeckContext.Provider value={{ decks, folders, actions, folderActions, reload }}>
+            {children}
         </DeckContext.Provider>
     );
 };
