@@ -34,7 +34,7 @@ const DeckScreenInner = () => {
     
     if (!deck) return null;
 
-    return <DeckContent entity={deck} folderId={folderId} />;
+    return <DeckContent entity={deck} />;
 };
 
 const DeckScreen = () => (
