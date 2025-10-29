@@ -18,7 +18,12 @@ type DeckListProps = {
     onDelete: (cardId: string) => void;
 };
 
-const DeckList = ({ cards, variant = 'regular', onEdit, onDelete }: DeckListProps) => {
+const DeckList = ({ 
+    cards, 
+    variant = 'regular', 
+    onEdit, 
+    onDelete
+}: DeckListProps) => {
     const swipeableRefs = useRef<Record<string, SwipeableRef>>({});
     const confirmDelete = useConfirmDelete();
 
@@ -36,12 +41,13 @@ const DeckList = ({ cards, variant = 'regular', onEdit, onDelete }: DeckListProp
     const renderRightActions = useCallback(
         (card: Card, swipeableRef: SwipeableRef) => (
             <SwipeButtons
-                onEdit={onEdit 
-                    ? () => { 
-                        onEdit(card.id); 
-                        swipeableRef?.close(); 
-                    } 
-                    : undefined
+                onEdit={
+                    onEdit 
+                        ? () => { 
+                            onEdit(card.id); 
+                            swipeableRef?.close(); 
+                        } 
+                        : undefined
                 }
                 onDelete={async () => {
                     const confirmed = await confirmDelete('card', card.id);
@@ -64,9 +70,7 @@ const DeckList = ({ cards, variant = 'regular', onEdit, onDelete }: DeckListProp
                 }
                 onSwipeableWillOpen={() => {
                     Object.entries(swipeableRefs.current).forEach(([id, ref]) => {
-                        if (id !== item.id) {
-                            ref?.close();
-                        }
+                        if (id !== item.id) ref?.close();
                     });
                     setSwipingCardId(item.id);
                 }}
@@ -89,7 +93,9 @@ const DeckList = ({ cards, variant = 'regular', onEdit, onDelete }: DeckListProp
             keyExtractor={(item) => item.id}
             renderItem={renderItem}
             ListEmptyComponent={
-                <MessageContainer>No cards yet. Start by adding one!</MessageContainer>
+                <MessageContainer>
+                    No cards yet. Start by adding one!
+                </MessageContainer>
             }
             contentContainerStyle={flatListStyles.deckList(variant)}
         />
