@@ -1,20 +1,27 @@
-import { useCallback, useState, useMemo } from "react";
+import { useMemo } from "react";
 import { useLocalSearchParams } from "expo-router";
 
 import { useDecks } from "@/context/DeckContext";
+import { useMenu, MenuProvider } from "@/context/MenuContext";
 import DeckContent from "@/components/pages/DeckContent";
 import useCustomHeader from "@/hooks/useCustomHeader";
 
-const DeckScreen = () => {
-    const [isMenuVisible, setMenuVisible] = useState(false);
-    const { deckId } = useLocalSearchParams<{ deckId: string }>();
+const DeckScreenInner = () => {
+    const { deckId, folderId } = useLocalSearchParams<{ 
+        deckId: string; 
+        folderId?: string 
+    }>();
+    const { decks, folders } = useDecks();
+    const { openMenu } = useMenu();
 
-    const { decks } = useDecks();
-    const deck = useMemo(() => decks.find((d) => d.id === deckId), [decks, deckId]);
+    const deck = useMemo(() => {
+        if (folderId) {
+            const folder = folders.find(f => f.id === folderId);
+            return folder?.decks?.find(d => d.id === deckId);
+        }
+        return decks.find(d => d.id === deckId);
+    }, [decks, folders, deckId, folderId]);
 
-    const openMenu = useCallback(() => setMenuVisible(true), []);
-    const closeMenu = useCallback(() => setMenuVisible(false), []);
-    
     useCustomHeader({ 
         title: deck?.title,
         headerTransparent: true,
@@ -27,13 +34,13 @@ const DeckScreen = () => {
     
     if (!deck) return null;
 
-    return (
-        <DeckContent
-            deck={deck}
-            isMenuVisible={isMenuVisible}
-            onCloseMenu={closeMenu}
-        />
-    );
+    return <DeckContent entity={deck} folderId={folderId} />;
 };
+
+const DeckScreen = () => (
+    <MenuProvider>
+        <DeckScreenInner />
+    </MenuProvider>
+);
 
 export default DeckScreen;
