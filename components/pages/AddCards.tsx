@@ -31,6 +31,7 @@ const AddCards = () => {
             </CardInputContainer>
 
             <AddCardsList
+                deckId={deckId!}
                 cards={cards}
                 onEdit={handleEditCard}
                 onDelete={deleteCard}
