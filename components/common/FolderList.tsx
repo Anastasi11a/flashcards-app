@@ -11,7 +11,7 @@ import { flatListStyles } from "@/utils/contentContainerStyle";
 import { navigateToCards } from "@/utils/navigation/navigation";
 
 const FolderList = ({ folderId }: { folderId?: string }) => {
-    const { decks, folders, actions, folderActions } = useDecks();
+    const { decks, folders, actions } = useDecks();
 
     const confirmDelete = useConfirmDelete();
     const swipeableRefs = useRef<Record<string, Swipeable | null>>({});
@@ -26,10 +26,7 @@ const FolderList = ({ folderId }: { folderId?: string }) => {
     const handleDelete = useCallback(
         async (deckId: string) => {
             if (folderId) {
-                const confirmed = await confirmDelete('deckFromFolder', deckId);
-                if (confirmed) {
-                    await folderActions.removeDeckFromFolder(folderId, deckId);
-                }
+                await confirmDelete('deck', deckId, folderId);
             } else {
                 const confirmed = await confirmDelete('deck', deckId);
                 if (confirmed) {
@@ -37,7 +34,7 @@ const FolderList = ({ folderId }: { folderId?: string }) => {
                 }
             }
         },
-        [folderId, confirmDelete, actions, folderActions]
+        [folderId, confirmDelete, actions]
     );
 
     const renderRightActions = useCallback(

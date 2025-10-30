@@ -12,6 +12,7 @@ import { flatListStyles } from "@/utils/contentContainerStyle";
 
 type SwipeableRef = SwipeableType | null;
 type DeckListProps = {
+    deckId: string;
     cards: Card[];
     variant?: 'regular' | 'transparent';
     onEdit?: (cardId: string) => void;
@@ -19,6 +20,7 @@ type DeckListProps = {
 };
 
 const DeckList = ({ 
+    deckId,
     cards, 
     variant = 'regular', 
     onEdit, 
@@ -64,7 +66,9 @@ const DeckList = ({
     const renderItem = useCallback(
         ({ item }: { item: Card }) => (
             <Swipeable
-                ref={(ref) => {swipeableRefs.current[item.id] = ref}}
+                ref={(ref) => {
+                    swipeableRefs.current[item.id] = ref
+                }}
                 renderRightActions={(_, __, swipeable) =>
                     renderRightActions(item, swipeable)
                 }
