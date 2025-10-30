@@ -78,13 +78,14 @@ export const useMenuOptions = <T extends Deck | FolderWithDecks>(
         }
         : () => {
             const nextOrder: SortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
-            const sortedDeck = [...(entity as FolderWithDecks).decks ?? []].sort((a, b) =>
-                    nextOrder === 'asc'
-                        ? a.title.localeCompare(b.title)
-                        : b.title.localeCompare(a.title)
+            const sortedDeck = [...(entity as FolderWithDecks).decks ?? []]
+                .sort((a, b) => nextOrder === 'asc'
+                    ? a.title.localeCompare(b.title)
+                    : b.title.localeCompare(a.title)
                 );
-            folderActions.updateFolderDeckOrder(entity.id, sortedDeck)
+                folderActions.updateFolderDeckOrder(entity.id, sortedDeck)
                 .catch(console.error);
+
             setSortOrder(nextOrder);
         };
 
