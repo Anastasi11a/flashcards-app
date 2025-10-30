@@ -32,8 +32,10 @@ export function useAddCardState(deckId: string) {
         setAnswer('');
     };
 
-    const deleteCard = (cardId: string) => actions.deleteCard(cardId);
-
+    const deleteCard = async (cardId: string) => {
+        actions.deleteCard(cardId);
+    };
+  
     return {
         cardState: {
             question,
